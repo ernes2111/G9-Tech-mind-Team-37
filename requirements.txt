@@ -1,0 +1,22 @@
+# TechMind — Ciencia de Datos
+# Entorno: Python 3.12.3
+# Instalar con: pip install -r requirements.txt
+
+# ── Núcleo de datos ─────────────────────────────────────────────────────────
+pandas>=2.2.0
+numpy>=1.26.0
+
+# ── Machine Learning ─────────────────────────────────────────────────────────
+scikit-learn>=1.4.0
+joblib>=1.3.0
+
+# ── Visualización ────────────────────────────────────────────────────────────
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ── Entorno Jupyter ───────────────────────────────────────────────────────────
+notebook>=7.0.0
+ipykernel>=6.29.0
+
+# ── Stdlib (incluidas en Python, sin instalar) ────────────────────────────────
+# re, json, sqlite3, string, csv, pathlib, datetime
