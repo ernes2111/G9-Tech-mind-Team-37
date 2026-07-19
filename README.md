@@ -8,7 +8,8 @@
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=flat&logo=jupyter&logoColor=white)](https://jupyter.org/)
 [![OCI](https://img.shields.io/badge/Oracle-OCI-F80000?style=flat&logo=oracle&logoColor=white)](https://www.oracle.com/cloud/)
-[![Hackathon](https://img.shields.io/badge/G9_LATAM-Team_37-blueviolet?style=flat)]()
+[![Hackathon](https://img.shields.io/badge/G9_LATAM-Team_37-blueviolet?style=flat)](https://github.com/ernes2111/G9-Tech-mind-Team-37)
+[![Repo](https://img.shields.io/badge/Repositorio-Privado-red?style=flat&logo=github&logoColor=white)](https://github.com/ernes2111/G9-Tech-mind-Team-37)
 
 **Hackathon TechMind · G9 LATAM · Equipo 37**
 
@@ -100,8 +101,8 @@ TechMind - G9 - LATAM - TEAM 37/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
-cd "TechMind - G9 - LATAM - TEAM 37"
+git clone https://github.com/ernes2111/G9-Tech-mind-Team-37.git
+cd G9-Tech-mind-Team-37
 ```
 
 ### 2. Crear entorno virtual e instalar dependencias
