@@ -21,3 +21,6 @@ env/
 # Documentos fuente (PDF/DOCX) — locales, no versionar
 documentos/*.pdf
 documentos/*.docx
+# extra
+postman_collection.json
+QA_TESTING.md
