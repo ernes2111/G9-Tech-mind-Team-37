@@ -1,0 +1,62 @@
+titulo,texto,categoria
+Introducción a Spring Boot,En este contenido se presentan los conceptos básicos para la creación de APIs REST utilizando Java y Spring Boot.,Backend
+Arquitectura de microservicios,"Se describen los principios de diseño de microservicios, comunicación entre servicios y patrones como API Gateway y Service Discovery.",Backend
+Consultas avanzadas en SQL,"Tutorial sobre subconsultas, joins y funciones de ventana en SQL para consultas complejas.",Bases de Datos
+Pipelines de Scikit-Learn,Se explica cómo construir pipelines reproducibles que encadenan preprocesamiento y modelado en Scikit-Learn.,Data Science
+Hooks de React explicados,"Se explican los hooks useState, useEffect y useContext para manejar estado y ciclo de vida en componentes React.",Frontend
+Gestión segura de secretos,Tutorial sobre el manejo seguro de credenciales y variables sensibles en aplicaciones y pipelines de despliegue.,Seguridad
+Integración continua con GitHub Actions,Guía para configurar pipelines de CI/CD utilizando GitHub Actions y automatizar pruebas y despliegues.,DevOps
+Redis para caché de datos,Tutorial sobre el uso de Redis como almacén de datos en memoria para caché de aplicaciones.,Bases de Datos
+Componentes en React,"Introducción a la creación de componentes funcionales en React, uso de props y composición de interfaces de usuario.",Frontend
+React Native para iOS y Android,Se explica cómo construir aplicaciones móviles nativas utilizando React Native y JavaScript.,Mobile
+Orquestación con Kubernetes,"Se presentan los conceptos básicos de Kubernetes: pods, deployments, servicios y escalado de aplicaciones.",DevOps
+Escalabilidad de aplicaciones en la nube,Se explican estrategias de escalado horizontal y vertical de aplicaciones desplegadas en proveedores de nube.,Cloud
+TypeScript en aplicaciones web,"Se describe cómo TypeScript añade tipado estático a JavaScript, mejorando la mantenibilidad de aplicaciones frontend.",Frontend
+Persistencia con JPA e Hibernate,Este tutorial cubre el mapeo objeto-relacional con JPA e Hibernate para conectar aplicaciones Java con bases de datos relacionales.,Backend
+Prevención de inyección SQL,Buenas prácticas para prevenir ataques de inyección SQL mediante consultas parametrizadas.,Seguridad
+Gestión de estado con Redux,"Este contenido explica el patrón de gestión de estado global con Redux, acciones, reducers y el store.",Frontend
+Colas de mensajes con RabbitMQ,Se explica cómo utilizar RabbitMQ para desacoplar servicios backend mediante colas de mensajes asíncronas.,Backend
+Validación de datos en APIs REST,Buenas prácticas para validar el cuerpo de las solicitudes HTTP y devolver códigos de estado apropiados en una API REST.,Backend
+Kotlin para desarrollo Android,Guía práctica sobre el uso de Kotlin para el desarrollo de aplicaciones nativas en Android.,Mobile
+Node.js y Express desde cero,"Guía práctica para construir un servidor HTTP con Node.js y el framework Express, incluyendo rutas, middlewares y controladores.",Backend
+SwiftUI para desarrollo iOS,Introducción a SwiftUI para construir interfaces declarativas en aplicaciones para iOS.,Mobile
+Accesibilidad web (a11y),Buenas prácticas de accesibilidad web para que las interfaces sean utilizables por personas con discapacidad.,Frontend
+MongoDB y bases de datos NoSQL,"Introducción a las bases de datos documentales con MongoDB, colecciones y consultas de agregación.",Bases de Datos
+Criptografía aplicada a aplicaciones,Introducción a algoritmos de cifrado simétrico y asimétrico utilizados para proteger datos en aplicaciones.,Seguridad
+Vectorización de texto con TF-IDF,Se explica la técnica TF-IDF para convertir texto en vectores numéricos utilizables por modelos de machine learning.,Data Science
+Cómputo en la nube con OCI Compute,Se describe cómo desplegar aplicaciones utilizando instancias de cómputo de Oracle Cloud Infrastructure.,Cloud
+Vue.js para principiantes,"Guía introductoria a Vue.js, su sistema de reactividad, directivas y componentes de un solo archivo.",Frontend
+Funciones serverless en la nube,Tutorial sobre el uso de funciones serverless para ejecutar procesamiento específico sin administrar servidores.,Cloud
+Feature engineering para modelos ML,Técnicas de ingeniería de características para mejorar el desempeño de modelos de aprendizaje automático.,Data Science
+GraphQL vs REST,"Comparación entre GraphQL y REST para el diseño de APIs, ventajas de cada enfoque y casos de uso recomendados.",Backend
+Series temporales con Pandas,"Manejo de datos de series temporales, remuestreo y análisis de tendencias utilizando Pandas.",Data Science
+Monitoreo de aplicaciones con Prometheus,Tutorial sobre cómo recolectar métricas de aplicaciones y visualizarlas con Prometheus y Grafana.,DevOps
+Visualización de datos con Matplotlib,"Guía práctica para crear gráficos de barras, histogramas y diagramas de dispersión con Matplotlib y Seaborn.",Data Science
+Regresión logística con Scikit-Learn,Tutorial sobre cómo entrenar y evaluar un modelo de regresión logística para problemas de clasificación con Scikit-Learn.,Data Science
+Almacenamiento local en apps móviles,Se describen estrategias de almacenamiento local como SQLite y SharedPreferences en aplicaciones móviles.,Mobile
+Patrones de diseño en backend,"Se presentan patrones de diseño como Repository, Factory y Singleton aplicados al desarrollo de aplicaciones backend en Java.",Backend
+Contenedores con Docker,"Introducción a Docker, creación de imágenes, Dockerfiles y contenedores para empaquetar aplicaciones.",DevOps
+Autenticación de dos factores,Se explica cómo implementar autenticación de dos factores para reforzar la seguridad de acceso a sistemas.,Seguridad
+Servicios de OCI Object Storage,Introducción al almacenamiento de objetos en Oracle Cloud Infrastructure para guardar modelos y documentos.,Cloud
+Despliegue continuo en la nube,Buenas prácticas para automatizar el despliegue continuo de aplicaciones en entornos de nube pública.,DevOps
+Clustering con K-Means,Introducción al algoritmo K-Means para agrupamiento no supervisado de datos y selección del número de clusters.,Data Science
+Modelado de bases de datos relacionales,Se explican los principios de normalización y modelado entidad-relación para bases de datos relacionales.,Bases de Datos
+Manejo de excepciones en Spring,Spring Boot permite centralizar el manejo de errores mediante ControllerAdvice y ExceptionHandler para APIs REST robustas.,Backend
+Consumo de APIs con Fetch y Axios,Se explica cómo realizar solicitudes HTTP desde el frontend utilizando Fetch API y la librería Axios.,Frontend
+Autenticación con JWT en Java,Se explica cómo implementar autenticación basada en tokens JWT en una API REST desarrollada con Spring Boot y Spring Security.,Backend
+Índices y optimización de consultas,Se describe cómo los índices mejoran el rendimiento de las consultas en bases de datos relacionales.,Bases de Datos
+Desarrollo de apps con Flutter,Introducción al desarrollo de aplicaciones móviles multiplataforma utilizando Flutter y el lenguaje Dart.,Mobile
+Infraestructura como código con Terraform,Se explica cómo definir y provisionar infraestructura en la nube utilizando Terraform de forma declarativa.,DevOps
+Análisis exploratorio de datos,"Se presenta el proceso de EDA, incluyendo estadística descriptiva, visualización y detección de valores atípicos.",Data Science
+Transacciones y propiedades ACID,Se explican las propiedades ACID y el manejo de transacciones en bases de datos relacionales.,Bases de Datos
+Manejo de sesiones y cookies,"Este contenido aborda el manejo de sesiones de usuario, cookies seguras y tokens de refresco en aplicaciones backend.",Backend
+Limpieza de datos con Pandas,Este contenido cubre técnicas de limpieza y transformación de datos utilizando la librería Pandas en Python.,Data Science
+Optimización de rendimiento web,"Técnicas para mejorar el rendimiento de aplicaciones web, incluyendo lazy loading, code splitting y caché de assets.",Frontend
+Redes virtuales en la nube,Introducción a la configuración de redes privadas virtuales y balanceadores de carga en entornos cloud.,Cloud
+Angular y sus módulos,"Introducción a Angular, su arquitectura basada en módulos, componentes, servicios e inyección de dependencias.",Frontend
+Django REST Framework,"Introducción a la construcción de APIs con Python utilizando Django REST Framework, serializers y vistas basadas en clases.",Backend
+Notificaciones push en apps móviles,Tutorial sobre la implementación de notificaciones push utilizando Firebase Cloud Messaging.,Mobile
+Diseño responsive con CSS Grid,Tutorial sobre CSS Grid y Flexbox para crear diseños web responsivos que se adaptan a distintos tamaños de pantalla.,Frontend
+Métricas de evaluación de modelos,"Se describen métricas como precisión, recall, F1-score y matriz de confusión para evaluar modelos de clasificación.",Data Science
+Fundamentos de OWASP Top 10,Se presentan las vulnerabilidades más comunes en aplicaciones web según el listado OWASP Top 10.,Seguridad
+Gestión de logs centralizados,Se describe cómo centralizar y analizar logs de aplicaciones distribuidas utilizando herramientas como ELK Stack.,DevOps

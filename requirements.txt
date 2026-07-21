@@ -18,5 +18,19 @@ seaborn>=0.13.0
 notebook>=7.0.0
 ipykernel>=6.29.0
 
+# ── Microservicio FastAPI ────────────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+
+# ── PostgreSQL ────────────────────────────────────────────────────────────────
+psycopg2-binary>=2.9.9
+
+# ── Variables de entorno ──────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+# ── Ingesta de documentos (PDF / DOCX) ───────────────────────────────────────
+pdfplumber>=0.11.0      # Extracción de texto de PDFs (columnas, tablas, layouts complejos)
+python-docx>=1.1.0      # Extracción de texto de archivos .docx
+
 # ── Stdlib (incluidas en Python, sin instalar) ────────────────────────────────
-# re, json, sqlite3, string, csv, pathlib, datetime
+# re, json, string, csv, pathlib, datetime

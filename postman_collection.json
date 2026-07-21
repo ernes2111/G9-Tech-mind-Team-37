@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "TechMind — QA Test Suite v0.4",
+    "_postman_id": "techmind-g9-latam-team37",
+    "description": "Colección de tests para el sistema TechMind.\nEquipo: G9 LATAM Team 37\n\nSetup:\n1. Importar esta colección en Postman\n2. Crear environment con: BASE_URL=http://localhost:8080 y DS_URL=http://localhost:8000\n3. Correr en orden o usar el Runner para toda la suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:8080" },
+    { "key": "DS_URL",   "value": "http://localhost:8000"  }
+  ],
+  "item": [
+    {
+      "name": "🔍 Health Checks",
+      "item": [
+        {
+          "name": "HC-001 · FastAPI Health",
+          "request": {
+            "method": "GET",
+            "url": "{{DS_URL}}/health"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('status ok', () => pm.expect(body.status).to.eql('ok'));",
+              "pm.test('model_loaded true', () => pm.expect(body.model_loaded).to.be.true);",
+              "pm.test('version present', () => pm.expect(body.version).to.be.a('string'));"
+            ]}
+          }]
+        },
+        {
+          "name": "HC-002 · FastAPI Categorías",
+          "request": {
+            "method": "GET",
+            "url": "{{DS_URL}}/categorias"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('8 categorías', () => pm.expect(body.categorias).to.have.lengthOf(8));",
+              "const expected = ['Backend','Bases de Datos','Cloud','Data Science','DevOps','Frontend','Mobile','Seguridad'];",
+              "expected.forEach(c => pm.test('Categoría ' + c, () => pm.expect(body.categorias).to.include(c)));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "🟢 Happy Path — Las 8 categorías",
+      "item": [
+        {
+          "name": "TC-001 · Backend (Spring Boot + Java)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Introducción a Spring Boot\",\n  \"texto\": \"Conceptos básicos para la creación de APIs REST con Java y Spring Boot. Incluye configuración de dependencias, controladores y manejo de excepciones.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('categoria == Backend', () => pm.expect(body.categoria).to.eql('Backend'));",
+              "pm.test('probabilidad > 0', () => pm.expect(body.probabilidad).to.be.above(0));",
+              "pm.test('probabilidad <= 1', () => pm.expect(body.probabilidad).to.be.at.most(1));",
+              "pm.test('informaciones_adicionales es array', () => pm.expect(body.informaciones_adicionales).to.be.an('array'));",
+              "pm.test('Tiempo < 2000ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-002 · Data Science (ML + TF-IDF)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Machine Learning con Scikit-Learn\",\n  \"texto\": \"Pipeline de clasificación usando TF-IDF y regresión logística para análisis de textos en español. Incluye vectorización, entrenamiento y evaluación del modelo.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('categoria == Data Science', () => pm.expect(body.categoria).to.eql('Data Science'));",
+              "pm.test('probabilidad en rango 0-1', () => { pm.expect(body.probabilidad).to.be.above(0); pm.expect(body.probabilidad).to.be.at.most(1); });"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-003 · Frontend (React + Hooks)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Componentes en React\",\n  \"texto\": \"Uso de hooks como useState y useEffect para manejar el estado en aplicaciones React. Incluye ejemplos de componentes funcionales y ciclo de vida.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == Frontend', () => pm.expect(pm.response.json().categoria).to.eql('Frontend'));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-004 · DevOps (Docker + Kubernetes)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Despliegue con Docker y Kubernetes\",\n  \"texto\": \"Creación de imágenes Docker, configuración de contenedores y orquestación con Kubernetes. Pipelines de CI/CD con GitHub Actions.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == DevOps', () => pm.expect(pm.response.json().categoria).to.eql('DevOps'));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-005 · Cloud (OCI + Oracle)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Servicios en Oracle Cloud OCI\",\n  \"texto\": \"Uso de OCI Object Storage, Compute instances y redes virtuales para desplegar aplicaciones escalables en la nube de Oracle.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == Cloud', () => pm.expect(pm.response.json().categoria).to.eql('Cloud'));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-006 · Mobile (React Native)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Desarrollo de apps con React Native\",\n  \"texto\": \"Creación de aplicaciones móviles multiplataforma para Android e iOS usando React Native, navegación con React Navigation y consumo de APIs REST.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == Mobile', () => pm.expect(pm.response.json().categoria).to.eql('Mobile'));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-007 · Bases de Datos (PostgreSQL + SQL)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Consultas avanzadas en PostgreSQL\",\n  \"texto\": \"Uso de JOINs, índices, transacciones ACID y procedimientos almacenados en PostgreSQL. Optimización de queries y análisis de planes de ejecución.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == Bases de Datos', () => pm.expect(pm.response.json().categoria).to.eql('Bases de Datos'));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-008 · Seguridad (JWT + OAuth2)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Autenticación con JWT y OAuth2\",\n  \"texto\": \"Implementación de autenticación stateless con JSON Web Tokens. Flujos de autorización OAuth2, manejo de refresh tokens y buenas prácticas de seguridad.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('categoria == Seguridad', () => pm.expect(pm.response.json().categoria).to.eql('Seguridad'));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "🟡 Edge Cases",
+      "item": [
+        {
+          "name": "TC-010 · Texto muy corto (1 palabra)",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Java\",\n  \"texto\": \"Java\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Tiene categoria', () => pm.expect(body.categoria).to.be.a('string'));",
+              "pm.test('probabilidad en rango', () => { pm.expect(body.probabilidad).to.be.above(0); pm.expect(body.probabilidad).to.be.at.most(1); });"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-011 · Texto en inglés",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Introduction to React Hooks\",\n  \"texto\": \"React hooks allow functional components to use state and side effects. useState, useEffect, and custom hooks.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200 — no explota con inglés', () => pm.response.to.have.status(200));",
+              "pm.test('Respuesta válida aunque modelo no fue entrenado en inglés', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.categoria).to.be.a('string');",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-014 · Caracteres especiales y emojis",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"API REST con Spring Boot & JWT 🚀\",\n  \"texto\": \"Configuración de seguridad: autenticación JWT + OAuth2 (Bearer tokens). URL: /api/v1/auth/login?redirect=true\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200 — caracteres especiales no rompen la API', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "🔴 Error Handling",
+      "item": [
+        {
+          "name": "TC-016 · Falta campo titulo",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"texto\": \"Texto sin titulo\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422', () => pm.response.to.have.status(422));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-017 · Falta campo texto",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Titulo sin texto\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422', () => pm.response.to.have.status(422));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-018 · Ambos campos vacíos",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"texto\": \"\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422 — campos vacíos no permitidos', () => pm.response.to.have.status(422));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-019 · Body vacío",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422', () => pm.response.to.have.status(422));"
+            ]}
+          }]
+        },
+        {
+          "name": "TC-021 · Método GET en endpoint POST",
+          "request": {
+            "method": "GET",
+            "url": "{{DS_URL}}/predecir"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 405 Method Not Allowed', () => pm.response.to.have.status(405));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "📊 Validación de formato de respuesta",
+      "item": [
+        {
+          "name": "FMT-001 · Validar estructura completa del JSON",
+          "request": {
+            "method": "POST",
+            "url": "{{DS_URL}}/predecir",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Kubernetes y orquestación de contenedores\",\n  \"texto\": \"Gestión de pods, deployments y services en Kubernetes. Configuración de recursos, escalado automático y monitoreo con Prometheus.\"\n}" }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "const categorias = ['Backend','Bases de Datos','Cloud','Data Science','DevOps','Frontend','Mobile','Seguridad'];",
+              "pm.test('categoria es string válido', () => pm.expect(categorias).to.include(body.categoria));",
+              "pm.test('probabilidad es número 0-1', () => {",
+              "  pm.expect(body.probabilidad).to.be.a('number');",
+              "  pm.expect(body.probabilidad).to.be.above(0);",
+              "  pm.expect(body.probabilidad).to.be.at.most(1);",
+              "});",
+              "pm.test('informaciones_adicionales es array', () => pm.expect(body.informaciones_adicionales).to.be.an('array'));",
+              "pm.test('informaciones_adicionales máx 5 elementos', () => pm.expect(body.informaciones_adicionales.length).to.be.at.most(5));",
+              "pm.test('Content-Type es application/json', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+              "pm.test('Tiempo respuesta < 2000ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]}
+          }]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+# docker-compose.yml — TechMind · Entorno local de desarrollo
+#
+# Levanta PostgreSQL lista para usar con FastAPI y Spring Boot.
+#
+# Uso:
+#   docker-compose up -d          # levantar en segundo plano
+#   docker-compose down           # detener y eliminar contenedores
+#   docker-compose down -v        # detener y eliminar datos (reset completo)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: techmind-postgres
+    environment:
+      POSTGRES_DB:       techmind
+      POSTGRES_USER:     techmind_user
+      POSTGRES_PASSWORD: techmind_pass
+    ports:
+      - "5432:5432"       # accesible en localhost:5432
+    volumes:
+      - techmind_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U techmind_user -d techmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  techmind_data:
+    name: techmind_postgres_data
