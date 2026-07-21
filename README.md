@@ -324,5 +324,4 @@ Los ítems prioritarios antes de la demo final:
 
 **TechMind · Hackathon G9 LATAM · Equipo 37**
 
-
 </div>
