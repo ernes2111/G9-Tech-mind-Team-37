@@ -132,15 +132,16 @@ def predecir(req: ContenidoRequest):
 
     vector       = vectorizer.transform([texto_limpio])
     categoria    = modelo.predict(vector)[0]
-    probabilidad = float(np.max(modelo.predict_proba(vector)[0]))
-    keywords     = extraer_keywords(texto_limpio)
+    proba_arr    = modelo.predict_proba(vector)[0]
+    probabilidad = float(proba_arr.max())
+    informaciones_adicionales = extraer_keywords(texto_limpio)
 
-    log_prediccion(req.titulo, req.texto, categoria, probabilidad, keywords)
+    log_prediccion(req.titulo, req.texto, categoria, probabilidad, informaciones_adicionales)
 
     return PrediccionResponse(
         categoria=categoria,
         probabilidad=round(probabilidad, 4),
-        informaciones_adicionales=keywords,
+        informaciones_adicionales=informaciones_adicionales,
     )
 
 

@@ -65,9 +65,9 @@ CATEGORIAS = [
     "Cloud",
 ]
 
-CARPETA_DEFAULT = Path(__file__).parent / "documentos"
+CARPETA_DEFAULT = Path(__file__).parent.parent.parent / "documentos"
 UMBRAL_REENTRENAMIENTO = 3  # re-entrenar el modelo cada N documentos nuevos
-NOTEBOOK_PATH = Path(__file__).parent / "TechMind_DataScience.ipynb"
+NOTEBOOK_PATH = Path(__file__).parent.parent / "notebooks" / "TechMind_DataScience.ipynb"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Conexión a PostgreSQL

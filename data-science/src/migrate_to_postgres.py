@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR  = Path(__file__).parent
-CSV_PATH  = BASE_DIR / "contenidos_tecnicos.csv"
+CSV_PATH  = BASE_DIR.parent / "data" / "raw" / "contenidos_tecnicos.csv"
 
 
 # ── 1. Conexión a PostgreSQL ──────────────────────────────────────────────────
@@ -48,13 +48,13 @@ CREATE TABLE IF NOT EXISTS contenidos (
 );
 
 CREATE TABLE IF NOT EXISTS predicciones (
-    id              SERIAL PRIMARY KEY,
-    titulo          TEXT        NOT NULL,
-    texto           TEXT        NOT NULL,
-    categoria       TEXT        NOT NULL,
-    probabilidad    FLOAT       NOT NULL,
-    keywords        TEXT[]      NOT NULL,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id                        SERIAL PRIMARY KEY,
+    titulo                    TEXT        NOT NULL,
+    texto                     TEXT        NOT NULL,
+    categoria                 TEXT        NOT NULL,
+    probabilidad              FLOAT       NOT NULL,
+    informaciones_adicionales TEXT[]      NOT NULL,
+    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_contenidos_categoria   ON contenidos  (categoria);

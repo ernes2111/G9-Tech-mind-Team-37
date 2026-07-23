@@ -44,7 +44,7 @@ flowchart TD
     subgraph PROD ["⚡ SECCIÓN 2 — Inferencia en Producción (Online · FastAPI)"]
         direction TB
         FASTAPI["⚡ FastAPI — Puerto 8000\n─────────────────────────\nPOST /predecir · GET /health\nGET /categorias · GET /docs\n─────────────────────────\n• Limpia texto · vectoriza · predice\n• Extrae keywords · guarda en DB"]
-        PG_OUT[("🗄️ PostgreSQL\ntabla: predicciones\nid · titulo · categoria\nprobabilidad · keywords · created_at")]
+        PG_OUT[("🗄️ PostgreSQL\ntabla: predicciones\nid · titulo · categoria\nprobabilidad · informaciones_adicionales · created_at")]
         SPRING["☕ Spring Boot — Puerto 8080\n─────────────────────────\n• Recibe POST /contenido\n• Valida el request\n• Llama a FastAPI internamente\n• Responde al cliente"]
         CLIENT[/"📤 Cliente / Postman\n─────────────────────────\n{ 'categoria': 'Backend',\n  'probabilidad': 0.88,\n  'informaciones_adicionales': [...] }"/]
 
@@ -138,7 +138,7 @@ flowchart TD
 contenidos (id, titulo, texto, categoria, created_at)
 
 -- Log de inferencias (escritura por FastAPI en cada predicción)
-predicciones (id, titulo, texto, categoria, probabilidad, keywords[], created_at)
+predicciones (id, titulo, texto, categoria, probabilidad, informaciones_adicionales[], created_at)
 ```
 
 ---

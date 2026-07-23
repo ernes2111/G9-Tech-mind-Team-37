@@ -29,13 +29,13 @@ def init_db():
     cur = con.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS predicciones (
-            id              SERIAL PRIMARY KEY,
-            titulo          TEXT        NOT NULL,
-            texto           TEXT        NOT NULL,
-            categoria       TEXT        NOT NULL,
-            probabilidad    FLOAT       NOT NULL,
-            keywords        TEXT[]      NOT NULL,
-            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            id                        SERIAL PRIMARY KEY,
+            titulo                    TEXT        NOT NULL,
+            texto                     TEXT        NOT NULL,
+            categoria                 TEXT        NOT NULL,
+            probabilidad              FLOAT       NOT NULL,
+            informaciones_adicionales TEXT[]      NOT NULL,
+            created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
 
         CREATE INDEX IF NOT EXISTS idx_predicciones_categoria
@@ -55,7 +55,7 @@ def log_prediccion(
     texto: str,
     categoria: str,
     probabilidad: float,
-    keywords: list,
+    informaciones_adicionales: list,
 ) -> None:
     """
     Persiste una predicción en la tabla `predicciones`.
@@ -66,10 +66,10 @@ def log_prediccion(
         cur = con.cursor()
         cur.execute(
             """
-            INSERT INTO predicciones (titulo, texto, categoria, probabilidad, keywords)
+            INSERT INTO predicciones (titulo, texto, categoria, probabilidad, informaciones_adicionales)
             VALUES (%s, %s, %s, %s, %s)
             """,
-            (titulo, texto, categoria, probabilidad, keywords),
+            (titulo, texto, categoria, probabilidad, informaciones_adicionales),
         )
         con.commit()
         cur.close()
