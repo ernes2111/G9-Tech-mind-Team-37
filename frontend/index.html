@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TechMind AI — Clasificador Inteligente de Conocimiento Técnico</title>
+    
+    <!-- Google Fonts & Icons -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Outfit:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Tailwind Configuration (Stitch Cyber AI Theme) -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#6ffbbe",
+                        "primary-fixed": "#e9ddff",
+                        "secondary": "#c0c1ff",
+                        "on-surface": "#dae2fd",
+                        "secondary-container": "#3131c0",
+                        "primary": "#d0bcff",
+                        "on-tertiary": "#003824",
+                        "tertiary-container": "#00a572",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-container": "#b0b2ff",
+                        "on-primary-fixed-variant": "#5516be",
+                        "error-container": "#93000a",
+                        "outline": "#958ea0",
+                        "surface-variant": "#2d3449",
+                        "tertiary": "#4edea3",
+                        "outline-variant": "#494454",
+                        "error": "#ffb4ab",
+                        "on-background": "#dae2fd",
+                        "background": "#0b1326",
+                        "on-secondary": "#1000a9",
+                        "surface-bright": "#31394d",
+                        "surface": "#0b1326",
+                        "inverse-primary": "#6d3bd7",
+                        "surface-container-high": "#222a3d",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-tertiary-container": "#00311f",
+                        "on-error": "#690005",
+                        "surface-container": "#171f33",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-primary-fixed": "#23005c",
+                        "surface-container-highest": "#2d3449",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed": "#e1e0ff",
+                        "on-secondary-fixed": "#07006c",
+                        "primary-fixed-dim": "#d0bcff",
+                        "surface-tint": "#d0bcff",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-primary-container": "#340080",
+                        "on-primary": "#3c0091",
+                        "primary-container": "#a078ff",
+                        "on-tertiary-fixed": "#002113",
+                        "surface-container-low": "#131b2e"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "container-max": "1440px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "unit": "4px"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Outfit"],
+                        "display-lg": ["Outfit"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background-color: rgba(11, 19, 38, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel:hover {
+            border-color: rgba(208, 188, 255, 0.3);
+            box-shadow: 0 0 20px rgba(208, 188, 255, 0.1);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(208, 188, 255, 0) 0%, rgba(208, 188, 255, 0.5) 50%, rgba(208, 188, 255, 0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer-anim 2s infinite;
+        }
+        @keyframes shimmer-anim {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .led-pulse {
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(111, 251, 190, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(111, 251, 190, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(111, 251, 190, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+
+    <!-- Ambient Glow Background -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-40">
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-inverse-primary/20 blur-[120px]"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-tertiary-fixed/10 blur-[120px]"></div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-md pointer-events-none"></div>
+
+    <!-- Side Navigation Shell -->
+    <aside class="fixed left-0 top-0 h-screen w-64 border-r border-white/5 shadow-2xl bg-surface-container-low/80 backdrop-blur-2xl z-40 hidden md:flex flex-col py-6 px-4">
+        <div class="mb-10 px-3">
+            <h1 class="font-headline-md text-primary-fixed tracking-tight flex items-center gap-3">
+                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                TechMind AI
+            </h1>
+            <p class="font-label-sm text-label-sm text-on-surface-variant mt-2 opacity-80">Organización Inteligente</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="bg-primary-container text-on-primary-container rounded-xl flex items-center gap-3 p-3 transition-all" href="#">
+                <span class="material-symbols-outlined text-xl">psychology</span>
+                <span class="font-label-sm text-label-sm font-bold">Clasificador IA</span>
+            </a>
+            <a class="btn-history-trigger text-on-surface-variant flex items-center gap-3 p-3 hover:bg-surface-variant/50 transition-all rounded-xl group cursor-pointer" href="#history-section">
+                <span class="material-symbols-outlined text-xl group-hover:text-primary-fixed transition-colors">history</span>
+                <span class="font-label-sm text-label-sm font-semibold">Historial BD</span>
+            </a>
+            <a class="text-on-surface-variant flex items-center gap-3 p-3 hover:bg-surface-variant/50 transition-all rounded-xl group" href="http://localhost:8000/docs" target="_blank">
+                <span class="material-symbols-outlined text-xl group-hover:text-primary-fixed transition-colors">api</span>
+                <span class="font-label-sm text-label-sm">Swagger FastAPI</span>
+            </a>
+        </nav>
+        <div class="mt-auto pt-6 border-t border-white/5 text-center">
+            <p class="font-label-sm text-[11px] text-on-surface-variant opacity-60">Hackathon G9 LATAM · Team 37</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 md:ml-64 min-h-screen flex flex-col p-4 md:p-8">
+        
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pt-4 md:pt-0">
+            <div>
+                <h2 class="font-headline-md text-3xl text-on-surface font-bold tracking-tight">Clasificación de Contenido Técnico</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Ingresá textos para clasificarlos en tiempo real con Inteligencia Artificial.</p>
+            </div>
+            
+            <!-- Server Status Badges -->
+            <div class="flex flex-wrap gap-3">
+                <div id="status-springboot" class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-full border border-white/5 bg-surface-container/50">
+                    <div class="w-2 h-2 rounded-full bg-tertiary-fixed led-pulse"></div>
+                    <span class="font-label-sm text-label-sm text-tertiary-fixed font-medium">API Spring Boot :8080</span>
+                </div>
+                <div id="status-fastapi" class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-full border border-white/5 bg-surface-container/50">
+                    <div class="w-2 h-2 rounded-full bg-tertiary-fixed led-pulse"></div>
+                    <span class="font-label-sm text-label-sm text-tertiary-fixed font-medium">FastAPI ML :8000</span>
+                </div>
+                <div id="status-postgres" class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-full border border-white/5 bg-surface-container/50">
+                    <div class="w-2 h-2 rounded-full bg-tertiary-fixed led-pulse"></div>
+                    <span class="font-label-sm text-label-sm text-tertiary-fixed font-medium">PostgreSQL :5432</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+            
+            <!-- Left Column: Input Form -->
+            <section class="lg:col-span-7 xl:col-span-7 flex flex-col gap-6">
+                <div class="glass-panel rounded-2xl p-6 md:p-8 flex-1 flex flex-col transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    
+                    <h3 class="font-headline-md text-2xl text-on-surface mb-6 flex items-center gap-2.5 font-bold">
+                        <span class="material-symbols-outlined text-primary-fixed text-3xl">edit_document</span>
+                        Ingresar Contenido Técnico
+                    </h3>
+                    
+                    <form class="flex flex-col gap-6 flex-1" onsubmit="return false;">
+                        <div class="space-y-2">
+                            <label class="font-label-sm text-label-sm text-on-surface-variant ml-1" for="content-title">Título del Documento o Artículo</label>
+                            <input id="content-title" type="text" class="w-full bg-surface-container-low/60 border border-white/10 rounded-xl px-4 py-3.5 text-on-surface font-body-md focus:outline-none focus:border-primary-fixed focus:ring-4 focus:ring-primary-fixed/20 transition-all placeholder:text-outline-variant/60" placeholder="ej. Orquestación avanzada de contenedores con Kubernetes"/>
+                        </div>
+                        
+                        <div class="space-y-2 flex-1 flex flex-col">
+                            <label class="font-label-sm text-label-sm text-on-surface-variant ml-1" for="content-body">Contenido Técnico (Texto crudo, Markdown o Resumen)</label>
+                            <textarea id="content-body" class="w-full flex-1 min-h-[220px] bg-surface-container-low/60 border border-white/10 rounded-xl px-4 py-3.5 text-on-surface font-body-md text-sm focus:outline-none focus:border-primary-fixed focus:ring-4 focus:ring-primary-fixed/20 transition-all placeholder:text-outline-variant/60 resize-none leading-relaxed" placeholder="Pegue aquí el texto o resumen técnico para que el modelo de Machine Learning determine la categoría y extraiga los conceptos clave..."></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end mt-2">
+                            <button id="btn-classify" type="button" class="group relative px-8 py-4 rounded-xl font-label-sm text-sm font-bold text-white overflow-hidden transition-all duration-300 active:scale-95 shadow-xl shadow-primary-container/30 cursor-pointer">
+                                <div class="absolute inset-0 bg-gradient-to-r from-inverse-primary to-primary-container group-hover:scale-105 transition-transform duration-300"></div>
+                                <div class="relative flex items-center gap-2.5">
+                                    <span class="material-symbols-outlined text-xl">bolt</span>
+                                    <span>Clasificar con TechMind AI</span>
+                                </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Column: AI Results Card -->
+            <section class="lg:col-span-5 xl:col-span-5 flex flex-col gap-6">
+                <div id="results-card" class="glass-panel rounded-2xl p-6 md:p-8 flex-1 flex flex-col relative border-t-4 border-t-primary-fixed transition-all duration-500">
+                    <div class="absolute top-0 right-8 w-24 h-1 bg-primary-fixed blur-md"></div>
+                    
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="font-headline-md text-2xl text-on-surface font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary-fixed text-3xl">auto_awesome</span>
+                            Resultado del Análisis
+                        </h3>
+                    </div>
+
+                    <!-- Category Badge Container -->
+                    <div class="mb-8 text-center py-6 bg-surface-container/40 rounded-xl border border-white/5">
+                        <p class="font-label-sm text-xs text-on-surface-variant mb-3 uppercase tracking-widest font-semibold">Categoría Predicha</p>
+                        <div id="category-badge-container">
+                            <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border text-lg font-bold bg-primary/10 border-primary/30 text-primary-fixed">
+                                <span class="material-symbols-outlined text-2xl">psychology</span>
+                                <span>Esperando análisis...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Meter -->
+                    <div class="mb-8 space-y-3">
+                        <div class="flex justify-between items-end">
+                            <span class="font-label-sm text-xs text-on-surface-variant font-medium">Confianza del Modelo (Probabilidad)</span>
+                            <span id="confidence-score" class="font-label-sm text-sm text-primary-fixed font-bold">0.0%</span>
+                        </div>
+                        <div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden p-0.5">
+                            <div id="confidence-bar" class="h-full bg-gradient-to-r from-primary-container to-tertiary-fixed rounded-full w-[0%] relative transition-all duration-700 ease-out">
+                                <div class="absolute inset-0 shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Keyword Tags -->
+                    <div class="mb-8 flex-1">
+                        <p class="font-label-sm text-xs text-on-surface-variant mb-3 font-semibold uppercase tracking-wider">Palabras Clave Extraídas (TF-IDF)</p>
+                        <div id="keywords-list" class="flex flex-wrap gap-2">
+                            <span class="text-on-surface-variant text-sm italic opacity-60">Las entidades detectadas aparecerán aquí...</span>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Action -->
+                    <div class="mt-auto pt-4 border-t border-white/5">
+                        <button id="btn-view-json" type="button" class="w-full py-3.5 rounded-xl border border-primary/20 bg-primary/5 text-primary-fixed font-label-sm text-xs font-semibold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2 group cursor-pointer">
+                            <span class="material-symbols-outlined text-base group-hover:rotate-180 transition-transform duration-500">code</span>
+                            <span>Ver Respuesta JSON Cruda</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Recent Entries Footer Grid -->
+        <section id="history-section" class="mt-auto pt-8 border-t border-white/10">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h3 class="font-headline-md text-2xl text-on-surface font-bold">Contenidos Clasificados Recientemente</h3>
+                    <p class="font-label-sm text-xs text-on-surface-variant opacity-70">Persistidos en PostgreSQL mediante Spring Boot</p>
+                </div>
+                <button id="btn-view-all-history" type="button" class="btn-history-trigger px-4 py-2 rounded-xl bg-primary/10 border border-primary/30 text-primary-fixed font-label-sm text-xs font-semibold hover:bg-primary/20 transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-base">history</span>
+                    <span>Ver Historial Completo</span>
+                </button>
+            </div>
+            
+            <div id="history-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="col-span-full py-8 text-center glass-panel rounded-xl">
+                    <span class="material-symbols-outlined text-4xl text-outline mb-2 animate-spin">refresh</span>
+                    <p class="text-on-surface-variant text-sm font-label-sm">Cargando publicaciones guardadas desde PostgreSQL...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal JSON Respuesta Cruda -->
+    <div id="json-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-md p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 border border-white/10 shadow-2xl flex flex-col max-h-[80vh]">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
+                <h4 class="font-headline-md text-xl text-primary-fixed font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined">code</span>
+                    Respuesta JSON de Spring Boot / FastAPI
+                </h4>
+                <button id="modal-close" class="text-on-surface-variant hover:text-white transition-colors p-1 rounded-lg">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <pre id="json-content" class="bg-surface-container-lowest/80 text-emerald-300 font-mono text-xs p-4 rounded-xl overflow-y-auto flex-1 leading-relaxed border border-white/5 selection:bg-emerald-800 selection:text-white"></pre>
+            <div class="mt-4 pt-3 border-t border-white/10 flex justify-end">
+                <button onclick="toggleJsonModal()" class="px-5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Historial Completo PostgreSQL -->
+    <div id="history-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-md p-4">
+        <div class="glass-panel w-full max-w-4xl rounded-2xl p-6 border border-white/10 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
+                <div>
+                    <h4 class="font-headline-md text-xl text-primary-fixed font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-2xl">database</span>
+                        Historial de Predicciones en PostgreSQL
+                    </h4>
+                    <p class="font-label-sm text-xs text-on-surface-variant">Todas las publicaciones procesadas y guardadas por la aplicación</p>
+                </div>
+                <button id="history-modal-close" class="text-on-surface-variant hover:text-white transition-colors p-1 rounded-lg">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <div id="history-modal-list" class="flex flex-col gap-3 overflow-y-auto flex-1 pr-1">
+                <!-- Lista de predicciones renderizada por app.js -->
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex justify-end">
+                <button onclick="toggleHistoryModal()" class="px-5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Principal -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# ⚠️  DEPRECADO — NO usar este archivo directamente.
+#
+# Usar el docker-compose.yml de la raíz del proyecto:
+#   cd ../..
+#   docker-compose up -d
+#
+# Este archivo se mantiene como referencia pero fue reemplazado por el
+# docker-compose.yml unificado en la raíz para evitar conflictos de
+# puertos y volúmenes entre el equipo de Backend y Data Science.
+# (BUG-1 — resuelto 2026-07-27)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: techmind-postgres
+    environment:
+      POSTGRES_DB:       techmind
+      POSTGRES_USER:     techmind_user
+      POSTGRES_PASSWORD: techmind_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - techmind_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U techmind_user -d techmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  techmind_data:
+    name: techmind_postgres_data

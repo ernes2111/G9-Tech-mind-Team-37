@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-setup.py — TechMind · Script de instalación y arranque automático
-================================================================
+setup.py — TechMind · Script de instalación y arranque automático del stack completo
+======================================================================================
 Ejecutá con:
-    python setup.py          ← primera vez (instala todo y arranca)
-    python setup.py --start  ← veces siguientes (solo arranca)
+    python setup.py          ← primera vez (instala todo, migra BD y arranca)
+    python setup.py --start  ← veces siguientes (solo arranca los servicios)
 
 Compatible con Windows y macOS/Linux.
 """
@@ -16,6 +16,7 @@ import platform
 import time
 import shutil
 import argparse
+import socket
 
 # ─── Configuración ────────────────────────────────────────────────────────────
 
@@ -27,18 +28,18 @@ VENV_PYTHON   = os.path.join(VENV_DIR, SCRIPTS_DIR, "python.exe" if IS_WINDOWS e
 VENV_PIP      = os.path.join(VENV_DIR, SCRIPTS_DIR, "pip.exe"    if IS_WINDOWS else "pip")
 VENV_UVICORN  = os.path.join(VENV_DIR, SCRIPTS_DIR, "uvicorn.exe" if IS_WINDOWS else "uvicorn")
 
-REQUIREMENTS  = os.path.join("data-science", "requirements.txt")
+REQUIREMENTS   = os.path.join("data-science", "requirements.txt")
 MIGRATE_SCRIPT = os.path.join("data-science", "src", "migrate_to_postgres.py")
 
 TOTAL_STEPS   = 7
 
 
-# ─── Helpers de output ────────────────────────────────────────────────────────
+# ─── Helpers ──────────────────────────────────────────────────────────────────
 
 def header(n, msg):
-    print(f"\n{'─' * 60}")
+    print(f"\n{'─' * 65}")
     print(f"  [{n}/{TOTAL_STEPS}] {msg}")
-    print(f"{'─' * 60}")
+    print(f"{'─' * 65}")
 
 def ok(msg):    print(f"  ✅  {msg}")
 def warn(msg):  print(f"  ⚠️   {msg}")
@@ -59,6 +60,12 @@ def run_or_fail(cmd, error_msg, **kwargs):
     if result.returncode != 0:
         fail(error_msg)
     return result
+
+def is_port_open(port):
+    """Comprueba si un puerto local está en uso/escuchando."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(1)
+        return s.connect_ex(('127.0.0.1', port)) == 0
 
 
 # ─── Paso 1 — Verificar Python ───────────────────────────────────────────────
@@ -143,7 +150,6 @@ def start_docker():
     info("Ejecutando docker-compose up -d ...")
     result = run("docker-compose up -d")
     if result.returncode != 0:
-        # Puede ser que ya exista el contenedor con otro nombre de proyecto — intentar iniciarlo
         info("Intentando iniciar contenedor existente 'techmind-postgres'...")
         result = run("docker start techmind-postgres", capture_output=True)
         if result.returncode != 0:
@@ -170,15 +176,11 @@ def start_docker():
 # ─── Paso 6 — Migración de datos ─────────────────────────────────────────────
 
 def migrate_db():
-    header(6, "Cargando datos iniciales en PostgreSQL")
+    header(6, "Cargando dataset de entrenamiento (221 registros) en PostgreSQL")
     if not os.path.exists(MIGRATE_SCRIPT):
         fail(f"No se encontró el script de migración: {MIGRATE_SCRIPT}")
 
     info("Ejecutando script de migración...")
-    info("(Si los datos ya existen se conservarán — no se borrarán)")
-
-    # Pasamos "N\n" al stdin para responder automáticamente
-    # a la pregunta interactiva "¿Querés reemplazarlos? (s/N)"
     result = subprocess.run(
         [VENV_PYTHON, MIGRATE_SCRIPT],
         input="N\n",
@@ -186,32 +188,50 @@ def migrate_db():
     )
 
     if result.returncode != 0:
-        warn("El script de migración terminó con un aviso. Revisá la salida anterior.")
+        warn("El script de migración terminó con un aviso. Asegúrate de haber arrancado Spring Boot previamente para crear las tablas Flyway.")
     else:
-        ok("Base de datos lista")
+        ok("Base de datos lista con 221 registros de entrenamiento")
 
 
-# ─── Paso 7 — Iniciar FastAPI ────────────────────────────────────────────────
+# ─── Paso 7 — Iniciar Frontend Web & FastAPI ML Service ──────────────────────
 
-def start_api():
-    header(7, "Iniciando el microservicio FastAPI")
+def start_services():
+    header(7, "Arrancando los Servicios del Sistema (Frontend + FastAPI ML)")
+
+    # 1. Iniciar servidor web del Frontend si no está corriendo en el puerto 5173
+    if not is_port_open(5173):
+        info("Iniciando servidor web para el Frontend en http://localhost:5173 ...")
+        cmd_frontend = [sys.executable, "-m", "http.server", "5173", "--directory", "frontend"]
+        subprocess.Popen(cmd_frontend, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(1)
+        ok("Frontend Web iniciado correctamente en http://localhost:5173")
+    else:
+        ok("Frontend Web ya se encuentra activo en http://localhost:5173")
+
     print()
-    print("  La API va a quedar corriendo en: http://localhost:8000")
-    print("  Documentación Swagger:           http://localhost:8000/docs")
-    print("  Para detener el servidor:        CTRL + C")
+    print(" ╔══════════════════════════════════════════════════════════════════╗")
+    print(" ║                  🚀 TECHMIND SYSTEM IS READY                    ║")
+    print(" ╠══════════════════════════════════════════════════════════════════╣")
+    print(" ║  🎨 Frontend Web (Stitch UI):   http://localhost:5173            ║")
+    print(" ║  🤖 Microservicio FastAPI ML:   http://localhost:8000            ║")
+    print(" ║  ☕ API Spring Boot (Backend):  http://localhost:8080            ║")
+    print(" ║  📖 Documentación Swagger:      http://localhost:8000/docs       ║")
+    print(" ╚══════════════════════════════════════════════════════════════════╝")
     print()
+    info("Recuerda mantener Spring Boot activo ('cd backend/api/api && ./mvnw spring-boot:run')")
+    print("  Para detener el microservicio Python: CTRL + C\n")
 
-    cmd = [VENV_UVICORN, "app.main:app", "--reload", "--port", "8000"]
+    cmd_uvicorn = [VENV_UVICORN, "app.main:app", "--reload", "--port", "8000"]
 
     try:
-        subprocess.run(cmd)
+        subprocess.run(cmd_uvicorn)
     except KeyboardInterrupt:
-        print("\n\n  🛑 Servidor detenido por el usuario.")
+        print("\n\n  🛑 Servidor de Python detenido por el usuario.")
         sys.exit(0)
     except FileNotFoundError:
         fail(
             f"No se encontró uvicorn en {VENV_UVICORN}\n"
-            "  Asegurate de haber completado el Paso 3 (instalación de dependencias)."
+            "  Asegúrate de haber completado el Paso 3 (instalación de dependencias)."
         )
 
 
@@ -234,31 +254,52 @@ def quick_start():
                  capture_output=True, text=True)
     if "Up" not in result.stdout:
         info("PostgreSQL no está corriendo — levantándolo...")
-        run("docker-compose up -d")
-        time.sleep(5)
-    ok("PostgreSQL activo")
+        result = run("docker-compose up -d")
+        if result.returncode != 0:
+            info("Intentando iniciar contenedor existente 'techmind-postgres'...")
+            result = run("docker start techmind-postgres", capture_output=True)
+            if result.returncode != 0:
+                fail("No se pudo levantar PostgreSQL con Docker.")
 
-    start_api()
+        print("  ⏳ Esperando que PostgreSQL esté listo", end="", flush=True)
+        for _ in range(30):
+            time.sleep(1)
+            ready = run(
+                "docker exec techmind-postgres pg_isready -U techmind_user -d techmind",
+                capture_output=True
+            )
+            if ready.returncode == 0:
+                print(" ✅")
+                ok("PostgreSQL listo en localhost:5432")
+                break
+            print(".", end="", flush=True)
+        else:
+            print()
+            fail("PostgreSQL no respondió a tiempo.")
+    else:
+        ok("PostgreSQL activo en localhost:5432")
+
+    start_services()
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(
-        description="TechMind — Script de setup y arranque del microservicio Python"
+        description="TechMind — Script de setup y arranque del stack completo"
     )
     parser.add_argument(
         "--start",
         action="store_true",
-        help="Solo arranca el servidor (omite instalación). Usalo las veces siguientes."
+        help="Solo arranca los servicios del sistema (omite instalación inicial)."
     )
     args = parser.parse_args()
 
     print()
-    print("╔══════════════════════════════════════════════════════════╗")
-    print("║   🧠 TechMind — Setup del Microservicio Python           ║")
-    print("║   Hackathon G9 LATAM · Equipo 37                         ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("╔═════════════════════════════════════════════════════════════════╗")
+    print("║   🧠 TechMind — Setup y Arranque Automático del Proyecto        ║")
+    print("║   Hackathon G9 LATAM · Equipo 37                                ║")
+    print("╚═════════════════════════════════════════════════════════════════╝")
 
     if args.start:
         quick_start()
@@ -271,7 +312,7 @@ def main():
     setup_env()
     start_docker()
     migrate_db()
-    start_api()
+    start_services()
 
 
 if __name__ == "__main__":

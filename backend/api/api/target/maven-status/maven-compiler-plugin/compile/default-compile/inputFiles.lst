@@ -1,0 +1,11 @@
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/ApiApplication.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/config/RestTemplateConfig.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/controller/ContenidoController.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/controller/GlobalExceptionHandler.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/dto/ContenidoRequest.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/dto/PrediccionResponse.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/model/Contenido.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/model/Prediccion.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/repository/ContenidoRepository.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/repository/PrediccionRepository.java
+/Users/ernesto/Desktop/PROYECTO FINAL TEST/backend/api/api/src/main/java/api/service/PrediccionService.java

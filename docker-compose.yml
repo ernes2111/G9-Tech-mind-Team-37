@@ -7,6 +7,8 @@
 #   docker-compose down           # detener y eliminar contenedores
 #   docker-compose down -v        # detener y eliminar datos (reset completo)
 
+name: g9-latam-techmind-team37
+
 services:
   postgres:
     image: postgres:16-alpine

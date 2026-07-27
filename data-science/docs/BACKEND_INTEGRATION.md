@@ -92,15 +92,24 @@ source venv/bin/activate        # Linux / macOS
 pip install -r data-science/requirements.txt
 ```
 
-### Paso 4 — Migrar el dataset inicial a PostgreSQL
+### Paso 4 — Iniciar Spring Boot para inicializar la base de datos (Flyway)
 
-Ejecuta el script de migración para poblar la tabla `contenidos` con el dataset semilla:
+> ⚠️ **Orden estricto de arranque:** Spring Boot debe iniciarse antes de migrar los datos para que Flyway cree las tablas oficiales (`contenidos` y `predicciones`) con los tipos de datos correctos (`BIGINT` / `BIGSERIAL`).
+
+```bash
+cd backend/api/api
+./mvnw spring-boot:run
+```
+
+### Paso 5 — Cargar el dataset inicial de entrenamiento en PostgreSQL
+
+Ejecuta el script de migración para poblar la tabla `contenidos` con los 61 registros iniciales:
 
 ```bash
 python3 data-science/src/migrate_to_postgres.py
 ```
 
-### Paso 5 — Iniciar el microservicio FastAPI
+### Paso 6 — Iniciar el microservicio FastAPI
 
 ```bash
 uvicorn app.main:app --reload --port 8000
@@ -109,7 +118,7 @@ uvicorn app.main:app --reload --port 8000
 Salida esperada en consola:
 ```
 ✅  Modelos cargados correctamente
-✅  Tabla 'predicciones' lista en PostgreSQL
+✅  Conexión a PostgreSQL verificada correctamente
 INFO:     Uvicorn running on http://0.0.0.0:8000
 ```
 

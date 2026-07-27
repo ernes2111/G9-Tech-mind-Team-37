@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, field_validator
 
-from app.database import init_db, log_prediccion
+from app.database import init_db, log_prediccion, get_predicciones
 
 load_dotenv()
 
@@ -80,11 +80,21 @@ async def lifespan(app: FastAPI):
 
 # ── Aplicación FastAPI ────────────────────────────────────────────────────────
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="TechMind — API de Ciencia de Datos",
     description="Microservicio interno de clasificación de contenidos técnicos. Consumido por Spring Boot.",
     version="0.4.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -156,6 +166,15 @@ def health():
         "model_loaded": vectorizer is not None,
         "version":      "0.4.0",
     }
+
+
+@app.get(
+    "/predicciones",
+    summary="Historial de predicciones",
+    description="Devuelve el historial de predicciones registradas en la base de datos PostgreSQL.",
+)
+def listar_predicciones(limit: int = 50):
+    return get_predicciones(limit=limit)
 
 
 @app.get(

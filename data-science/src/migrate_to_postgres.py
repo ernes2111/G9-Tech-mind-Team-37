@@ -1,13 +1,27 @@
 """
 migrate_to_postgres.py
-Migra el dataset de TechMind a PostgreSQL.
+Migra el dataset de entrenamiento de TechMind a PostgreSQL.
 
-Lee desde techmind.db (SQLite) si existe, o desde contenidos_tecnicos.csv como fallback.
-Crea las tablas `contenidos` y `predicciones` si no existen.
+Lee el dataset desde contenidos_tecnicos.csv e inserta los registros
+en la tabla `contenidos` de PostgreSQL.
+
+⚠️  ORDEN CORRECTO DE ARRANQUE (BUG-7 — resuelto 2026-07-27):
+Este script debe ejecutarse DESPUÉS de que Spring Boot haya levantado
+al menos una vez, porque Flyway (Spring Boot) es quien crea las tablas
+con el schema correcto (BIGSERIAL para id, sin columna categoria, etc.).
+
+    1. docker-compose up -d                      # PostgreSQL
+    2. cd backend/api/api && ./mvnw spring-boot:run  # Flyway crea tablas
+    3. python3 data-science/src/migrate_to_postgres.py  # inserta datos
+    4. uvicorn app.main:app --port 8000          # FastAPI
+
+NOTA (BUG-6 — resuelto 2026-07-27):
+Este script NO crea ni modifica la tabla `predicciones`.
+Esa responsabilidad es exclusiva de Flyway (Spring Boot).
 
 Uso:
     cp .env.example .env        # configurar credenciales
-    python3 migrate_to_postgres.py
+    python3 data-science/src/migrate_to_postgres.py
 """
 
 import csv
@@ -36,37 +50,35 @@ def get_pg_connection():
     )
 
 
-# ── 2. Crear esquema ─────────────────────────────────────────────────────────
-
-SCHEMA_SQL = """
-CREATE TABLE IF NOT EXISTS contenidos (
-    id          SERIAL PRIMARY KEY,
-    titulo      TEXT        NOT NULL,
-    texto       TEXT        NOT NULL,
-    categoria   TEXT        NOT NULL,
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS predicciones (
-    id                        SERIAL PRIMARY KEY,
-    titulo                    TEXT        NOT NULL,
-    texto                     TEXT        NOT NULL,
-    categoria                 TEXT        NOT NULL,
-    probabilidad              FLOAT       NOT NULL,
-    informaciones_adicionales TEXT[]      NOT NULL,
-    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_contenidos_categoria   ON contenidos  (categoria);
-CREATE INDEX IF NOT EXISTS idx_predicciones_categoria ON predicciones (categoria);
-CREATE INDEX IF NOT EXISTS idx_predicciones_fecha     ON predicciones (created_at DESC);
-"""
-
 pg_con = get_pg_connection()
 pg_cur = pg_con.cursor()
-pg_cur.execute(SCHEMA_SQL)
-pg_con.commit()
-print("✅  Esquema creado/verificado en PostgreSQL")
+
+# ── Verificar que Flyway ya creó la tabla contenidos ─────────────────────────
+# (BUG-7: si ejecutamos antes que Spring Boot, el schema sería incorrecto)
+pg_cur.execute("""
+    SELECT EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public' AND table_name = 'contenidos'
+    );
+""")
+tabla_existe = pg_cur.fetchone()[0]
+
+if not tabla_existe:
+    print("❌  La tabla 'contenidos' no existe en PostgreSQL.")
+    print("")
+    print("   Este script debe ejecutarse DESPUÉS de que Spring Boot haya")
+    print("   levantado al menos una vez (Flyway crea las tablas).")
+    print("")
+    print("   Orden correcto:")
+    print("   1. docker-compose up -d")
+    print("   2. cd backend/api/api && ./mvnw spring-boot:run  (esperar inicio)")
+    print("   3. python3 data-science/src/migrate_to_postgres.py")
+    print("   4. uvicorn app.main:app --port 8000")
+    pg_cur.close()
+    pg_con.close()
+    exit(1)
+
+print("✅  Tabla 'contenidos' verificada (schema creado por Flyway)")
 
 
 # ── 3. Leer registros de la fuente disponible ─────────────────────────────────
@@ -102,11 +114,14 @@ if existing > 0:
     print("   Tabla vaciada.")
 
 
-# ── 5. Insertar registros ─────────────────────────────────────────────────────
+# ── 5. Insertar registros ─────────────────────────────────────────────────────────
+# NOTA: la columna `categoria` del CSV no se inserta porque el schema de Flyway
+# para `contenidos` no la incluye (es solo titulo, texto, created_at).
+# La categoria la asigna el modelo ML en cada prediccion.
 
 pg_cur.executemany(
-    "INSERT INTO contenidos (titulo, texto, categoria, created_at) VALUES (%s, %s, %s, %s)",
-    rows,
+    "INSERT INTO contenidos (titulo, texto) VALUES (%s, %s)",
+    [(r[0], r[1]) for r in rows],
 )
 pg_con.commit()
 print(f"✅  {len(rows)} registros insertados en PostgreSQL")
@@ -114,19 +129,15 @@ print(f"✅  {len(rows)} registros insertados en PostgreSQL")
 
 # ── 6. Verificación ───────────────────────────────────────────────────────────
 
-print("\n📊  Distribución por categoría:")
-pg_cur.execute("SELECT categoria, COUNT(*) AS n FROM contenidos GROUP BY categoria ORDER BY n DESC")
-for cat, count in pg_cur.fetchall():
-    print(f"    {cat:<20} {count} registros")
-
+print("\n📊  Registros insertados:")
 pg_cur.execute("SELECT COUNT(*) FROM contenidos")
 total = pg_cur.fetchone()[0]
-print(f"\n    TOTAL: {total} registros")
+print(f"    TOTAL: {total} registros en 'contenidos'")
 
 print("\n🔍  Ejemplo — primeros 3 registros:")
-pg_cur.execute("SELECT id, titulo, categoria FROM contenidos LIMIT 3")
+pg_cur.execute("SELECT id, titulo FROM contenidos LIMIT 3")
 for row in pg_cur.fetchall():
-    print(f"    [{row[0]}] {row[2]:<20} | {row[1]}")
+    print(f"    [{row[0]}] {row[1]}")
 
 pg_cur.close()
 pg_con.close()

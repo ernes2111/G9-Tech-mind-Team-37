@@ -39,30 +39,40 @@ Todo en formato JSON, listo para ser consumido por la API REST del equipo.
 ## 🏗️ Arquitectura del Proyecto
 
 ```
-  Postman / Cliente
-       │  POST /contenido
-       ▼
-┌──────────────────────────────────┐
-│   Spring Boot — Puerto 8080      │
-└───────────────┬──────────────────┘
-                │  HTTP interno POST /predecir
-                ▼
-┌──────────────────────────────────┐
-│   FastAPI (Python) — Puerto 8000 │
-│   TF-IDF + Regresión Logística   │
-└──────────┬───────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────┐
-│   PostgreSQL — Puerto 5432       │
-│   contenidos · predicciones      │
-└──────────────────────────────────┘
+   Cliente / Usuario (Navegador)
+               │
+               │  POST /contenido  (http://localhost:5173)
+               ▼
+  ┌─────────────────────────────────────────┐
+  │   Frontend Web (HTML5 + TailwindCSS)    │
+  │   Diseño Cyber AI Glassmorphism         │
+  └────────────────────┬────────────────────┘
+                       │  HTTP POST /contenido
+                       ▼
+  ┌─────────────────────────────────────────┐
+  │   Spring Boot — Puerto 8080 (CORS ON)   │
+  └────────────────────┬────────────────────┘
+                       │  HTTP interno POST /predecir
+                       ▼
+  ┌─────────────────────────────────────────┐
+  │   FastAPI (Python) — Puerto 8000        │
+  │   TF-IDF (3000 max_feat) + LogReg       │
+  │   Dataset: 221 registros (Accuracy 86.7%)│
+  └────────────────────┬────────────────────┘
+                       │
+                       ▼
+  ┌─────────────────────────────────────────┐
+  │   PostgreSQL 16 — Puerto 5432           │
+  │   contenidos · predicciones             │
+  └─────────────────────────────────────────┘
 ```
 
 | Componente | Tecnología | Responsable |
 |-----------|-----------|-------------|
-| **Ciencia de Datos** | Python · Scikit-Learn · FastAPI | Ernesto |
-| **Back-End** | Java · Spring Boot | Equipo Backend |
+| **Frontend Web** | HTML5 · TailwindCSS v3 · JS Vanilla (Stitch UI) | Ernesto Llampa · Equipo DS |
+| **Ciencia de Datos** | Python · Scikit-Learn · FastAPI | Leandro Villamil · Ernesto Llampa · Romulo Garcia Maygua |
+| **Back-End** | Java · Spring Boot · Flyway | Sergio Pablo Vilte · Andres Felipe Rojas · Noelia Rementeria · Camila Fagina |
+| **Quality Assurance** | Postman · Swagger · Manual Testing · Git | Federico Gutierrez |
 | **Nube** | Oracle Cloud Infrastructure (OCI) | Todo el equipo |
 
 ---
@@ -72,45 +82,63 @@ Todo en formato JSON, listo para ser consumido por la API REST del equipo.
 ```
 g9-latam-techmind-team37/
 │
-├── app/                            # Microservicio FastAPI (Backend Python)
+├── app/                                   # Microservicio FastAPI (Backend Python)
 │   ├── __init__.py
-│   ├── main.py                     # API REST: /predecir, /health, /categorias
-│   └── database.py                 # Conexión PostgreSQL y registro de predicciones
+│   ├── main.py                            # API REST: /predecir, /health, /categorias, /predicciones
+│   └── database.py                        # Conexión PostgreSQL y registro de predicciones
 │
-├── documentos/                     # PDFs / DOCXs para ingesta masiva
+├── frontend/                              # Módulo Frontend Web (Stitch UI)
+│   ├── index.html                         # Plantilla Cyber AI Dark Mode Glassmorphism
+│   ├── app.js                             # Lógica cliente JS, Health checks, POST y Modal BD
+│   └── README.md                          # Documentación del módulo web
 │
-├── data-science/                   # Módulo de Ciencia de Datos y Machine Learning
+├── documentos/                            # PDFs / DOCXs para ingesta masiva
+│
+├── data-science/                          # Módulo de Ciencia de Datos y Machine Learning
 │   ├── data/
 │   │   ├── raw/
-│   │   │   └── contenidos_tecnicos.csv    # Dataset inicial de entrenamiento
-│   │   └── processed/              # Datos procesados / intermedios
+│   │   │   └── contenidos_tecnicos.csv    # Dataset ampliado de entrenamiento (221 registros)
+│   │   └── processed/                     # Datos procesados / intermedios
 │   ├── notebooks/
 │   │   └── TechMind_DataScience.ipynb     # Notebook Jupyter principal
 │   ├── src/
-│   │   ├── ingest_documents.py     # Script para ingestión de PDFs/DOCXs
-│   │   └── migrate_to_postgres.py  # Script de migración CSV -> PostgreSQL
+│   │   ├── ingest_documents.py            # Script para ingestión de PDFs/DOCXs
+│   │   ├── expand_and_train.py            # Script de expansión de dataset y reentrenamiento
+│   │   └── migrate_to_postgres.py         # Script de migración CSV -> PostgreSQL
 │   ├── models/
-│   │   ├── modelo_clasificador.joblib     # Modelo binario serializado
-│   │   └── tfidf_vectorizer.joblib        # Vectorizador TF-IDF serializado
-│   ├── docs/                       # Documentación técnica de Data Science
+│   │   ├── modelo_clasificador.joblib     # Modelo binario serializado (LogReg balanced)
+│   │   └── tfidf_vectorizer.joblib        # Vectorizador TF-IDF serializado (3000 max_feat)
+│   ├── docs/                              # Documentación técnica de Data Science
 │   │   ├── BACKEND_INTEGRATION.md
 │   │   ├── DIAGRAMA_PIPELINE.md
 │   │   ├── INGESTA_DOCUMENTOS.md
 │   │   ├── EXPLICACION_PROYECTO.md
-│   │   ├── REQUIREMENTS.md
-│   │   ├── ROADMAP.md
-│   │   └── CHANGELOG.md
+│   │   ├── BUGFIX_CHANGELOG.md
+│   │   ├── ROADMAP_MEJORAS.md
+│   │   └── REQUIREMENTS.md
 │   ├── assets/
-│   │   └── pipeline_flowchart.png  # Diagrama de flujo del pipeline
-│   ├── requirements.txt            # Dependencias de Python
-│   └── README.md                   # Documentación específica del módulo DS
+│   │   └── pipeline_flowchart.png        # Diagrama de flujo del pipeline
+│   ├── requirements.txt                  # Dependencias de Python
+│   └── README.md                         # Documentación específica del módulo DS
 │
-├── docker-compose.yml              # Servidor PostgreSQL 16
-├── setup.py                        # Script automático de instalación y arranque
-├── how-to-run.md                   # Guía paso a paso para el equipo de Backend
-├── .env.example                    # Plantilla de variables de entorno
-├── .gitignore
-└── README.md                       # Documentación principal del repositorio
+├── qa/                                   # Módulo de Quality Assurance
+│   ├── casos-de-prueba/                  # Documentación de diseño de pruebas
+│   │   └── (v1.2) Matriz de Casos de Prueba – Sprint 1.xlsx          
+│   ├── evidencias/                       # Respaldos y ejecuciones de las pruebas
+│   │   ├── capturas/                     
+│   │   └── respuestas-json/
+│   ├── reportes/                         # Informes y resultados finales
+│   │   ├── informes/
+│   │   │   └── (v1.2) Matriz de Casos de Prueba – Sprint 1.xlsx
+│   │   └── resultados-sprint-1.md        # Resumen ejecutivo de métricas, bugs encontrados y estado de ejecución del Sprint 1
+│   └── README.md                         # Documentación específica del módulo QA
+│
+├── docker-compose.yml                    # Servidor PostgreSQL 16
+├── setup.py                              # Script automático de instalación y arranque del stack completo
+├── how-to-run.md                         # Guía paso a paso para el equipo de Backend y Fullstack
+├── .env.example                          # Plantilla de variables de entorno
+├── .gitignore                            # Filtro de archivos para Git/GitHub
+└── README.md                             # Documentación principal del repositorio
 ```
 
 ---
@@ -155,18 +183,38 @@ docker-compose up -d
 # PostgreSQL disponible en localhost:5432
 ```
 
-#### 4. Configurar variables de entorno y migrar datos
+#### 4. Levantar la API Spring Boot (crea las tablas con Flyway)
+
+```bash
+cd backend/api/api
+./mvnw spring-boot:run
+```
+
+#### 5. Configurar variables de entorno y migrar datos
+
+En otra terminal con el entorno Python activo:
 
 ```bash
 cp .env.example .env
 python3 data-science/src/migrate_to_postgres.py
 ```
 
-#### 5. Iniciar la API FastAPI
+#### 6. Iniciar la API FastAPI
 
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
+
+#### 7. Iniciar el Frontend Web UI
+
+En una tercera terminal:
+
+```bash
+python3 -m http.server 5173 --directory frontend
+```
+
+Abrí en tu navegador:
+👉 **[http://localhost:5173](http://localhost:5173)**
 
 ---
 
@@ -214,7 +262,7 @@ uvicorn app.main:app --reload --port 8000
 
 ## 📚 Documentación Técnica
 
-- **Guía de arranque para Backend (Windows):** [`how-to-run.md`](how-to-run.md)
+- Guía de arranque para Backend (Windows): [`how-to-run.md`](how-to-run.md)
 - Guía de integración Java/Spring Boot: [`data-science/docs/BACKEND_INTEGRATION.md`](data-science/docs/BACKEND_INTEGRATION.md)
 - Guía de entrenamiento y ejecución del modelo: [`data-science/docs/ENTRENAMIENTO_Y_EJECUCION.md`](data-science/docs/ENTRENAMIENTO_Y_EJECUCION.md)
 - Ingesta de documentos PDF/DOCX: [`data-science/docs/INGESTA_DOCUMENTOS.md`](data-science/docs/INGESTA_DOCUMENTOS.md)
@@ -222,16 +270,7 @@ uvicorn app.main:app --reload --port 8000
 - Explicación conceptual para presentaciones: [`data-science/docs/EXPLICACION_PROYECTO.md`](data-science/docs/EXPLICACION_PROYECTO.md)
 - Requerimientos técnicos: [`data-science/docs/REQUIREMENTS.md`](data-science/docs/REQUIREMENTS.md)
 - Historial de cambios: [`data-science/docs/CHANGELOG.md`](data-science/docs/CHANGELOG.md)
-
----
-
-## 👥 Equipo
-
-| Rol | Tecnología | Integrante |
-|-----|-----------|-----------|
-| **Ciencia de Datos** | Python · Scikit-Learn · FastAPI · PostgreSQL | Equipo Data Science |
-| **Back-End** | Java · Spring Boot | Equipo Backend |
-| **Cloud** | Oracle Cloud Infrastructure | Todo el equipo |
+- Documentación y Reportes de QA: [`qa/README.md`](qa/README.md)
 
 ---
 
