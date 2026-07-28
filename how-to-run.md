@@ -205,7 +205,7 @@ Si todo salió bien, vas a ver esto en la consola:
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 ```
 
-> ✅ **Los modelos ya vienen incluidos en el repositorio** (`data-science\models\`) — no necesitás generarlos ni pedirlos.
+> ✅ **Los modelos se auto-generan automáticamente** si no existen al ejecutar `setup.py` o `setup.py --docker`, y también están almacenados en `data-science\models\`.
 
 ---
 

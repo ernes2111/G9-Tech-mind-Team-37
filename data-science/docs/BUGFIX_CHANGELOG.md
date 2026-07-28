@@ -243,6 +243,70 @@ python3 data-science/src/migrate_to_postgres.py  # restaura solo contenidos
 2. Agregadas validaciones nulas en `entry.probabilidad` y `entry.categoria`.
 3. Creado el modal completo `#history-modal` para visualizar todas las predicciones registradas en la base de datos PostgreSQL.
 
+## 🔴 BUG-10 — Mismatch de nombres de variables de entorno de Spring Boot en `docker-compose.yml`
+
+| Campo | Valor |
+|---|---|
+| **Severidad** | 🔴 Crítica |
+| **Archivos afectados** | `docker-compose.yml` |
+| **Estado** | ✅ Resuelto |
+| **Fecha** | 2026-07-28 |
+
+**Descripción:** En `docker-compose.yml`, el servicio `springboot` tenía variables como `SPRING_DATASOURCE_URL` y `FASTAPI_URL`. Sin embargo, `application.properties` en Java lee explícitamente `PG_HOST`, `PG_PORT`, `PG_DB`, `PG_USER`, `PG_PASSWORD` y `TECHMIND_DS_API_URL`. Al no coincidir las claves, Spring Boot asumía `PG_HOST=localhost` por defecto e intentaba conectarse a una BD dentro de su propio contenedor en lugar del contenedor `postgres`.
+
+**Síntoma:** Error de conexión a la base de datos e inicio fallido del backend Spring Boot al ejecutar `python setup.py --docker`.
+
+**Solución aplicada:** Se corrigieron los nombres de variables de entorno en `docker-compose.yml` bajo el servicio `springboot`:
+```yaml
+environment:
+  - PG_HOST=postgres
+  - PG_PORT=5432
+  - PG_DB=techmind
+  - PG_USER=techmind_user
+  - PG_PASSWORD=techmind_pass
+  - TECHMIND_DS_API_URL=http://fastapi:8000
+```
+
+---
+
+## 🔴 BUG-11 — Regla de `.gitignore` bloqueando los modelos serializados `.joblib`
+
+| Campo | Valor |
+|---|---|
+| **Severidad** | 🔴 Crítica |
+| **Archivos afectados** | `.gitignore` |
+| **Estado** | ✅ Resuelto |
+| **Fecha** | 2026-07-28 |
+
+**Descripción:** En `.gitignore`, una regla global excluyó la carpeta `data-science/models/` impidiendo que los archivos `.joblib` (modelo clasificador y vectorizador TF-IDF) fueran rastreados e incluyeran en el repositorio al clonar en nuevas máquinas.
+
+**Síntoma:** FastAPI fallaba al iniciar en Docker con `Missing ML model files: tfidf_vectorizer.joblib`.
+
+**Solución aplicada:** Se ajustó `.gitignore` agregando excepciones explícitas para rastrear el directorio y los binarios de Machine Learning:
+```gitignore
+data-science/models/
+!data-science/models/
+!data-science/models/*.joblib
+```
+
+---
+
+## 🔴 BUG-12 — Ausencia de auto-generación de modelos y schema drift en volúmenes Docker
+
+| Campo | Valor |
+|---|---|
+| **Severidad** | 🟠 Alta |
+| **Archivos afectados** | `setup.py` · `data-science/src/generate_models.py` |
+| **Estado** | ✅ Resuelto |
+| **Fecha** | 2026-07-28 |
+
+**Descripción:** Si un usuario ejecutaba `python setup.py --docker` en un repositorio recién clonado sin los archivos `.joblib` o con un volumen Docker legacy de PostgreSQL que contenía el schema anterior (`serial` en lugar de `BIGSERIAL`), la compilación abortaba.
+
+**Solución aplicada:**
+1. Creado `data-science/src/generate_models.py` para entrenar y exportar los modelos `.joblib` de forma offline en 2 segundos.
+2. Actualizado `setup.py` (`run_full_docker`) para detectar si faltan los `.joblib` y generarlos automáticamente sobre la marcha.
+3. Agregado detector y prompt de limpieza de volumen en `setup.py` (`docker-compose --profile full down -v`) para forzar la recreación limpia del schema por Flyway.
+
 ---
 
 ## 📊 Resumen de Impacto
@@ -258,7 +322,11 @@ python3 data-science/src/migrate_to_postgres.py  # restaura solo contenidos
 | BUG-7 (columna INTEGER vs BIGINT) | Fallo al validar schema JPA | FastAPI · migrate_to_postgres.py |
 | BUG-8 (bloqueo CORS) | Interfaz web no puede llamar a las APIs | Spring Boot · FastAPI |
 | BUG-9 (date parse historial) | Botón de historial no renderiza resultados | Frontend · app.js |
+| BUG-10 (springboot env vars) | Fallo de conexión BD en modo Docker | Docker Compose · Spring Boot |
+| BUG-11 (gitignore .joblib) | FastAPI caía por modelos faltantes | Git · FastAPI |
+| BUG-12 (auto-healing setup.py) | Aborto en instalaciones frescas | setup.py · Data Science |
 
 ---
 
-*TechMind G9 LATAM Team 37 — Changelog generado el 2026-07-27*
+*TechMind G9 LATAM Team 37 — Changelog actualizado el 2026-07-28*
+
