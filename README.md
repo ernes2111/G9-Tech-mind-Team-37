@@ -3,11 +3,13 @@
 # 🧠 TechMind
 ### Organización Inteligente del Conocimiento Técnico
 
-[![Python](https://img.shields.io/badge/Python-3.12.3-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=flat&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-F7931E?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=flat&logo=jupyter&logoColor=white)](https://jupyter.org/)
-[![OCI](https://img.shields.io/badge/Oracle-OCI-F80000?style=flat&logo=oracle&logoColor=white)](https://www.oracle.com/cloud/)
+[![Docker](https://img.shields.io/badge/Docker-24+-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Hackathon](https://img.shields.io/badge/G9_LATAM-Team_37-blueviolet?style=flat)](https://github.com/No-Country-simulation/g9-latam-techmind-team37)
 
 **Hackathon TechMind · G9 LATAM · Equipo 37**
@@ -18,62 +20,83 @@
 
 ## 📌 ¿Qué es TechMind?
 
-TechMind es un sistema de **organización inteligente de contenido técnico**. Dado el título y texto de un artículo, documentación o apunte técnico, el sistema responde automáticamente con:
+TechMind es una plataforma web inteligente para la **organización y clasificación automatizada de contenido técnico**. Mediante el análisis del título y cuerpo de un artículo, documento o fragmento de código, la plataforma procesa la información y responde en tiempo real con:
 
-- 📂 La **categoría temática** del contenido (Backend, Data Science, DevOps, etc.)
-- 📊 La **probabilidad** de esa clasificación
-- 🔑 Las **palabras clave** más relevantes del texto
+- 📂 La **categoría temática** del contenido (`Backend`, `Frontend`, `Data Science`, `DevOps`, `Mobile`, `Bases de Datos`, `Seguridad`, `Cloud`)
+- 📊 El nivel de **confianza / probabilidad** de la predicción
+- 🔑 Las **palabras clave** (keywords) más relevantes extraídas automáticamente mediante vectores TF-IDF
+- 📜 Un **historial persistente** accesible desde la interfaz web con todas las clasificaciones registradas
 
-Todo en formato JSON, listo para ser consumido por la API REST del equipo.
+---
 
-```json
-{
-  "categoria": "Backend",
-  "probabilidad": 0.8879,
-  "informaciones_adicionales": ["spring boot", "java", "api rest", "creación apis", "spring"]
-}
+## 🏗️ Arquitectura del Sistema
+
+```
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │                      Cliente Web (Navegador)                            │
+  │                      HTML5 + JS Vanilla + TailwindCSS                   │
+  │                      http://localhost:5173                              │
+  └────────────────────────────────────┬────────────────────────────────────┘
+                                       │ HTTP POST /contenido
+                                       ▼
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │              API Backend Principal — Spring Boot (Java 17)              │
+  │              Puerto 8080 · JPA / Hibernate · Flyway Migrations          │
+  └──────────────┬──────────────────────────────────────────┬───────────────┘
+                 │ HTTP POST /predecir                      │ JDBC
+                 ▼                                          ▼
+  ┌──────────────────────────────┐          ┌──────────────────────────────┐
+  │ Microservicio Data Science   │          │ Base de Datos PostgreSQL 16  │
+  │ FastAPI (Python) · :8000     │          │ Puerto 5432                  │
+  │ TF-IDF + LogisticRegression  │          │ contenidos · predicciones    │
+  └──────────────────────────────┘          └──────────────────────────────┘
 ```
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+## 🛠️ Tecnologías Utilizadas
 
-```
-   Cliente / Usuario (Navegador)
-               │
-               │  POST /contenido  (http://localhost:5173)
-               ▼
-  ┌─────────────────────────────────────────┐
-  │   Frontend Web (HTML5 + TailwindCSS)    │
-  │   Diseño Cyber AI Glassmorphism         │
-  └────────────────────┬────────────────────┘
-                       │  HTTP POST /contenido
-                       ▼
-  ┌─────────────────────────────────────────┐
-  │   Spring Boot — Puerto 8080 (CORS ON)   │
-  └────────────────────┬────────────────────┘
-                       │  HTTP interno POST /predecir
-                       ▼
-  ┌─────────────────────────────────────────┐
-  │   FastAPI (Python) — Puerto 8000        │
-  │   TF-IDF (3000 max_feat) + LogReg       │
-  │   Dataset: 221 registros (Accuracy 86.7%)│
-  └────────────────────┬────────────────────┘
-                       │
-                       ▼
-  ┌─────────────────────────────────────────┐
-  │   PostgreSQL 16 — Puerto 5432           │
-  │   contenidos · predicciones             │
-  └─────────────────────────────────────────┘
-```
+### ☕ Back-End (Java / Spring Boot)
+- **Java 17 (LTS)**: Lenguaje principal de backend transaccional.
+- **Spring Boot 3.x**: Framework base para APIs REST.
+- **Spring Data JPA / Hibernate**: ORM para la persistencia de datos.
+- **Flyway**: Control de versiones y migraciones automáticas de base de datos (`V1__create_tables.sql`).
+- **Lombok**: Reducción de código repetitivo (Getters, Setters, Constructors).
+- **Maven Wrapper**: Gestión de dependencias y builds reproducibles.
 
-| Componente | Tecnología | Responsable |
-|-----------|-----------|-------------|
-| **Frontend Web** | HTML5 · TailwindCSS v3 · JS Vanilla (Stitch UI) | Ernesto Llampa · Equipo DS |
-| **Ciencia de Datos** | Python · Scikit-Learn · FastAPI | Leandro Villamil · Ernesto Llampa · Romulo Garcia Maygua |
-| **Back-End** | Java · Spring Boot · Flyway | Sergio Pablo Vilte · Andres Felipe Rojas · Noelia Rementeria · Camila Fagina |
-| **Quality Assurance** | Postman · Swagger · Manual Testing · Git | Federico Gutierrez |
-| **Nube** | Oracle Cloud Infrastructure (OCI) | Todo el equipo |
+### 🤖 Ciencia de Datos & Machine Learning (Python / FastAPI)
+- **Python 3.12**: Entorno de ejecución de inteligencia artificial.
+- **FastAPI & Uvicorn**: Microservicio asíncrono de alto rendimiento.
+- **Scikit-Learn**:
+  - `TfidfVectorizer` (3.000 características, unigramas y bigramas) para extracción de features y keywords.
+  - `LogisticRegression` (con pesos de clase balanceados) para la clasificación temática.
+- **Pandas & NumPy**: Procesamiento y limpieza del dataset técnico.
+- **Joblib**: Serialización y des-serialización de modelos entrenados.
+
+### 🎨 Front-End (Web UI)
+- **HTML5 & CSS3**: Estructura semántica moderna.
+- **TailwindCSS v3**: Diseño **Cyber AI Dark Mode** con efecto Glassmorphism.
+- **JavaScript Vanilla (ES6+)**: Consumo de APIs REST, sanitización de fechas ISO y control del modal de historial.
+- **Nginx Alpine**: Servidor web liviano para la versión contenedorisada.
+
+### 🗄️ Base de Datos e Infraestructura
+- **PostgreSQL 16**: Motor relacional principal.
+- **Docker & Docker Compose**: Orquestación multicontenedor (PostgreSQL, FastAPI, Spring Boot, Frontend).
+
+---
+
+## 👥 Equipo de Trabajo & Roles
+
+| Integrante | Rol / Especialidad | Responsabilidades Principales |
+|-----------|-------------------|--------------------------------|
+| **Ernesto Llampa** | Data Science / Fullstack | Integración completa, Frontend Web UI, auto-healing Docker & `setup.py` |
+| **Leandro Villamil** | Data Science / ML | Pipeline NLP, vectorización TF-IDF y entrenamiento del modelo |
+| **Rómulo García Maygua** | Data Science / ML | Ingesta de datos, exploración EDA y notebooks |
+| **Sergio Pablo Vilte** | Backend Java | Desarrollo API REST Spring Boot, controladores y servicio de predicción |
+| **Andrés Felipe Rojas** | Backend Java | Configuración Spring Boot, entidades JPA y DTOs |
+| **Noelia Rementería** | Backend Java | Configuración de base de datos y soporte backend |
+| **Camila Fagina** | Backend Java | Soporte backend y lógica transaccional |
+| **Federico Gutiérrez** | Quality Assurance (QA) | Matriz de pruebas, testing manual de endpoints, Swagger y validación |
 
 ---
 
@@ -82,195 +105,106 @@ Todo en formato JSON, listo para ser consumido por la API REST del equipo.
 ```
 g9-latam-techmind-team37/
 │
-├── app/                                   # Microservicio FastAPI (Backend Python)
-│   ├── __init__.py
-│   ├── main.py                            # API REST: /predecir, /health, /categorias, /predicciones
-│   └── database.py                        # Conexión PostgreSQL y registro de predicciones
+├── app/                                   # Microservicio FastAPI (Python)
+│   ├── main.py                            # API REST: /predecir, /health, /predicciones
+│   ├── database.py                        # Consulta a PostgreSQL para el historial
+│   └── Dockerfile                         # Imagen Docker de FastAPI
 │
-├── frontend/                              # Módulo Frontend Web (Stitch UI)
-│   ├── index.html                         # Plantilla Cyber AI Dark Mode Glassmorphism
-│   ├── app.js                             # Lógica cliente JS, Health checks, POST y Modal BD
-│   └── README.md                          # Documentación del módulo web
+├── backend/                               # API Backend Principal (Spring Boot / Java)
+│   ├── Dockerfile                         # Imagen Docker multi-stage de Spring Boot
+│   └── api/api/                           # Proyecto Maven / Spring Boot
+│       ├── pom.xml
+│       ├── src/main/java/api/             # Controladores, Entidades JPA, DTOs y Servicios
+│       └── src/main/resources/            # application.properties y db/migration (Flyway)
 │
-├── documentos/                            # PDFs / DOCXs para ingesta masiva
+├── frontend/                              # Frontend Web (UI Cyber AI)
+│   ├── index.html                         # Interfaz gráfica Cyber AI Dark Mode Glassmorphism
+│   ├── app.js                             # Consumo de APIs y rendering de Historial
+│   └── Dockerfile                         # Imagen Docker Nginx para producción
 │
-├── data-science/                          # Módulo de Ciencia de Datos y Machine Learning
-│   ├── data/
-│   │   ├── raw/
-│   │   │   └── contenidos_tecnicos.csv    # Dataset ampliado de entrenamiento (221 registros)
-│   │   └── processed/                     # Datos procesados / intermedios
-│   ├── notebooks/
-│   │   └── TechMind_DataScience.ipynb     # Notebook Jupyter principal
-│   ├── src/
-│   │   ├── ingest_documents.py            # Script para ingestión de PDFs/DOCXs
-│   │   ├── expand_and_train.py            # Script de expansión de dataset y reentrenamiento
-│   │   └── migrate_to_postgres.py         # Script de migración CSV -> PostgreSQL
-│   ├── models/
-│   │   ├── modelo_clasificador.joblib     # Modelo binario serializado (LogReg balanced)
-│   │   └── tfidf_vectorizer.joblib        # Vectorizador TF-IDF serializado (3000 max_feat)
-│   ├── docs/                              # Documentación técnica de Data Science
-│   │   ├── BACKEND_INTEGRATION.md
-│   │   ├── DIAGRAMA_PIPELINE.md
-│   │   ├── INGESTA_DOCUMENTOS.md
-│   │   ├── EXPLICACION_PROYECTO.md
-│   │   ├── BUGFIX_CHANGELOG.md
-│   │   ├── ROADMAP_MEJORAS.md
-│   │   └── REQUIREMENTS.md
-│   ├── assets/
-│   │   └── pipeline_flowchart.png        # Diagrama de flujo del pipeline
-│   ├── requirements.txt                  # Dependencias de Python
-│   └── README.md                         # Documentación específica del módulo DS
+├── data-science/                          # Módulo de Data Science y Machine Learning
+│   ├── data/raw/contenidos_tecnicos.csv   # Dataset ampliado (221 registros técnicos)
+│   ├── models/                            # Binarios serializados (.joblib)
+│   ├── notebooks/TechMind_DataScience.ipynb # Notebook Jupyter interactivo
+│   └── src/
+│       ├── generate_models.py             # Entrenador offline ultrarrápido para auto-healing
+│       ├── ingest_documents.py            # Ingesta masiva de documentos PDF / DOCX
+│       └── migrate_to_postgres.py         # Carga inicial de datos a PostgreSQL
 │
-├── qa/                                   # Módulo de Quality Assurance
-│   ├── casos-de-prueba/                  # Documentación de diseño de pruebas
-│   │   └── (v1.2) Matriz de Casos de Prueba – Sprint 1.xlsx          
-│   ├── evidencias/                       # Respaldos y ejecuciones de las pruebas
-│   │   ├── capturas/                     
-│   │   └── respuestas-json/
-│   ├── reportes/                         # Informes y resultados finales
-│   │   ├── informes/
-│   │   │   └── (v1.2) Matriz de Casos de Prueba – Sprint 1.xlsx
-│   │   └── resultados-sprint-1.md        # Resumen ejecutivo de métricas, bugs encontrados y estado de ejecución del Sprint 1
-│   └── README.md                         # Documentación específica del módulo QA
-│
-├── docker-compose.yml                    # Servidor PostgreSQL 16
-├── setup.py                              # Script automático de instalación y arranque del stack completo
-├── how-to-run.md                         # Guía paso a paso para el equipo de Backend y Fullstack
-├── .env.example                          # Plantilla de variables de entorno
-├── .gitignore                            # Filtro de archivos para Git/GitHub
-└── README.md                             # Documentación principal del repositorio
+├── docker-compose.yml                    # Configuración de los 4 servicios en Docker
+├── setup.py                              # Installer y orquestador multiplataforma (Windows/Mac/Linux)
+├── how-to-run.md                         # Guía paso a paso de ejecución
+└── README.md                             # Documentación principal del proyecto
 ```
 
 ---
 
-## 🚀 Cómo ejecutar el proyecto
+## 🚀 Cómo Ejecutar el Proyecto
 
-### Opción rápida — Script automático (recomendado)
+### 🐳 Opción 1: Despliegue 100% Dockerizado (Recomendado)
+Para levantar la solución completa sin necesidad de instalar Java ni Python en la máquina:
 
-```bash
-# Primera vez — instala todo y arranca
+```powershell
+python setup.py --docker
+```
+
+O directamente con Docker Compose:
+```powershell
+docker-compose --profile full up -d --build
+```
+
+Esto desplegará los 4 componentes:
+- 🎨 **Frontend Web UI:** [http://localhost:5173](http://localhost:5173)
+- ☕ **Spring Boot API:** [http://localhost:8080](http://localhost:8080)
+- 🤖 **FastAPI ML Service:** [http://localhost:8000](http://localhost:8000)
+- 📖 **Documentación Swagger:** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 💻 Opción 2: Desarrollo Local (Modo A)
+```powershell
 python setup.py
-
-# Las veces siguientes
-python setup.py --start
 ```
+El script creará el entorno virtual de Python, instalará requerimientos, levantará el contenedor de PostgreSQL y dejará los servicios activos.
 
-> Ver la guía completa paso a paso en [`how-to-run.md`](how-to-run.md) (especialmente útil para el equipo de Backend en Windows).
-
-### Pasos manuales
-
-#### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/No-Country-simulation/g9-latam-techmind-team37.git
-cd g9-latam-techmind-team37
-```
-
-#### 2. Crear entorno virtual e instalar dependencias
-
-```bash
-python3 -m venv venv
-source venv/bin/activate          # macOS / Linux
-# venv\Scripts\activate           # Windows
-
-pip install -r data-science/requirements.txt
-```
-
-#### 3. Levantar PostgreSQL con Docker
-
-```bash
-docker-compose up -d
-# PostgreSQL disponible en localhost:5432
-```
-
-#### 4. Levantar la API Spring Boot (crea las tablas con Flyway)
-
-```bash
-cd backend/api/api
-./mvnw spring-boot:run
-```
-
-#### 5. Configurar variables de entorno y migrar datos
-
-En otra terminal con el entorno Python activo:
-
-```bash
-cp .env.example .env
-python3 data-science/src/migrate_to_postgres.py
-```
-
-#### 6. Iniciar la API FastAPI
-
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-
-#### 7. Iniciar el Frontend Web UI
-
-En una tercera terminal:
-
-```bash
-python3 -m http.server 5173 --directory frontend
-```
-
-Abrí en tu navegador:
-👉 **[http://localhost:5173](http://localhost:5173)**
+> 📖 Para una guía detallada paso a paso en Windows/Mac, consultar [`how-to-run.md`](how-to-run.md).
 
 ---
 
-## 🧪 Pipeline de Ciencia de Datos
+## 📬 Contrato de la API REST
 
-![Diagrama del Pipeline](data-science/assets/pipeline_flowchart.png)
+### Endpoint: `POST /predecir` (FastAPI / Spring Boot)
 
-| Paso | Descripción | Función / Herramienta |
-|------|-------------|----------------------|
-| 1 | **Carga de datos** desde PostgreSQL (`contenidos`) | `pd.read_sql_query()` |
-| 2 | **EDA** — distribución de categorías, longitud de textos, nulos | `matplotlib` / `seaborn` |
-| 3 | **Preprocesamiento** — minúsculas, remover puntuación, stopwords | `limpiar_texto()` |
-| 4 | **Vectorización TF-IDF** — unigramas y bigramas, max 1500 features | `TfidfVectorizer` |
-| 5a | **Entrenamiento** — Regresión Logística balanceada | `LogisticRegression` |
-| 5b | **Extracción de keywords** — top 5 tokens por peso TF-IDF | `extraer_keywords()` |
-| 6 | **Evaluación** — accuracy, precision/recall/F1 | `classification_report` |
-| 7 | **Serialización** de artefactos en `data-science/models/` | `joblib.dump()` |
-
-> Ver [`data-science/docs/DIAGRAMA_PIPELINE.md`](data-science/docs/DIAGRAMA_PIPELINE.md) para el diagrama interactivo Mermaid.
-
----
-
-## 📬 Contrato de la API
-
-### Endpoint: `POST /predecir`
-
-**Request:**
+**Request Body:**
 ```json
 {
-  "titulo": "Introducción a Spring Boot",
-  "texto": "Conceptos básicos para la creación de APIs REST con Java y Spring Boot."
+  "titulo": "Inyección de dependencias en Spring Boot",
+  "texto": "Tutorial sobre el uso de @Autowired, @Component y la configuración de beans en IoC."
 }
 ```
 
-**Response:**
+**Response 200 OK:**
 ```json
 {
   "categoria": "Backend",
   "probabilidad": 0.8879,
-  "informaciones_adicionales": ["spring boot", "java", "api rest", "creación apis", "spring"]
+  "informaciones_adicionales": [
+    "spring boot",
+    "java",
+    "autowired",
+    "component",
+    "beans"
+  ]
 }
 ```
 
 ---
 
-## 📚 Documentación Técnica
+## 📚 Documentación Adicional
 
-- Guía de arranque para Backend (Windows): [`how-to-run.md`](how-to-run.md)
-- Guía de integración Java/Spring Boot: [`data-science/docs/BACKEND_INTEGRATION.md`](data-science/docs/BACKEND_INTEGRATION.md)
-- Guía de entrenamiento y ejecución del modelo: [`data-science/docs/ENTRENAMIENTO_Y_EJECUCION.md`](data-science/docs/ENTRENAMIENTO_Y_EJECUCION.md)
-- Ingesta de documentos PDF/DOCX: [`data-science/docs/INGESTA_DOCUMENTOS.md`](data-science/docs/INGESTA_DOCUMENTOS.md)
-- Diagrama interactivo del pipeline: [`data-science/docs/DIAGRAMA_PIPELINE.md`](data-science/docs/DIAGRAMA_PIPELINE.md)
-- Explicación conceptual para presentaciones: [`data-science/docs/EXPLICACION_PROYECTO.md`](data-science/docs/EXPLICACION_PROYECTO.md)
-- Requerimientos técnicos: [`data-science/docs/REQUIREMENTS.md`](data-science/docs/REQUIREMENTS.md)
-- Historial de cambios: [`data-science/docs/CHANGELOG.md`](data-science/docs/CHANGELOG.md)
-- Documentación y Reportes de QA: [`qa/README.md`](qa/README.md)
+- 📄 **Guía de Ejecución Rápida**: [`how-to-run.md`](how-to-run.md)
+- 📄 **Changelog de Bugs Corregidos**: [`data-science/docs/BUGFIX_CHANGELOG.md`](data-science/docs/BUGFIX_CHANGELOG.md)
+- 📄 **Integración Backend / ML**: [`data-science/docs/BACKEND_INTEGRATION.md`](data-science/docs/BACKEND_INTEGRATION.md)
+- 📄 **Ingesta de Documentos PDF/DOCX**: [`data-science/docs/INGESTA_DOCUMENTOS.md`](data-science/docs/INGESTA_DOCUMENTOS.md)
+- 📄 **Reporte Ejecutivo de QA**: [`qa/reportes/resultados-sprint-1.md`](qa/reportes/resultados-sprint-1.md)
 
 ---
 
