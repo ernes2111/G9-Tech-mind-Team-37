@@ -80,32 +80,4 @@ def get_predicciones(limit: int = 50):
         return []
 
 
-def log_prediccion(
-    titulo: str,
-    texto: str,
-    categoria: str,
-    probabilidad: float,
-    informaciones_adicionales: list,
-) -> None:
-    """
-    Persiste una predicción en la tabla `predicciones`.
-    Los errores de escritura se loguean pero NO interrumpen la respuesta al cliente.
-    """
-    try:
-        con = get_connection()
-        cur = con.cursor()
-        palabras_clave_str = ",".join(informaciones_adicionales) if informaciones_adicionales else ""
-        cur.execute(
-            """
-            INSERT INTO predicciones (categoria, probabilidad, palabras_clave, created_at)
-            VALUES (%s, %s, %s, NOW())
-            """,
-            (categoria, probabilidad, palabras_clave_str),
-        )
-        con.commit()
-        cur.close()
-        con.close()
-    except Exception as exc:
-        print(f"⚠️ Error al guardar predicción en PostgreSQL: {exc}")
-
 

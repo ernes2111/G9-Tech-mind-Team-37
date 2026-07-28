@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, field_validator
 
-from app.database import init_db, log_prediccion, get_predicciones
+from app.database import init_db, get_predicciones
 
 load_dotenv()
 
@@ -147,8 +147,6 @@ Recibe el **título** y **texto** de un contenido técnico y devuelve:
 - `categoria` — una de las 8 categorías del modelo
 - `probabilidad` — confianza del modelo (0 a 1)
 - `informaciones_adicionales` — top 5 palabras clave por peso TF-IDF
-
-Cada predicción se persiste automáticamente en la tabla `predicciones` de PostgreSQL.
 """,
 )
 def predecir(req: ContenidoRequest):
@@ -163,8 +161,6 @@ def predecir(req: ContenidoRequest):
     proba_arr    = modelo.predict_proba(vector)[0]
     probabilidad = float(proba_arr.max())
     informaciones_adicionales = extraer_keywords(texto_limpio)
-
-    log_prediccion(req.titulo, req.texto, categoria, probabilidad, informaciones_adicionales)
 
     return PrediccionResponse(
         categoria=categoria,

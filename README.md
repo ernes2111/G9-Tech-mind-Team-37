@@ -31,6 +31,12 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 
 ## 🏗️ Arquitectura del Sistema
 
+<div align="center">
+
+![Arquitectura y Flujo del Sistema TechMind](assets/techmind_project_flow.png)
+
+</div>
+
 ```
   ┌─────────────────────────────────────────────────────────────────────────┐
   │                      Cliente Web (Navegador)                            │
