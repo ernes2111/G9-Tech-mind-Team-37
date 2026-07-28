@@ -26,12 +26,34 @@ Si no querés hacer los pasos manualmente, el repositorio incluye un script que 
 python setup.py
 ```
 
-### Las veces siguientes
+El script verifica Python, crea el entorno virtual, instala dependencias, levanta Docker, migra la base de datos e inicia la API. Si algo falla, te dice exactamente qué está mal.
+
+---
+
+## 🐳 Opción 100% Dockerizada (Producción / Demo)
+
+Si querés levantar los **4 componentes del sistema** (PostgreSQL + FastAPI + Spring Boot + Frontend Web UI) totalmente dentro de contenedores Docker con un solo comando (sin necesidad de tener Java ni Python instalados en la PC):
+
+### Vía Script Automático:
 ```powershell
-python setup.py --start
+python setup.py --docker
 ```
 
-El script verifica Python, crea el entorno virtual, instala dependencias, levanta Docker, migra la base de datos e inicia la API. Si algo falla, te dice exactamente qué está mal.
+### Vía Docker Compose directamente:
+```powershell
+docker-compose --profile full up -d --build
+```
+
+Esto compilará las imágenes y dejará todo el stack activo en:
+* 🎨 **Frontend Web UI:** **[http://localhost:5173](http://localhost:5173)**
+* ☕ **Spring Boot API:** `http://localhost:8080`
+* 🤖 **FastAPI ML Service:** `http://localhost:8000`
+* 📖 **Documentación Swagger:** `http://localhost:8000/docs`
+
+Para detener todos los contenedores:
+```powershell
+docker-compose --profile full down
+```
 
 > ⚠️ Requiere tener **Python** y **Docker Desktop** instalados (ver requisitos abajo).
 
