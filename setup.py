@@ -241,22 +241,115 @@ def start_services():
 
 # ─── Modo 100% Dockerizado ──────────────────────────────────────────────────
 
+def check_model_files():
+    """Verifica que los archivos .joblib existen antes de buildear Docker."""
+    models_dir = os.path.join("data-science", "models")
+    required = ["tfidf_vectorizer.joblib", "modelo_clasificador.joblib"]
+    missing = []
+    for f in required:
+        path = os.path.join(models_dir, f)
+        if not os.path.isfile(path):
+            missing.append(path)
+    return missing
+
+
+def reset_docker_volumes():
+    """
+    Elimina el volumen de PostgreSQL si existe, para que Flyway
+    pueda crear las tablas limpias con el esquema correcto (BIGSERIAL).
+    Solo se ejecuta si el usuario confirma o si el volumen ya está presente.
+    """
+    import subprocess as _sp
+    # Detectar si el volumen viejo existe
+    result = _sp.run(
+        "docker volume ls --format {{.Name}}",
+        shell=True,
+        stdout=_sp.PIPE,
+        stderr=_sp.DEVNULL
+    )
+    volume_names = result.stdout.decode(errors="replace") if result.returncode == 0 else ""
+
+    # Buscar volumen que corresponda al proyecto
+    candidate_volumes = [
+        v.strip() for v in volume_names.splitlines()
+        if "techmind" in v.lower() and "data" in v.lower()
+    ]
+
+    if candidate_volumes:
+        warn(f"Volumen de datos viejo detectado: {', '.join(candidate_volumes)}")
+        warn("Esto puede causar errores de schema en Spring Boot (serial vs bigint).")
+        print()
+        print("  ¿Querés eliminar el volumen para un deploy limpio? (s/N): ", end="", flush=True)
+        try:
+            answer = input().strip().lower()
+        except EOFError:
+            answer = "s"
+
+        if answer in ("s", "si", "sí", "y", "yes"):
+            info("Deteniendo contenedores y eliminando volumen...")
+            run("docker-compose --profile full down -v")
+            ok("Volumen eliminado. Flyway creará el schema correcto desde cero.")
+        else:
+            warn("Continuando sin limpiar el volumen. Si Spring Boot falla, ejecutá:")
+            warn("  docker-compose --profile full down -v")
+            warn("  python setup.py --docker")
+    else:
+        # Primera vez: bajar contenedores por las dudas
+        run("docker-compose --profile full down")
+
+
+
 def run_full_docker():
     """Ejecuta los 4 contenedores en Docker Compose."""
     print()
     print("  🐳 TechMind — Modo 100% Dockerizado (Producción / Demo)")
     print()
+
+    # 1. Verificar modelos ML
+    missing = check_model_files()
+    if missing:
+        print()
+        fail(
+            f"No se encontraron los modelos de ML (.joblib):\n"
+            + "\n".join(f"    ✗ {m}" for m in missing)
+        )
+        print()
+        print("  ──────────────────────────────────────────────────────────────")
+        print("  Para generarlos, abrí y ejecutá el notebook:")
+        print("    data-science/TechMind_DataScience.ipynb")
+        print()
+        print("  O si los tenés en otro lugar, copialos a:")
+        print("    data-science/models/")
+        print("  ──────────────────────────────────────────────────────────────")
+        sys.exit(1)
+
+    ok(f"Modelos ML verificados: {', '.join(['tfidf_vectorizer.joblib', 'modelo_clasificador.joblib'])}")
+
+    # 2. Limpiar volúmenes viejos para evitar errores de schema de Flyway
+    reset_docker_volumes()
+
+    # 3. Build y arranque del stack completo
+    print()
     info("Compilando y levantando PostgreSQL + FastAPI + Spring Boot + Frontend en Docker...")
-    
     result = run("docker-compose --profile full up -d --build")
     if result.returncode == 0:
         print()
         ok("¡Todo el stack fue dockerizado y levantado exitosamente en contenedores!")
+        print()
         print("  • Frontend Web UI: http://localhost:5173")
         print("  • Spring Boot API: http://localhost:8080")
         print("  • FastAPI ML:      http://localhost:8000")
+        print()
+        info("Esperando que los servicios estén listos (~15 segundos)...")
+        time.sleep(15)
+        ok("¡Proyecto listo! Abrí http://localhost:5173 en tu navegador.")
     else:
         fail("Ocurrió un error al compilar la pila Docker.")
+        print()
+        warn("Tip: si el error es de schema, ejecutá:")
+        warn("  docker-compose --profile full down -v")
+        warn("  python setup.py --docker")
+
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
