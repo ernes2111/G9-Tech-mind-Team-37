@@ -309,6 +309,21 @@ data-science/models/
 
 ---
 
+### BUG-13 — Intento de inserción directa a PostgreSQL desde FastAPI sin `contenido_id`
+
+| Campo | Valor |
+|---|---|
+| **Severidad** | 🟠 Alta |
+| **Archivos afectados** | `app/main.py` · `app/database.py` |
+| **Estado** | ✅ Resuelto |
+| **Fecha** | 2026-07-28 |
+
+**Descripción:** Al realizar inferencias en `POST /predecir`, FastAPI ejecutaba la función `log_prediccion()` que intentaba hacer `INSERT INTO predicciones (categoria, probabilidad, palabras_clave, created_at)` sin especificar `contenido_id`. Como la tabla `predicciones` creada por Flyway requiere `contenido_id BIGINT NOT NULL REFERENCES contenidos(id)`, PostgreSQL arrojaba un error de restricción `null value in column "contenido_id" violates not-null constraint` en cada petición.
+
+**Solución aplicada:** Se eliminó la llamada a `log_prediccion()` en `app/main.py` y se removió la función obsoleta en `app/database.py`. FastAPI pasó a ser un microservicio predictivo 100% sin estado (stateless), dejando la responsabilidad de persistencia relacional exclusivamente a Spring Boot (que asigna el `contenido_id` al guardar la entidad `Contenido`).
+
+---
+
 ## 📊 Resumen de Impacto
 
 | Bug | Riesgo en demo | Componente |
@@ -325,6 +340,7 @@ data-science/models/
 | BUG-10 (springboot env vars) | Fallo de conexión BD en modo Docker | Docker Compose · Spring Boot |
 | BUG-11 (gitignore .joblib) | FastAPI caía por modelos faltantes | Git · FastAPI |
 | BUG-12 (auto-healing setup.py) | Aborto en instalaciones frescas | setup.py · Data Science |
+| BUG-13 (FastAPI null contenido_id) | Error de log en PostgreSQL por inserción redundante | FastAPI · app/main.py |
 
 ---
 

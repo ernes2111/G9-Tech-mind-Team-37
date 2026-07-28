@@ -2,7 +2,7 @@
 
 > Mejoras pendientes organizadas por impacto y esfuerzo estimado.
 > Este documento se actualiza a medida que el proyecto avanza.
-> Última actualización: 2026-07-27
+> Última actualización: 2026-07-28
 
 ---
 
@@ -25,22 +25,39 @@
 
 ## 🤖 Data Science (FastAPI / ML)
 
-### 🔴 MEJORA-DS-001 — Ampliar el dataset (61 → 250+ registros)
+### 🔴 MEJORA-DS-001 — Ampliar el dataset (61 → 221+ registros)
 
 | Campo | Valor |
 |---|---|
-| **Estado** | ⬜ Pendiente |
+| **Estado** | ✅ Completado |
 | **Owner** | Ernesto |
 | **Esfuerzo** | 2-3 horas |
 
-**Problema:** El dataset actual tiene ~61 ejemplos (~7 por categoría). Con tan pocos datos, la accuracy (~69%) no es confiable estadísticamente.
+**Resultado:** Dataset ampliado a 221 registros técnicos balanceados en `data-science/data/raw/contenidos_tecnicos.csv` e ingresados en PostgreSQL.
 
-**Acción:** Colocar PDFs y DOCXs técnicos en `documentos/` y ejecutar:
-```bash
-python data-science/src/ingest_documents.py
-```
+---
 
-**Impacto esperado:** Accuracy estimada ≥ 82% con 250+ registros balanceados.
+### 🎨 MEJORA-INFRA-001 — Diagrama de Arquitectura Infográfico en README.md
+
+| Campo | Valor |
+|---|---|
+| **Estado** | ✅ Completado |
+| **Owner** | Ernesto |
+| **Esfuerzo** | 1 hora |
+
+**Resultado:** Generada e integrada la infografía `assets/techmind_project_flow.png` en `README.md`.
+
+---
+
+### 🧪 MEJORA-QA-001 — Suite de Pruebas Automatizadas E2E (Sprint 2)
+
+| Campo | Valor |
+|---|---|
+| **Estado** | ✅ Completado |
+| **Owner** | QA Team / Assistant |
+| **Esfuerzo** | 1 hora |
+
+**Resultado:** Suite de 14 casos de prueba automatizados con 100% de tasa de éxito documentada en `qa/reportes/resultados-sprint-2.md`.
 
 ---
 

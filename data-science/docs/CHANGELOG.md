@@ -3,9 +3,19 @@
 > Todas las versiones están ordenadas de la más reciente a la más antigua.
 > Se sigue el formato [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.1.0] — 2026-07-28 · Sprint 2 & QA Automation (actual)
+
+### Añadido
+- **Diagrama Infográfico de Arquitectura de Sistema:** Generado e integrado en `README.md` (`assets/techmind_project_flow.png`) mostrando el flujo visual multicontenedor (Frontend UI → Spring Boot :8080 → FastAPI ML :8000 → PostgreSQL 16 :5432).
+- **Suite de Pruebas Automatizadas de QA (Sprint 2):** Creada e implementada suite de 14 casos de prueba E2E cubriendo flujos felices, límites de carga, resistencia a inyección SQL/XSS, resiliencia y validación de tipos HTTP (reporte en `qa/reportes/resultados-sprint-2.md`).
+- **Documentación del Esquema Relacional de PostgreSQL:** Creado informe técnico completo (`informe_base_de_datos.md`) con diagrama Entidad-Relación (ER) Mermaid, contratos DDL, índices y mapeo JPA.
+
+### Corregido
+- **Eliminación de la llamada redundante `log_prediccion()` en FastAPI (`app/main.py` y `app/database.py`):** Solucionado el error de log en PostgreSQL (`null value in column "contenido_id" violates not-null constraint`). FastAPI opera ahora como un microservicio 100% stateless mientras Spring Boot administra la transacción y asignación de `contenido_id`.
+
 ---
 
-## [0.6.0] — 2026-07-22 · Bug Fixes + Corrección de rutas del modelo (actual)
+## [0.6.0] — 2026-07-22 · Bug Fixes + Corrección de rutas del modelo
 
 ### Corregido
 - **Bug crítico en `app/main.py` — endpoint `POST /predecir`:** la variable `probabilidad` nunca se calculaba antes de ser usada en `log_prediccion()`, lo que causaba un `NameError` en runtime. Se agregó el cálculo correcto usando `modelo.predict_proba(vector)[0].max()` antes de la llamada a la función de logging.
