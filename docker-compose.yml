@@ -7,8 +7,6 @@
 #   docker-compose --profile full up -d --build
 #
 
-name: g9-latam-techmind-team37
-
 services:
   # 1. Base de Datos PostgreSQL
   postgres:
@@ -58,10 +56,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/techmind
-      - SPRING_DATASOURCE_USERNAME=techmind_user
-      - SPRING_DATASOURCE_PASSWORD=techmind_pass
-      - FASTAPI_URL=http://fastapi:8000
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DB=techmind
+      - PG_USER=techmind_user
+      - PG_PASSWORD=techmind_pass
+      - TECHMIND_DS_API_URL=http://fastapi:8000
     depends_on:
       postgres:
         condition: service_healthy
