@@ -1,15 +1,16 @@
-# docker-compose.yml — TechMind · Entorno local de desarrollo
+# docker-compose.yml — TechMind · Entorno local y despliegue completo
 #
-# Levanta PostgreSQL lista para usar con FastAPI y Spring Boot.
+# Modo 1 — Desarrollo local (Solo PostgreSQL activo):
+#   docker-compose up -d
 #
-# Uso:
-#   docker-compose up -d          # levantar en segundo plano
-#   docker-compose down           # detener y eliminar contenedores
-#   docker-compose down -v        # detener y eliminar datos (reset completo)
+# Modo 2 — Despliegue 100% Dockerizado (PostgreSQL + FastAPI + Spring Boot + Frontend):
+#   docker-compose --profile full up -d --build
+#
 
 name: g9-latam-techmind-team37
 
 services:
+  # 1. Base de Datos PostgreSQL
   postgres:
     image: postgres:16-alpine
     container_name: techmind-postgres
@@ -18,7 +19,7 @@ services:
       POSTGRES_USER:     techmind_user
       POSTGRES_PASSWORD: techmind_pass
     ports:
-      - "5432:5432"       # accesible en localhost:5432
+      - "5432:5432"
     volumes:
       - techmind_data:/var/lib/postgresql/data
     healthcheck:
@@ -26,6 +27,61 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # 2. Microservicio FastAPI ML (Python)
+  fastapi:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    container_name: techmind-fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DB=techmind
+      - PG_USER=techmind_user
+      - PG_PASSWORD=techmind_pass
+      - MODEL_PATH=./data-science/models
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - full
+
+  # 3. API Backend Spring Boot (Java)
+  springboot:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: techmind-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/techmind
+      - SPRING_DATASOURCE_USERNAME=techmind_user
+      - SPRING_DATASOURCE_PASSWORD=techmind_pass
+      - FASTAPI_URL=http://fastapi:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      fastapi:
+        condition: service_started
+    profiles:
+      - full
+
+  # 4. Frontend Web UI (Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: techmind-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - springboot
+    profiles:
+      - full
 
 volumes:
   techmind_data:
