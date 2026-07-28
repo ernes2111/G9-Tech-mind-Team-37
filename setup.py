@@ -305,25 +305,26 @@ def run_full_docker():
     print("  🐳 TechMind — Modo 100% Dockerizado (Producción / Demo)")
     print()
 
-    # 1. Verificar modelos ML
+    # 1. Verificar modelos ML (auto-generar si no existen)
     missing = check_model_files()
     if missing:
-        print()
-        fail(
-            f"No se encontraron los modelos de ML (.joblib):\n"
-            + "\n".join(f"    ✗ {m}" for m in missing)
-        )
-        print()
-        print("  ──────────────────────────────────────────────────────────────")
-        print("  Para generarlos, abrí y ejecutá el notebook:")
-        print("    data-science/TechMind_DataScience.ipynb")
-        print()
-        print("  O si los tenés en otro lugar, copialos a:")
-        print("    data-science/models/")
-        print("  ──────────────────────────────────────────────────────────────")
-        sys.exit(1)
+        warn("No se encontraron los modelos .joblib. Generándolos automáticamente...")
+        if not os.path.exists(VENV_PYTHON):
+            info("Creando entorno virtual e instalando librerías de Data Science para la generación...")
+            create_venv()
+            install_deps()
+        
+        gen_script = os.path.join("data-science", "src", "generate_models.py")
+        py_bin = VENV_PYTHON if os.path.exists(VENV_PYTHON) else sys.executable
+        
+        res = run(f'"{py_bin}" "{gen_script}"')
+        if res.returncode != 0:
+            fail("No se pudieron generar los modelos de ML (.joblib).")
+        missing = check_model_files()
+        if missing:
+            fail("Los modelos no pudieron ser guardados en data-science/models/")
 
-    ok(f"Modelos ML verificados: {', '.join(['tfidf_vectorizer.joblib', 'modelo_clasificador.joblib'])}")
+    ok("Modelos ML verificados: tfidf_vectorizer.joblib y modelo_clasificador.joblib")
 
     # 2. Limpiar volúmenes viejos para evitar errores de schema de Flyway
     reset_docker_volumes()
