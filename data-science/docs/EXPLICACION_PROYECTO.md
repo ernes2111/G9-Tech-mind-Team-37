@@ -1,225 +1,144 @@
 # 🧠 TechMind — Explicación del Proyecto
 
-> **¿Para quién es este documento?**
-> Para cualquier persona que quiera entender qué es TechMind, cómo funciona y qué problema resuelve,
-> sin necesidad de saber programar.
+> **¿Para quién es este documento?**  
+> Para cualquier persona (estudiante, jurado, reclutador o compañero) que quiera entender **qué es TechMind**, **cómo funciona** y **qué problema resuelve**, expresado en lenguaje claro, simple y accesible sin necesidad de saber programar.
 
 ---
 
 ## 🎯 ¿Qué problema resuelve TechMind?
 
-Imaginate que sos estudiante o profesional de tecnología.
-Cada día leés artículos, tutoriales, documentación de herramientas, resúmenes de cursos…
-Con el tiempo, tenés cientos de notas y materiales guardados en distintos lugares,
-y cuando querés volver a encontrar algo, **no sabés ni por dónde empezar**.
+Imaginate que sos estudiante o profesional de tecnología.  
+Cada día leés artículos, tutoriales, documentación de herramientas, guías de código y resúmenes de cursos...  
+Con el tiempo, acumulás cientos de notas guardadas en distintos lugares y, cuando querés volver a encontrar algo, **no sabés por dónde empezar a buscar**.
 
 **TechMind resuelve exactamente ese problema.**
 
-Le mandás un texto técnico — puede ser el título de un artículo y su descripción —
-y el sistema te dice automáticamente:
+Le entregás cualquier texto técnico —puede ser el título de un artículo y su explicación, un snippet de código o una nota rápida— y el sistema en **menos de un segundo** responde automáticamente con:
 
-- 📂 **De qué tema trata** (por ejemplo: Backend, Data Science, DevOps, etc.)
-- 🔑 **Cuáles son las palabras clave más importantes** del texto
-- 📊 **Qué tan seguro está** de esa clasificación
+1. 📂 **La categoría temática** (`Backend`, `Frontend`, `Data Science`, `DevOps`, `Mobile`, `Bases de Datos`, `Seguridad`, `Cloud`).
+2. 📊 **El nivel de probabilidad / confianza** de la predicción (por ejemplo: `88.7% de certeza`).
+3. 🔑 **Las palabras clave (keywords) más relevantes** extraídas del texto.
+4. 📜 **Un historial organizado y persistente** disponible desde la interfaz web.
 
-Todo esto en menos de un segundo, sin que ninguna persona tenga que leerlo y etiquetarlo a mano.
+Todo sin que ninguna persona tenga que leerlo ni etiquetarlo a mano.
 
 ---
 
-## 🏗️ ¿Cómo está construido el proyecto?
+## 🏗️ ¿Cómo funciona el sistema en la práctica? (El flujo paso a paso)
 
-TechMind tiene tres partes que trabajan juntas, como los engranajes de una máquina:
+TechMind está formado por **cuatro componentes que trabajan en equipo**, conectadas como los engranajes de un reloj:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   📝 VOS escribís un texto técnico                         │
-│                    │                                        │
-│                    ▼                                        │
-│   🔵 BACKEND (Java) — recibe el texto y lo envía           │
-│                    │                                        │
-│                    ▼                                        │
-│   🟣 CIENCIA DE DATOS (Python) — analiza y clasifica       │
-│                    │                                        │
-│                    ▼                                        │
-│   📦 NUBE (OCI) — guarda los modelos entrenados            │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
-| Parte | ¿Quién lo hace? | ¿Qué hace? |
-|-------|-----------------|------------|
-| **Backend** | Equipo de Java | Recibe los textos, los envía al modelo y devuelve la respuesta al usuario |
-| **Ciencia de Datos** | Ernesto | Entrena el modelo que aprende a clasificar textos y extraer palabras clave |
-| **Base de datos** | Ernesto | Guarda todos los contenidos técnicos en una base de datos PostgreSQL, accesible por todo el equipo |
-| **Nube (OCI)** | Todo el equipo | Guarda los modelos entrenados para que estén disponibles en internet |
-
----
-
-## 🧪 ¿Qué es la parte de Ciencia de Datos?
-
-Esta es la parte que hace la "magia" del proyecto. Acá es donde el sistema **aprende** a reconocer de qué tema habla un texto.
-
-### Paso a paso, ¿cómo aprende la máquina?
-
-#### 🗃️ Paso 1 — Alimentarla con ejemplos
-Primero necesitamos darle al sistema muchos ejemplos ya etiquetados.
-Estos contenidos están guardados en una **base de datos PostgreSQL** — como una
-hoja de cálculo organizada y conectada en red, accesible simultáneamente por el modelo de
-Ciencia de Datos y por la API de Back-End.
-Empezamos con 61 textos técnicos donde ya sabemos la categoría correcta:
-
-| Título | Texto | Categoría |
-|--------|-------|-----------|
-| Introducción a Spring Boot | APIs REST con Java y Spring Boot | **Backend** |
-| Vectorización con TF-IDF | Técnica para convertir texto en números para ML | **Data Science** |
-| Contenedores con Docker | Crear imágenes y desplegar aplicaciones | **DevOps** |
-| … | … | … |
-
-Esto se llama **dataset de entrenamiento** — es como el libro de texto del que aprende el sistema.
-A diferencia de un archivo de texto o CSV, una base de datos PostgreSQL
-permite al sistema **buscar, agregar y filtrar** contenidos automáticamente, y además
-guarda un historial de todas las predicciones que el modelo realiza en producción.
-
----
-
-#### 🧹 Paso 2 — Limpiar los textos
-Antes de que el sistema pueda entender los textos, hay que "limpiarlos":
-
-- Se pasan **todo a minúsculas** → `"Spring Boot"` se convierte en `"spring boot"`
-- Se eliminan **signos de puntuación** → `,`, `.`, `!` desaparecen
-- Se eliminan **palabras vacías** → palabras como *"el"*, *"la"*, *"que"*, *"se explica"* que no aportan significado se descartan
-
-**¿Por qué?** Porque la computadora no entiende el lenguaje como nosotros. Necesita que el texto esté lo más "limpio" posible para identificar las palabras que realmente importan.
-
----
-
-#### 🔢 Paso 3 — Convertir palabras en números (TF-IDF)
-Las computadoras no entienden palabras, solo entienden números.
-Usamos una técnica llamada **TF-IDF** (suena complicado, pero la idea es simple):
-
-> **Cada palabra importante del texto se convierte en un número.**
-> Cuanto más relevante es una palabra para ESE texto en particular, mayor es su número.
-
-Por ejemplo, si un texto habla de *"kubernetes"* y *"pods"*, esas palabras van a tener números altos en ese texto, y eso le dice al modelo que probablemente sea de **DevOps**.
-
----
-
-#### 🤖 Paso 4 — Entrenar el modelo clasificador
-Con todos los textos ya convertidos en números, entrenamos un algoritmo llamado
-**Regresión Logística** — que básicamente aprende los patrones:
-
-> *"Cuando aparecen estas palabras juntas → probablemente es Backend"*
-> *"Cuando aparecen estas otras → probablemente es Data Science"*
-
-Es similar a cómo aprende un humano con la práctica: cuantos más ejemplos ve, mejor clasifica.
-
----
-
-#### 📊 Paso 5 — Evaluar qué tan bien aprendió
-Una vez entrenado, lo ponemos a prueba con textos que **nunca había visto antes**
-y medimos cuántos acierta. Con el dataset actual (pequeño, de práctica) acierta en el **69%** de los casos.
-Con más datos reales, ese número sube significativamente.
-
----
-
-#### 🔑 Paso 6 — Extraer palabras clave
-Para las palabras clave usamos otra lógica: buscamos cuáles son los términos con
-mayor "peso" dentro del texto ingresado — las palabras más representativas y únicas
-de ese documento en particular.
-
----
-
-#### 💾 Paso 7 — Guardar el modelo entrenado
-Una vez que el modelo aprendió, lo guardamos en un archivo (como si fuera una foto de su conocimiento).
-Ese archivo es el que usa el Backend para responder en tiempo real, sin tener que volver a entrenar cada vez.
-
----
-
-## 📬 ¿Cómo se usa en la práctica?
-
-El sistema expone lo que se llama una **API** — una especie de "ventanilla" por la que otras aplicaciones pueden hablar con él.
-
-**¿Qué le mandás?**
-```
-Título: "Introducción a Spring Boot"
-Texto:  "Conceptos básicos para crear APIs REST con Java y Spring Boot."
-```
-
-**¿Qué te devuelve?**
-```
-Categoría:            Backend
-Confianza:            88.9%
-Palabras clave:       spring boot, java, api rest, creación apis, spring
-```
-
-Eso es todo. En menos de un segundo, el sistema leyó el texto, lo entendió y lo clasificó.
-
----
-
-## 🗂️ Las 8 categorías que reconoce
-
-| Categoría | ¿De qué trata? | Ejemplo |
-|-----------|----------------|---------|
-| **Backend** | Lógica del servidor, APIs, bases de datos desde el código | Spring Boot, Node.js, JWT |
-| **Frontend** | Interfaces web y experiencia visual del usuario | React, Vue.js, CSS |
-| **Data Science** | Análisis de datos e inteligencia artificial | Pandas, Scikit-Learn, ML |
-| **DevOps** | Automatización, despliegues y operaciones | Docker, Kubernetes, CI/CD |
-| **Mobile** | Aplicaciones para celulares | React Native, Flutter, Swift |
-| **Bases de Datos** | Almacenamiento y consulta de datos | SQL, MongoDB, Redis |
-| **Seguridad** | Protección de sistemas y datos | JWT, OWASP, cifrado |
-| **Cloud** | Servicios en la nube | OCI, servidores, serverless |
-
----
-
-## ☁️ ¿Dónde vive el proyecto?
-
-Los archivos del modelo entrenado se guardan en **OCI** (Oracle Cloud Infrastructure),
-que es básicamente un espacio de almacenamiento en internet. Así el Backend puede
-acceder al modelo desde cualquier lugar, sin depender de la computadora de ningún integrante del equipo.
-
----
-
-## 👥 ¿Qué hizo cada parte del equipo?
-
-```
-TechMind
-├── 🟣 Ciencia de Datos (Ernesto)
-│   ├── Creó el dataset de entrenamiento
-│   ├── Migró los datos a PostgreSQL (tabla: contenidos)
-│   ├── Construyó el pipeline de análisis en Jupyter
-│   ├── Entrenó y evaluó el modelo (TF-IDF + Regresión Logística)
-│   ├── Implementó el microservicio FastAPI (/predecir, /health, /categorias)
-│   └── Definió el contrato de respuesta JSON para el equipo de Backend
-│
-├── 🔵 Backend (equipo Java)
-│   ├── Construyó la API REST con Spring Boot
-│   ├── Llama a FastAPI internamente para clasificar textos
-│   └── Valida entradas y maneja errores
-│
-└── ☁️ OCI (todo el equipo)
-    └── Almacena los modelos y aloja la aplicación
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 1. 🎨 FRONTEND (Interfaz Web Cyber AI — Puerto 5173)                   │
+│    VOS escribís el título y texto en la pantalla y tocás "Clasificar"   │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ ✉️ Envía el contenido
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 2. ☕ BACKEND PRINCIPAL (Java / Spring Boot — Puerto 8080)              │
+│    Recibe el texto, genera su ID y le pide ayuda a la Inteligencia Art.│
+└──────────────┬──────────────────────────────────────────┬───────────────┘
+               │ 🤖 Solicita predicción                   │ 💾 Guarda datos
+               ▼                                          ▼
+┌──────────────────────────────┐          ┌──────────────────────────────┐
+│ 3. 🟣 CIENCIA DE DATOS       │          │ 4. 🗄️ BASE DE DATOS         │
+│    FastAPI (Python) :8000    │          │    PostgreSQL (Puerto 5432)   │
+│    Analiza el texto con ML,  │          │    Almacena los contenidos e  │
+│    calcula la categoría y    │          │    historial de predicciones  │
+│    extrae palabras clave     │          │    de forma permanente       │
+└──────────────────────────────┘          └──────────────────────────────┘
 ```
 
 ---
 
-## 🚀 ¿Qué podría mejorar a futuro?
+## ⚙️ Explicación simple de cada parte
 
-| Mejora | ¿Qué significa en simple? |
-|--------|--------------------------|
-| **PostgreSQL + FastAPI** | ✅ Ya implementado — base de datos compartida con el equipo, y un servicio Python que clasifica textos en tiempo real |
-| **Más datos reales** | Con más ejemplos, el modelo acierta mucho más |
-| **Búsqueda por similitud** | "Encontrá contenidos parecidos a este" |
-| **Recomendaciones** | "Si leíste esto, también te puede interesar..." |
-| **Procesar muchos a la vez** | Clasificar 100 textos de golpe mediante la propia base de datos |
-| **Dashboard** | Una pantalla que muestre estadísticas de todo lo clasificado |
+| Componente | ¿Qué tecnología usa? | ¿Cuál es su trabajo en simple? |
+|---|---|---|
+| 🎨 **1. Interfaz Web (Frontend)** | HTML5, JavaScript Vanilla, TailwindCSS Dark Mode | Es la pantalla donde interactuás. Mostrás el formulario, los botones neón con efecto de vidrio (Glassmorphism), los badges de palabras clave y el historial modal. |
+| ☕ **2. Backend (Spring Boot)** | Java 17, Spring Boot, JPA, Flyway | Es el "cerebro orquestador". Recibe tu petición desde la web, gestiona las transacciones, le pide la inferencia al modelo de IA y coordina el guardado en la base de datos. |
+| 🤖 **3. Ciencia de Datos (FastAPI)** | Python 3.12, FastAPI, Scikit-Learn | Es la "inteligencia artificial". Recibe el texto, lo convierte en números, calcula a qué categoría pertenece y extrae las palabras más importantes. |
+| 🗄️ **4. Base de Datos** | PostgreSQL 16 | Es la "memoria central". Guarda todos los artículos ingresados y sus resultados de forma segura para que puedas ver tu historial en cualquier momento. |
 
 ---
 
-## 💡 En una sola frase
+## 🧪 ¿Cómo "aprende" la Inteligencia Artificial de TechMind?
 
-> **TechMind es un sistema que lee textos técnicos, entiende de qué tema tratan y devuelve esa información organizada automáticamente, ahorrando el trabajo manual de clasificar y etiquetar contenido.**
+El módulo de Ciencia de Datos realiza un proceso de aprendizaje automático (Machine Learning) en 5 sencillos pasos:
+
+### 🗃️ Paso 1 — Alimentarla con ejemplos reales (221 Registros)
+Le entregamos al sistema un libro de estudio (**dataset de entrenamiento**) con **221 ejemplos reales** etiquetados previamente en las 8 categorías principales de la tecnología.
+
+### 🧹 Paso 2 — Limpiar el texto (Procesamiento NLP)
+Antes de leer un texto, la computadora elimina palabras sin valor informativo (como *"el"*, *"la"*, *"para"*, *"de"*), pasa todo a minúsculas y remueve signos de puntuación.
+
+### 🔢 Paso 3 — Convertir palabras en números (Vectorización TF-IDF)
+Las computadoras no leen letras, leen números. Usamos una técnica llamada **TF-IDF**:
+> Cada palabra recibe una puntuación numérica. Cuanto más única y representativa es una palabra para un texto (ejemplo: *"kubernetes"* o *"docker"*), mayor es su número.
+
+### 🤖 Paso 4 — Clasificar con Regresión Logística
+Con los textos convertidos en números, el algoritmo aprende patrones de asociación:
+> *"Si en el texto aparecen términos como 'spring', 'java' y 'autowired' → 89% probable que sea **Backend**."*  
+> *"Si aparecen 'pandas', 'scikit' y 'dataset' → es **Data Science**."*
+
+### 🔑 Paso 5 — Extraer las palabras clave
+Identifica los 5 términos con mayor peso dentro del texto ingresado y los devuelve en forma de etiquetas (*badges*) para que el usuario entienda rápidamente de qué trata el documento.
 
 ---
 
-*Documento preparado para la presentación del Hackathon — TechMind G9 LATAM Team 37.*
+## 📬 ¿Qué le enviás y qué te responde?
+
+### 📥 Lo que el usuario ingresa:
+* **Título:** `"Introducción a Spring Boot"`
+* **Texto:** `"Tutorial sobre el uso de @Autowired, @Component y la configuración de beans en Java."`
+
+### 📤 Lo que TechMind responde en pantalla (< 0.05 segundos):
+* 📂 **Categoría:** `Backend`
+* 📊 **Confianza:** `88.7%`
+* 🔑 **Palabras Clave:** `spring boot`, `java`, `autowired`, `component`, `beans`
+
+---
+
+## 🗂️ Las 8 Categorías que clasifica
+
+| Categoría | ¿De qué trata? | Ejemplos de tecnologías |
+|---|---|---|
+| ☕ **Backend** | Lógica de servidor, APIs y arquitectura | Spring Boot, Java, Node.js, Express, APIs REST |
+| 🎨 **Frontend** | Interfaz visual y experiencia de usuario | React, Vue.js, HTML5, CSS3, TailwindCSS |
+| 📊 **Data Science** | Análisis de datos y modelos de IA | Pandas, Scikit-Learn, Python, Machine Learning |
+| 🛠️ **DevOps** | Automatización, contenedores y despliegues | Docker, Kubernetes, CI/CD, Linux |
+| 📱 **Mobile** | Aplicaciones para celulares | React Native, Flutter, Android, iOS |
+| 🗄️ **Bases de Datos** | Almacenamiento y consultas relacionales o NoSQL | PostgreSQL, MySQL, MongoDB, Redis |
+| 🛡️ **Seguridad** | Protección de datos y autenticación | JWT, OAuth2, Cifrado, OWASP |
+| ☁️ **Cloud** | Infraestructura en la nube | OCI (Oracle Cloud), AWS, Servidores |
+
+---
+
+## 🚀 ¿Cómo se ejecuta todo junto? (Auto-Healing & Docker)
+
+Para evitar instalar Java, Python y PostgreSQL por separado, el proyecto cuenta con **Docker Compose** y un script automático denominado **`setup.py`**:
+
+Con un solo comando:
+```powershell
+python setup.py --docker
+```
+El sistema automáticamente:
+1. Verifica si existen los modelos de Inteligencia Artificial (si no están, los entrena e instala en 2 segundos).
+2. Construye los 4 contenedores de forma aislada.
+3. Levanta la pantalla web en **[http://localhost:5173](http://localhost:5173)** lista para usar.
+
+---
+
+## 👥 Resumen del Trabajo en Equipo
+
+* 🟣 **Data Science & ML (Ernesto & Leandro & Rómulo):** Entrenamiento del modelo NLP, vectorización TF-IDF, dataset de 221 registros, microservicio FastAPI y scripts de auto-healing.
+* 🔵 **Backend Java (Sergio, Andrés, Noelia, Camila):** Desarrollo de la API REST Spring Boot, controladores transaccionales, migraciones Flyway y persistencia.
+* 🎨 **Frontend UI & Fullstack (Ernesto):** Diseño Cyber AI Dark Mode en TailwindCSS, consumo de APIs y modal de historial.
+* 🧪 **QA & Testing (Federico & Assistant):** Suite automatizada de pruebas E2E, matrices de validación y reportes de resiliencia.
+
+---
+
+## 💡 En resumen
+
+> **TechMind es un asistente inteligente que organiza tus notas y lecturas técnicas en segundos. Lee el contenido, descubre su tema principal, extrae las palabras clave y lo guarda en tu historial automáticamente.**
