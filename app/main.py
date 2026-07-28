@@ -63,14 +63,32 @@ def extraer_keywords(texto_limpio: str, top_n: int = 5) -> list:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global vectorizer, modelo
-    model_path = os.getenv("MODEL_PATH", "./")
+    
+    # Búsqueda inteligente de rutas para los archivos .joblib
+    env_path = os.getenv("MODEL_PATH")
+    possible_paths = [
+        env_path,
+        os.path.join("data-science", "models"),
+        os.path.join("..", "data-science", "models"),
+        "./"
+    ]
+    
+    model_path = None
+    for p in possible_paths:
+        if p and os.path.exists(os.path.join(p, "tfidf_vectorizer.joblib")):
+            model_path = p
+            break
+            
+    if not model_path:
+        model_path = env_path or os.path.join("data-science", "models")
+
     try:
         vectorizer = joblib.load(os.path.join(model_path, "tfidf_vectorizer.joblib"))
         modelo     = joblib.load(os.path.join(model_path, "modelo_clasificador.joblib"))
-        print("✅  Modelos cargados correctamente")
+        print(f"✅  Modelos cargados correctamente desde '{model_path}'")
     except FileNotFoundError as e:
-        print(f"❌  No se encontraron los .joblib: {e}")
-        print("    Ejecutá el notebook TechMind_DataScience.ipynb para generarlos.")
+        print(f"❌  No se encontraron los .joblib en '{model_path}': {e}")
+        print("    Verificá que la carpeta data-science/models/ contenga los archivos .joblib.")
         raise
     init_db()
     yield

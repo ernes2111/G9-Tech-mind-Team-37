@@ -227,8 +227,11 @@ def start_services():
 
     cmd_uvicorn = [VENV_UVICORN, "app.main:app", "--reload", "--port", "8000"]
 
+    env = os.environ.copy()
+    env["MODEL_PATH"] = os.path.join("data-science", "models")
+
     try:
-        subprocess.run(cmd_uvicorn)
+        subprocess.run(cmd_uvicorn, env=env)
     except KeyboardInterrupt:
         print("\n\n  🛑 Microservicio FastAPI detenido por el usuario.")
         sys.exit(0)
