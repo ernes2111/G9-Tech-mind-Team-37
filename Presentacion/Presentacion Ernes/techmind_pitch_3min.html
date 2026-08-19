@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMind — Pitch 4:30</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#141F3A; --grid:#2A3B60; --grid-bg:rgba(148,163,196,0.05);
+    --cyan:#4FD1C5; --amber:#F2B705; --text:#E8ECF3; --dim:#AEB9CE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ width:100%; height:100%; background:var(--bg); color:var(--text); font-family:'Inter', sans-serif; overflow:hidden; }
+  .viewport{ position:relative; width:100vw; height:100vh; overflow:hidden; }
+  .world{
+    position:absolute; top:0; left:0; width:500vw; height:100vh;
+    background-image: linear-gradient(var(--grid-bg) 1px, transparent 1px), linear-gradient(90deg, var(--grid-bg) 1px, transparent 1px);
+    background-size:48px 48px;
+    transition: transform 900ms cubic-bezier(0.65,0,0.15,1);
+  }
+  .slide{ position:absolute; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; padding: 6vh 8vw; }
+  .card{ max-width:940px; width:100%; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:clamp(17px, 1.8vw, 21px); letter-spacing:0.1em; color:var(--cyan); text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .eyebrow::before{ content:''; width:7px; height:7px; border-radius:50%; background:var(--cyan); display:inline-block; flex:none; }
+  h1{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(40px, 6vw, 72px); line-height:1.05; margin-bottom:18px; letter-spacing:-0.01em; }
+  h2{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:clamp(28px, 3.5vw, 38px); margin-bottom:20px; line-height:1.15; }
+  p.lead{ font-size:clamp(18px, 1.9vw, 22px); color:var(--dim); line-height:1.6; max-width:640px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:stretch; }
+  .stat-card{ background:var(--panel); border:1px solid var(--grid); border-radius:10px; padding:20px 22px; }
+  .stat-card h3{ font-family:'Space Grotesk', sans-serif; font-size:17px; color:var(--cyan); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.06em; }
+  .stat-card p{ font-size:17px; color:var(--text); line-height:1.55; }
+  .sources{ display:flex; gap:20px; margin-top:22px; flex-wrap:wrap; }
+  .source-icon{ display:flex; flex-direction:column; align-items:center; gap:6px; width:64px; }
+  .source-icon svg{ width:26px; height:26px; stroke:var(--cyan); fill:none; stroke-width:1.6; }
+  .source-icon span{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--dim); text-align:center; }
+  .arch--vertical{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .arch--vertical .arch-arrow{ transform:rotate(90deg); padding:2px 0; }
+  .arch-box{ background:var(--panel); border:1px solid var(--grid); border-radius:9px; width:200px; height:66px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:'IBM Plex Mono', monospace; font-size:16px; }
+  .arch-box .top{ color:var(--cyan); font-size:13px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  .arch-arrow{ color:var(--amber); font-size:18px; padding:0 8px; }
+  .big-stats{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:8px; }
+  .big-stat{ background:var(--panel); border:1px solid var(--grid); border-radius:10px; padding:24px; text-align:center; }
+  .big-stat .num{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(38px,4.5vw,52px); color:var(--cyan); line-height:1; }
+  .big-stat .cap{ font-size:15px; color:var(--dim); margin-top:8px; }
+  .benefit-list{ list-style:none; display:grid; gap:12px; margin-top:16px; }
+  .benefit-list li{ font-size:15px; color:var(--text); line-height:1.5; padding-left:16px; position:relative; }
+  .benefit-list li::before{ content:'·'; position:absolute; left:0; color:var(--amber); font-weight:700; }
+  .team-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .team-card{ background:var(--panel); border:1px solid var(--grid); border-radius:8px; padding:14px 16px; }
+  .team-card h4{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--cyan); text-transform:uppercase; margin-bottom:8px; }
+  .team-card ul{ list-style:none; display:grid; gap:4px; }
+  .team-card li{ font-size:15px; color:var(--text); line-height:1.5; padding-left:12px; position:relative; }
+  .team-card li::before{ content:'·'; position:absolute; left:0; color:var(--amber); }
+  .cierre-layout{ display:grid; grid-template-columns:1.3fr 1fr; gap:44px; align-items:stretch; }
+  .qr-box{ background:var(--panel); border:1px solid var(--grid); border-radius:12px; padding:22px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; }
+  .qr-box #qrcanvas{ background:#fff; padding:10px; border-radius:8px; display:inline-block; }
+  .qr-box p{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--dim); margin-top:12px; }
+  /* Navegación */
+  .nav-btn{ position:fixed; top:50%; transform:translateY(-50%); background:rgba(20,31,58,0.7); border:1px solid var(--grid); color:var(--text); font-size:28px; width:44px; height:60px; cursor:pointer; border-radius:8px; z-index:100; display:flex; align-items:center; justify-content:center; transition: background 200ms, opacity 200ms; backdrop-filter:blur(6px); }
+  .nav-btn:hover{ background:var(--panel); }
+  .nav-btn:disabled{ opacity:0.2; cursor:default; }
+  #prevBtn{ left:16px; }
+  #nextBtn{ right:16px; }
+  .tracker{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; gap:12px; z-index:100; }
+  .node{ width:9px; height:9px; border-radius:50%; background:var(--grid); cursor:pointer; border:none; transition: background 250ms, transform 250ms; }
+  .node.active{ background:var(--cyan); transform:scale(1.5); }
+  .node.done{ background:var(--dim); }
+  .kicker-logo{ position:fixed; top:24px; left:32px; font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:34px; letter-spacing:-0.01em; z-index:10; }
+  .kicker-logo span{ color:var(--cyan); }
+  /* Slide demo */
+  .demo-slide{ flex-direction:column; background:radial-gradient(ellipse at 50% 40%, rgba(79,209,197,0.07) 0%, transparent 65%); }
+  .demo-badge{ font-family:'IBM Plex Mono', monospace; font-size:clamp(11px,1.1vw,13px); letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); border:1px solid var(--amber); border-radius:40px; padding:6px 18px; margin-bottom:32px; display:inline-block; }
+  .demo-title{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(52px,8vw,96px); line-height:1; letter-spacing:-0.02em; text-align:center; margin-bottom:20px; }
+  .demo-title span{ color:var(--cyan); }
+  .demo-sub{ font-size:clamp(16px,1.7vw,20px); color:var(--dim); text-align:center; margin-bottom:48px; max-width:520px; }
+  .demo-steps{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .demo-step{ background:var(--panel); border:1px solid var(--grid); border-radius:10px; padding:14px 20px; font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--dim); display:flex; align-items:center; gap:10px; }
+  .demo-step .num{ color:var(--amber); font-weight:700; font-size:15px; min-width:20px; }
+  .node.demo-node.active{ background:var(--amber); box-shadow:0 0 0 4px rgba(242,183,5,0.25); animation:pulse-amber 1.6s ease-in-out infinite; }
+  @keyframes pulse-amber{ 0%,100%{ box-shadow:0 0 0 4px rgba(242,183,5,0.25); } 50%{ box-shadow:0 0 0 8px rgba(242,183,5,0.08); } }
+  /* Cierre */
+  .cierre-frase{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(30px,4vw,46px); line-height:1.12; letter-spacing:-0.015em; margin-bottom:20px; }
+  .cierre-frase .highlight{ color:var(--cyan); }
+  .cierre-caption{ font-size:clamp(15px,1.5vw,18px); color:var(--dim); line-height:1.6; max-width:600px; margin-bottom:28px; }
+  @media (max-width:640px){
+    .grid2,.big-stats,.team-grid,.cierre-layout{ grid-template-columns:1fr; }
+    .arch--vertical{ flex-direction:column; }
+    .demo-steps{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kicker-logo">Tech<span>Mind</span></div>
+
+<div class="viewport">
+  <div class="world" id="world">
+
+    <!-- SLIDE 1 — 0:00–0:45 | Hook + Problema -->
+    <div class="slide" style="left:0vw;">
+      <div class="card">
+        <div class="eyebrow">0:00 – 0:45 &nbsp;·&nbsp; El problema</div>
+        <h1>¿Dónde estaba ese documento?</h1>
+        <p class="lead">
+          Estudiantes, desarrolladores y equipos técnicos generan conocimiento constantemente.
+          El problema: ese conocimiento crece mucho más rápido de lo que podemos organizarlo.
+        </p>
+        <div class="sources">
+          <div class="source-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg><span>PDF</span></div>
+          <div class="source-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13l1 5 1.5-4L13 18l1-5"/></svg><span>Word</span></div>
+          <div class="source-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><span>Apuntes</span></div>
+          <div class="source-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>Tutoriales</span></div>
+          <div class="source-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Docs</span></div>
+        </div>
+        <p style="margin-top:28px; font-family:'IBM Plex Mono', monospace; font-size:clamp(14px,1.4vw,17px); color:var(--text); max-width:680px; line-height:1.65; border-left:3px solid var(--cyan); padding-left:18px;">
+          ¿Cómo transformamos todo ese contenido técnico disperso en conocimiento que podamos encontrar, entender y reutilizar fácilmente?
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 — 0:45–1:30 | Propuesta de valor -->
+    <div class="slide" style="left:100vw;">
+      <div class="card">
+        <div class="eyebrow">0:45 – 1:30 &nbsp;·&nbsp; Propuesta de valor</div>
+        <h2>Del contenido al conocimiento</h2>
+        <p class="lead" style="margin-bottom:28px;">
+          TechMind organiza automáticamente contenido técnico usando <strong style="color:var(--text);">Ciencia de Datos</strong>.
+          Sin catalogar manualmente. Sin perder tiempo buscando.
+        </p>
+        <div class="grid2">
+          <div class="stat-card">
+            <h3>¿Qué hace?</h3>
+            <p>El usuario sube un PDF o Word. TechMind analiza el contenido e identifica automáticamente <strong style="color:var(--cyan);">tema, nivel de confianza y palabras clave</strong>.</p>
+          </div>
+          <div class="stat-card">
+            <h3>¿Para quién?</h3>
+            <p>Estudiantes, profesionales y organizaciones que quieren transformar documentos dispersos en una <strong style="color:var(--cyan);">base de conocimiento organizada</strong>.</p>
+          </div>
+        </div>
+        <p style="margin-top:24px; font-family:'IBM Plex Mono', monospace; font-size:clamp(13px,1.3vw,15px); color:var(--amber);">
+          En lugar de una carpeta llena de archivos → una base de conocimiento organizada automáticamente.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 — 1:30–3:10 | Demo en vivo -->
+    <div class="slide demo-slide" style="left:200vw;">
+      <div class="demo-badge">1:30 – 3:10 &nbsp;·&nbsp; Demo en vivo</div>
+      <div class="demo-title">Veamos cómo<br>funciona <span>TechMind</span></div>
+      <p class="demo-sub">Vamos a importar un documento técnico real y ver el sistema en acción.</p>
+      <div class="demo-steps">
+        <div class="demo-step"><span class="num">01</span>Importar PDF / DOCX</div>
+        <div class="demo-step"><span class="num">02</span>Clasificar con TechMind</div>
+        <div class="demo-step"><span class="num">03</span>Ver resultado + confianza</div>
+        <div class="demo-step"><span class="num">04</span>Historial y búsqueda</div>
+        <div class="demo-step"><span class="num">05</span>Analytics de la base</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 — 3:10–4:10 | Arquitectura + Desafíos -->
+    <div class="slide" style="left:300vw;">
+      <div class="card" style="max-width:1060px;">
+        <div class="eyebrow">3:10 – 4:10 &nbsp;·&nbsp; Arquitectura y desafíos</div>
+        <div style="display:grid; grid-template-columns:auto 1fr; align-items:center; gap:48px;">
+          <div class="arch--vertical">
+            <div class="arch-box"><div class="top">Pantalla</div>Interfaz web</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box"><div class="top">Recepcionista</div>Spring Boot</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box"><div class="top">Experto IA</div>FastAPI · ML</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box"><div class="top">Archivo</div>PostgreSQL</div>
+          </div>
+          <div>
+            <h2 style="margin-bottom:16px;">Sistema completo,<br>listo para producción</h2>
+            <div class="big-stats" style="margin-bottom:20px;">
+              <div class="big-stat">
+                <div class="num">90,38%</div>
+                <div class="cap">Accuracy en prueba</div>
+              </div>
+              <div class="big-stat">
+                <div class="num">8</div>
+                <div class="cap">Categorías técnicas</div>
+              </div>
+            </div>
+            <ul class="benefit-list">
+              <li>Resolvimos integración, persistencia y rendimiento bajo carga real</li>
+              <li>Detectamos y corregimos agotamiento de conexiones de BD bajo carga</li>
+              <li>Múltiples ciclos de QA con casos documentados y correcciones reales</li>
+              <li>Contenerizado y desplegado en <strong style="color:var(--cyan);">Oracle Cloud (OCI)</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 — 4:10–4:40 | Cierre memorable -->
+    <div class="slide" style="left:400vw;">
+      <div class="card">
+        <div class="eyebrow">Cierre</div>
+        <div class="cierre-layout">
+          <div>
+            <div class="cierre-frase">
+              Convertir contenido técnico<br>en
+              <span class="highlight">conocimiento organizado.</span>
+            </div>
+            <p class="cierre-caption">
+              El valor no está solamente en tener información.<br>
+              Está en poder <strong style="color:var(--text);">encontrarla, entenderla y reutilizarla</strong> cuando realmente la necesitamos.
+            </p>
+            <div class="team-grid">
+              <div class="team-card"><h4>Ciencia de Datos</h4><ul><li>Leandro Villamil</li><li>Ernesto Llampa</li><li>Romulo Garcia Maygua</li></ul></div>
+              <div class="team-card"><h4>Back-End</h4><ul><li>Andres Felipe Rojas</li><li>Noelia Rementeria</li><li>Camila Fagina</li><li>Sergio Pablo Vilte</li></ul></div>
+              <div class="team-card"><h4>QA</h4><ul><li>Federico Gutierrez</li></ul></div>
+              <div class="team-card"><h4>Nube (OCI)</h4><ul><li>Todo el equipo</li></ul></div>
+            </div>
+          </div>
+          <div class="qr-box">
+            <div id="qrcanvas"></div>
+            <p>Probá TechMind en vivo<br><span id="qrurl" style="color:var(--cyan);">completar URL</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="nav-btn" id="prevBtn">&#8249;</button>
+<button class="nav-btn" id="nextBtn">&#8250;</button>
+<div class="tracker" id="tracker"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  const PROJECT_URL = "http://147.15.127.238:5173";
+  document.getElementById('qrurl').textContent = PROJECT_URL.replace(/^https?:\/\//,'');
+  new QRCode(document.getElementById("qrcanvas"), {
+    text: PROJECT_URL, width: 140, height: 140,
+    colorDark: "#0B1220", colorLight: "#ffffff"
+  });
+
+  const slides   = document.querySelectorAll('.slide');
+  const world    = document.getElementById('world');
+  const tracker  = document.getElementById('tracker');
+  const prevBtn  = document.getElementById('prevBtn');
+  const nextBtn  = document.getElementById('nextBtn');
+  const DEMO_IDX = 2;
+  let current    = 0;
+  const LABELS   = ['Hook + Problema','Propuesta de valor','Demo en vivo','Arquitectura y desafíos','Cierre'];
+
+  slides.forEach((s, i) => {
+    const wrap = document.createElement('div');
+    const btn  = document.createElement('button');
+    btn.className = 'node' + (i === DEMO_IDX ? ' demo-node' : '');
+    btn.title = LABELS[i] || '';
+    btn.addEventListener('click', () => goTo(i));
+    wrap.appendChild(btn);
+    tracker.appendChild(wrap);
+  });
+
+  function render(){
+    world.style.transform = `translateX(-${current*100}vw)`;
+    document.querySelectorAll('.node').forEach((n, i) => {
+      n.classList.toggle('active', i === current);
+      n.classList.toggle('done',   i < current);
+    });
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+  }
+  function goTo(i){ current = Math.max(0, Math.min(slides.length-1, i)); render(); }
+  prevBtn.addEventListener('click', () => goTo(current-1));
+  nextBtn.addEventListener('click', () => goTo(current+1));
+  window.addEventListener('keydown', e => {
+    if(['ArrowRight','ArrowDown',' '].includes(e.key)){ e.preventDefault(); goTo(current+1); }
+    if(['ArrowLeft','ArrowUp'].includes(e.key)){ e.preventDefault(); goTo(current-1); }
+  });
+  render();
+</script>
+</body>
+</html>
