@@ -1,7 +1,7 @@
 # REQUIREMENTS — TechMind · Ciencia de Datos
 
 > Dependencias, versiones y pasos de instalación del componente de Ciencia de Datos.
-> Última actualización: 2026-07-17.
+> Última actualización: 2026-07-30.
 
 ---
 
@@ -30,7 +30,7 @@ source venv/bin/activate        # macOS / Linux
 pip install -r requirements.txt
 
 # 3. Verificar
-python3 -c "import pandas, sklearn, matplotlib, seaborn, joblib; print('OK')"
+python3 -c "import pandas, sklearn, matplotlib, seaborn, joblib, fastapi, psycopg2; print('OK')"
 ```
 
 ---
@@ -49,6 +49,12 @@ python3 -c "import pandas, sklearn, matplotlib, seaborn, joblib; print('OK')"
 | **seaborn** | ≥ 0.13.0 | Gráficos estadísticos (`countplot`, `heatmap`) sobre las visualizaciones de matplotlib |
 | **notebook** | ≥ 7.0.0 | Entorno Jupyter para ejecutar `TechMind_DataScience.ipynb` |
 | **ipykernel** | ≥ 6.29.0 | Kernel Python dentro de Jupyter |
+| **fastapi** | ≥ 0.111.0 | Framework del microservicio de inferencia (`app/main.py`) |
+| **uvicorn[standard]** | ≥ 0.29.0 | Servidor ASGI para correr FastAPI |
+| **psycopg2-binary** | ≥ 2.9.9 | Driver de conexión a PostgreSQL desde Python |
+| **python-dotenv** | ≥ 1.0.0 | Carga de variables de entorno desde `.env` |
+| **pdfplumber** | ≥ 0.11.0 | Extracción de texto de archivos PDF para ingesta de documentos |
+| **python-docx** | ≥ 1.1.0 | Extracción de texto de archivos `.docx` para ingesta de documentos |
 
 ### 🐍 Módulos de la stdlib (incluidos en Python, sin instalar)
 
@@ -71,24 +77,26 @@ Estos archivos **no se instalan** — se generan localmente al correr el noteboo
 | `tfidf_vectorizer.joblib` | Vectorizador TF-IDF entrenado | FastAPI al recibir un texto nuevo |
 | `modelo_clasificador.joblib` | Clasificador de Regresión Logística entrenado | FastAPI para predecir categoría |
 
-> ⚠️ **Importante:** `tfidf_vectorizer.joblib` y `modelo_clasificador.joblib` deben subirse a
-> OCI Object Storage para que el Back-End (Java / Spring Boot) pueda acceder a ellos.
-> Ver el ROADMAP (ítem DS-003b) para los pasos de subida.
+> ✅ **Los archivos `.joblib` se incluyen en el repositorio** bajo `data-science/models/` y están trackeados por Git.
+> Si por alguna razón no existen, se pueden regenerar en ~2 segundos ejecutando:
+> ```bash
+> python data-science/src/generate_models.py
+> ```
+> El script `setup.py` también los genera automáticamente si detecta que faltan al iniciar.
 
 ---
 
-## Dependencias opcionales (no instaladas aún)
+## Dependencias opcionales (no instaladas — ROADMAP futuro)
 
 Estas dependencias corresponden a funcionalidades del ROADMAP que aún no están implementadas:
 
 | Paquete | Versión sugerida | Para qué se necesitaría |
 |---------|-----------------|-------------------------|
-| `nltk` | ≥ 3.8 | Stopwords en español más completas (DS-002 del ROADMAP) |
-| `spacy` + `es_core_news_sm` | ≥ 3.7 | Alternativa avanzada para preprocesamiento (DS-002) |
-| `sentence-transformers` | ≥ 2.7 | Búsqueda semántica con embeddings (DS-006) |
-| `eli5` o `lime` | ≥ 0.13 / ≥ 0.11 | Explicabilidad del modelo (DS-008) |
-| `oci` | ≥ 2.120 | SDK oficial de Oracle Cloud para subir artefactos a OCI Object Storage (DS-003b) |
-| `fastapi` + `uvicorn` | ≥ 0.111 / ≥ 0.29 | Microservicio Python de inferencia (opción arquitectónica alternativa al Java) |
+| `nltk` | ≥ 3.8 | Stopwords en español más completas (MEJORA-DS-002) |
+| `spacy` + `es_core_news_sm` | ≥ 3.7 | Alternativa avanzada para preprocesamiento (MEJORA-DS-002) |
+| `sentence-transformers` | ≥ 2.7 | Búsqueda semántica con embeddings (MEJORA-DS-006) |
+| `eli5` o `lime` | ≥ 0.13 / ≥ 0.11 | Explicabilidad del modelo (MEJORA-DS-007) |
+| `oci` | ≥ 2.120 | SDK oficial de Oracle Cloud para subir artefactos a OCI Object Storage (MEJORA-OCI-001) |
 
 ---
 
@@ -100,7 +108,7 @@ Estas dependencias corresponden a funcionalidades del ROADMAP que aún no están
 | **Google Colab** | ✅ | Subir el notebook; configurar las variables de entorno apuntando a una PostgreSQL accesible |
 | **VS Code + extensión Jupyter** | ✅ | Seleccionar el intérprete del virtualenv |
 | **pip + venv** | ✅ | Flujo estándar descrito arriba |
-| **conda** | ✅ | `conda install pandas scikit-learn matplotlib seaborn joblib notebook` |
+| **conda** | ✅ | `conda install pandas scikit-learn matplotlib seaborn joblib notebook` + pip para el resto |
 | **Python < 3.10** | ❌ | No garantizado; se usan type hints modernos |
 | **Python 2.x** | ❌ | No compatible |
 
@@ -120,6 +128,9 @@ requeridos = {
     "joblib":      "1.3.0",
     "matplotlib":  "3.8.0",
     "seaborn":     "0.13.0",
+    "fastapi":     "0.111.0",
+    "psycopg2":    "2.9.9",
+    "dotenv":      "1.0.0",   # importado como dotenv, instalado como python-dotenv
 }
 
 print(f"Python {sys.version}\n")
@@ -135,4 +146,4 @@ for mod, minver in requeridos.items():
 
 ---
 
-*Mantenido por el equipo de Ciencia de Datos — TechMind G9 LATAM Team 37.*
+*Mantenido por el equipo de Ciencia de Datos — TechMind G9 LATAM Team 37. Última actualización: 2026-07-30.*

@@ -11,7 +11,7 @@ al menos una vez, porque Flyway (Spring Boot) es quien crea las tablas
 con el schema correcto (BIGSERIAL para id, sin columna categoria, etc.).
 
     1. docker-compose up -d                      # PostgreSQL
-    2. cd backend/api/api && ./mvnw spring-boot:run  # Flyway crea tablas
+    2. cd backend/api && ./mvnw spring-boot:run  # Flyway crea tablas
     3. python3 data-science/src/migrate_to_postgres.py  # inserta datos
     4. uvicorn app.main:app --port 8000          # FastAPI
 
@@ -71,7 +71,7 @@ if not tabla_existe:
     print("")
     print("   Orden correcto:")
     print("   1. docker-compose up -d")
-    print("   2. cd backend/api/api && ./mvnw spring-boot:run  (esperar inicio)")
+    print("   2. cd backend/api && ./mvnw spring-boot:run  (esperar inicio)")
     print("   3. python3 data-science/src/migrate_to_postgres.py")
     print("   4. uvicorn app.main:app --port 8000")
     pg_cur.close()

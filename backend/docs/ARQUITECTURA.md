@@ -134,6 +134,12 @@ spring.flyway.baseline-on-migrate=true
 
 # URL del microservicio FastAPI
 techmind.ds.api.url=http://localhost:8000
+
+# Spring Boot Actuator — solo expone /actuator/health
+management.endpoints.web.exposure.include=health
+management.endpoint.health.show-details=never
+management.endpoints.web.cors.allowed-origins=*
+management.endpoints.web.cors.allowed-methods=GET
 ```
 
 ### `docker-compose.yml`
@@ -154,6 +160,23 @@ Levanta un contenedor PostgreSQL 16 Alpine con:
 2. Se conecta a PostgreSQL :5432
 3. Flyway ejecuta migraciones pendientes (V1__create_tables.sql)
 4. Hibernate valida que el esquema coincida con las entidades JPA
-5. Se registran los beans (Controller, Service, Repositories, Config)
+5. Se registran los beans (Controller, Service, Repositories, Config, Actuator)
 6. La aplicación está lista en :8080
+   - POST /contenido         → clasificación de contenido
+   - GET  /actuator/health   → health check del servicio
 ```
+
+---
+
+## Endpoint de Health Check
+
+**URL:** `GET http://localhost:8080/actuator/health`
+
+Proveído por `spring-boot-starter-actuator`. El frontend lo consulta al cargar la página para mostrar el estado del servicio en tiempo real.
+
+**Respuesta cuando el servicio está operativo (HTTP 200):**
+```json
+{ "status": "UP" }
+```
+
+> **Nota:** Configurado con `show-details=never` para no exponer información interna del servidor. Solo se expone el endpoint `health` (no métricas, no info, no env).

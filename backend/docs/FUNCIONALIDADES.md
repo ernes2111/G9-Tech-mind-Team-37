@@ -6,7 +6,7 @@ TechMind expone una única API REST que recibe contenidos textuales, los clasifi
 
 ---
 
-## Endpoint Disponible
+## Endpoints Disponibles
 
 ### `POST /contenido` — Clasificar Contenido
 
@@ -163,6 +163,25 @@ CREATE INDEX idx_predicciones_contenido_id ON predicciones(contenido_id);
 ## Restricciones y Comportamiento Actual
 
 - **Sin autenticación ni autorización**: Cualquier cliente puede usar el endpoint.
-- **Sin endpoints GET**: No existe consulta histórica de predicciones por API REST.
+- **Sin endpoints GET de clasificación**: No existe consulta histórica de predicciones por la API de Spring Boot (el historial se consulta directamente a FastAPI vía `/predicciones`).
 - **Solo clasificación sincrónica**: El cliente espera hasta recibir la respuesta del modelo ML.
 - **Timeouts fijos**: 5s de conexión y 10s de lectura hacia FastAPI. Si el modelo tarda más, la petición falla.
+
+---
+
+## Endpoint de Monitoreo
+
+### `GET /actuator/health` — Health Check
+
+Proveído por `spring-boot-starter-actuator`. Permite verificar que el servicio está operativo sin necesidad de ejecutar una clasificación real.
+
+**URL:** `http://localhost:8080/actuator/health`  
+**Método:** `GET`  
+**Autenticación:** Ninguna
+
+**Respuesta (HTTP 200 — servicio activo):**
+```json
+{ "status": "UP" }
+```
+
+> Este endpoint es consumido por el frontend al cargar la página para actualizar el indicador LED de estado de Spring Boot en la UI.

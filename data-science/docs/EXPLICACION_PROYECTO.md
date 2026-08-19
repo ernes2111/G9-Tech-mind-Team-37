@@ -56,8 +56,8 @@ TechMind está formado por **cuatro componentes que trabajan en equipo**, conect
 
 | Componente | ¿Qué tecnología usa? | ¿Cuál es su trabajo en simple? |
 |---|---|---|
-| 🎨 **1. Interfaz Web (Frontend)** | HTML5, JavaScript Vanilla, TailwindCSS Dark Mode | Es la pantalla donde interactuás. Mostrás el formulario, los botones neón con efecto de vidrio (Glassmorphism), los badges de palabras clave y el historial modal. |
-| ☕ **2. Backend (Spring Boot)** | Java 17, Spring Boot, JPA, Flyway | Es el "cerebro orquestador". Recibe tu petición desde la web, gestiona las transacciones, le pide la inferencia al modelo de IA y coordina el guardado en la base de datos. |
+| 🎨 **1. Interfaz Web (Frontend)** | HTML5, JavaScript Vanilla, TailwindCSS Dark Mode | Es la pantalla donde interactúas. Mostrás el formulario, los botones neón con efecto de vidrio (Glassmorphism), los badges de palabras clave, el historial y los indicadores LED en tiempo real del estado de cada servicio. |
+| ☕ **2. Backend (Spring Boot)** | Java 17, Spring Boot 4.x, JPA, Flyway, Actuator | Es el "cerebro orquestador". Recibe tu petición desde la web, gestiona las transacciones, le pide la inferencia al modelo de IA y coordina el guardado en la base de datos. Expone `/actuator/health` para que el frontend sepa si está activo. |
 | 🤖 **3. Ciencia de Datos (FastAPI)** | Python 3.12, FastAPI, Scikit-Learn | Es la "inteligencia artificial". Recibe el texto, lo convierte en números, calcula a qué categoría pertenece y extrae las palabras más importantes. |
 | 🗄️ **4. Base de Datos** | PostgreSQL 16 | Es la "memoria central". Guarda todos los artículos ingresados y sus resultados de forma segura para que puedas ver tu historial en cualquier momento. |
 
@@ -132,10 +132,10 @@ El sistema automáticamente:
 
 ## 👥 Resumen del Trabajo en Equipo
 
-* 🟣 **Data Science & ML (Ernesto & Leandro & Rómulo):** Entrenamiento del modelo NLP, vectorización TF-IDF, dataset de 221 registros, microservicio FastAPI y scripts de auto-healing.
+* 🟣 **Data Science & ML (Ernesto, Leandro & Rómulo):** Entrenamiento del modelo NLP, vectorización TF-IDF, dataset de 221 registros, microservicio FastAPI y scripts de auto-healing.
 * 🔵 **Backend Java (Sergio, Andrés, Noelia, Camila):** Desarrollo de la API REST Spring Boot, controladores transaccionales, migraciones Flyway y persistencia.
-* 🎨 **Frontend UI & Fullstack (Ernesto):** Diseño Cyber AI Dark Mode en TailwindCSS, consumo de APIs y modal de historial.
-* 🧪 **QA & Testing (Federico & Assistant):** Suite automatizada de pruebas E2E, matrices de validación y reportes de resiliencia.
+* 🎨 **Frontend UI & Fullstack (Ernesto):** Diseño Cyber AI Dark Mode en TailwindCSS, consumo de APIs, indicadores de estado en tiempo real y modal de historial.
+* 🧪 **QA & Testing (Federico):** Suite automatizada de pruebas E2E, matrices de validación y reportes de resiliencia.
 
 ---
 

@@ -119,13 +119,67 @@ def install_deps():
 
 def setup_env():
     header(4, "Configurando variables de entorno (.env)")
-    if os.path.exists(".env"):
-        ok("El archivo .env ya existe — omitiendo copia")
-        return
-    if not os.path.exists(".env.example"):
-        fail("No se encontró .env.example en la raíz del proyecto.")
-    shutil.copy(".env.example", ".env")
-    ok(".env creado a partir de .env.example (Configuración local lista)")
+    if not os.path.exists(".env"):
+        if not os.path.exists(".env.example"):
+            fail("No se encontró .env.example en la raíz del proyecto.")
+        shutil.copy(".env.example", ".env")
+
+    with open(".env", "r", encoding="utf-8") as f:
+        env_content = f.read()
+
+    admin_user = "admin"
+    admin_pass = "admin123"
+
+    # Si estamos en terminal interactiva, solicitar credenciales al usuario
+    if sys.stdin.isatty():
+        print("\n  🔐 Configuración de cuenta Administrador:")
+        try:
+            u_input = input("     Ingrese usuario administrador [admin]: ").strip()
+            if u_input:
+                admin_user = u_input
+
+            p_input = input("     Ingrese contraseña administrador [admin123]: ").strip()
+            if p_input:
+                admin_pass = p_input
+        except (KeyboardInterrupt, EOFError):
+            print()
+            pass
+        except Exception:
+            pass
+
+    # Actualizar o insertar ADMIN_USER, ADMIN_PASSWORD y JWT_SECRET en .env
+    lines = env_content.splitlines()
+    updated_user = False
+    updated_pass = False
+    updated_jwt = False
+    new_lines = []
+
+    for line in lines:
+        if line.startswith("ADMIN_USER="):
+            new_lines.append(f"ADMIN_USER={admin_user}")
+            updated_user = True
+        elif line.startswith("ADMIN_PASSWORD="):
+            new_lines.append(f"ADMIN_PASSWORD={admin_pass}")
+            updated_pass = True
+        elif line.startswith("JWT_SECRET="):
+            new_lines.append(line)
+            updated_jwt = True
+        else:
+            new_lines.append(line)
+
+    if not updated_user:
+        new_lines.append(f"ADMIN_USER={admin_user}")
+    if not updated_pass:
+        new_lines.append(f"ADMIN_PASSWORD={admin_pass}")
+    if not updated_jwt:
+        new_lines.append("JWT_SECRET=supersecret_techmind_token_2026")
+
+    with open(".env", "w", encoding="utf-8") as f:
+        f.write("\n".join(new_lines) + "\n")
+
+    ok(f"Credenciales de administrador listas en .env (Usuario: '{admin_user}')")
+
+
 
 
 # ─── Paso 5 — Docker / PostgreSQL ────────────────────────────────────────────
@@ -151,7 +205,7 @@ def start_docker():
 
     # Levantar el contenedor de PostgreSQL
     info("Levantando contenedor techmind-postgres (Puerto 5432) ...")
-    result = run("docker-compose up -d postgres")
+    result = run("docker compose up -d postgres")
     if result.returncode != 0:
         info("Intentando iniciar contenedor existente 'techmind-postgres'...")
         result = run("docker start techmind-postgres", capture_output=True)
@@ -216,13 +270,13 @@ def start_services():
     print(" ║                  🚀 PROYECTO TECHMIND LISTO Y EN EJECUCIÓN          ║")
     print(" ╠═════════════════════════════════════════════════════════════════════╣")
     print(" ║  🎨 Frontend Web UI (Stitch UI):   http://localhost:5173            ║")
-    print(" ║  🤖 Microservicio FastAPI ML:   http://localhost:8000            ║")
-    print(" ║  ☕ API Spring Boot (Backend):  http://localhost:8080            ║")
-    print(" ║  📖 Documentación Swagger:      http://localhost:8000/docs       ║")
+    print(" ║  🤖 Microservicio FastAPI ML:   http://localhost:8000               ║")
+    print(" ║  ☕ API Spring Boot (Backend):  http://localhost:8080               ║")
+    print(" ║  📖 Documentación Swagger:      http://localhost:8000/docs          ║")
     print(" ╚═════════════════════════════════════════════════════════════════════╝")
     print()
     info("Para conectar el backend Java de Spring Boot:")
-    print("  En otra terminal ejecutá: cd backend/api/api && ./mvnw spring-boot:run\n")
+    print("  En otra terminal ejecutá: cd backend/api && ./mvnw spring-boot:run\n")
     print("  Para detener la API de Python: Presioná CTRL + C\n")
 
     cmd_uvicorn = [VENV_UVICORN, "app.main:app", "--reload", "--port", "8000"]
@@ -287,15 +341,15 @@ def reset_docker_volumes():
 
         if answer in ("s", "si", "sí", "y", "yes"):
             info("Deteniendo contenedores y eliminando volumen...")
-            run("docker-compose --profile full down -v")
+            run("docker compose --profile full down -v")
             ok("Volumen eliminado. Flyway creará el schema correcto desde cero.")
         else:
             warn("Continuando sin limpiar el volumen. Si Spring Boot falla, ejecutá:")
-            warn("  docker-compose --profile full down -v")
+            warn("  docker compose --profile full down -v")
             warn("  python setup.py --docker")
     else:
         # Primera vez: bajar contenedores por las dudas
-        run("docker-compose --profile full down")
+        run("docker compose --profile full down")
 
 
 
@@ -332,7 +386,7 @@ def run_full_docker():
     # 3. Build y arranque del stack completo
     print()
     info("Compilando y levantando PostgreSQL + FastAPI + Spring Boot + Frontend en Docker...")
-    result = run("docker-compose --profile full up -d --build")
+    result = run("docker compose --profile full up -d --build")
     if result.returncode == 0:
         print()
         ok("¡Todo el stack fue dockerizado y levantado exitosamente en contenedores!")
@@ -373,9 +427,12 @@ def main():
 
     print()
     print("╔═════════════════════════════════════════════════════════════════╗")
-    print("║   🧠 TechMind — Asistente de Instalación y Arranque              ║")
+    print("║   🧠 TechMind — Asistente de Instalación y Arranque             ║")
     print("║   Hackathon G9 LATAM · Equipo 37                                ║")
     print("╚═════════════════════════════════════════════════════════════════╝")
+
+    # Configurar siempre .env primero para asegurar que existan las credenciales
+    setup_env()
 
     if args.docker:
         run_full_docker()
@@ -392,7 +449,6 @@ def main():
     check_python()
     create_venv()
     install_deps()
-    setup_env()
     start_docker()
     migrate_db()
     start_services()

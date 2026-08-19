@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMind — Presentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --panel:#101A2E;
+    --grid:#1B2740;
+    --cyan:#4FD1C5;
+    --amber:#F2B705;
+    --text:#E8ECF3;
+    --dim:#8A97AD;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    width:100%; height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow:hidden;
+  }
+  .viewport{
+    position:relative;
+    width:100vw; height:100vh;
+    overflow:hidden;
+  }
+  .world{
+    position:absolute;
+    top:0; left:0;
+    width:1000vw; height:100vh;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:48px 48px;
+    transition: transform 1000ms cubic-bezier(0.65,0,0.15,1);
+    will-change: transform;
+  }
+  .slide{
+    position:absolute;
+    width:100vw; height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 6vh 8vw;
+  }
+  .card{
+    max-width:920px;
+    width:100%;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.14em;
+    color:var(--cyan);
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px; height:1px;
+    background:var(--cyan);
+    display:inline-block;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(34px, 5.2vw, 64px);
+    line-height:1.05;
+    margin-bottom:20px;
+    letter-spacing:-0.01em;
+  }
+  h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:clamp(24px, 3vw, 34px);
+    margin-bottom:22px;
+    line-height:1.15;
+  }
+  p.lead{
+    font-size:clamp(16px, 1.6vw, 19px);
+    color:var(--dim);
+    line-height:1.6;
+    max-width:640px;
+    margin-bottom:8px;
+  }
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--bg);
+    background:var(--cyan);
+    padding:3px 10px;
+    border-radius:3px;
+    margin-top:22px;
+  }
+  ul.list{
+    list-style:none;
+    margin-top:26px;
+    display:grid;
+    gap:14px;
+  }
+  ul.list li{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    font-size:16px;
+    color:var(--text);
+    line-height:1.5;
+  }
+  ul.list li .dot{
+    flex:none;
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--amber);
+    margin-top:8px;
+  }
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:start;
+  }
+  .stat-card{
+    background:var(--panel);
+    border:1px solid var(--grid);
+    border-radius:10px;
+    padding:22px 24px;
+  }
+  .stat-card h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    color:var(--cyan);
+    margin-bottom:12px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+  .stat-card ul{ list-style:none; display:grid; gap:8px; }
+  .stat-card li{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    color:var(--text);
+  }
+  .stat-card li span{ color:var(--dim); }
+
+  /* Architecture diagram */
+  .arch{
+    display:flex;
+    align-items:center;
+    gap:0;
+    margin-top:34px;
+    flex-wrap:wrap;
+  }
+  .arch-box{
+    background:var(--panel);
+    border:1px solid var(--grid);
+    border-radius:8px;
+    padding:16px 18px;
+    min-width:150px;
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+  .arch-box .top{
+    color:var(--cyan);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .arch-arrow{
+    color:var(--amber);
+    font-size:20px;
+    padding:0 10px;
+  }
+  .sources{
+    display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;
+  }
+  .tech-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--dim);
+    margin-top:6px;
+    display:block;
+  }
+  .analogy{
+    background:var(--panel);
+    border-left:2px solid var(--amber);
+    border-radius:0 6px 6px 0;
+    padding:12px 16px;
+    margin-top:20px;
+    font-size:14px;
+    color:var(--dim);
+    line-height:1.6;
+    max-width:600px;
+  }
+  .analogy b{ color:var(--text); }
+  .source-chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--dim);
+    border:1px dashed var(--grid);
+    padding:5px 10px;
+    border-radius:20px;
+  }
+
+  /* Roadmap */
+  .roadmap{
+    display:flex;
+    gap:0;
+    margin-top:30px;
+    position:relative;
+  }
+  .rm-step{
+    flex:1;
+    padding-right:24px;
+    position:relative;
+  }
+  .rm-step::after{
+    content:'';
+    position:absolute;
+    top:7px; left:0; right:0;
+    height:1px;
+    background:var(--grid);
+    z-index:0;
+  }
+  .rm-step:last-child::after{ display:none; }
+  .rm-dot{
+    width:14px; height:14px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--cyan);
+    margin-bottom:14px;
+    position:relative; z-index:1;
+  }
+  .rm-step h4{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    margin-bottom:6px;
+  }
+  .rm-step p{
+    font-size:13px;
+    color:var(--dim);
+    line-height:1.5;
+  }
+
+  /* Progress tracker */
+  .tracker{
+    position:fixed;
+    bottom:26px; left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    align-items:center;
+    gap:0;
+    z-index:10;
+    background:rgba(16,26,46,0.85);
+    backdrop-filter:blur(6px);
+    padding:10px 18px;
+    border-radius:30px;
+    border:1px solid var(--grid);
+  }
+  .node-wrap{
+    display:flex; align-items:center;
+  }
+  .node{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--grid);
+    cursor:pointer;
+    transition: background 300ms, transform 300ms;
+    border:none;
+  }
+  .node.active{
+    background:var(--cyan);
+    transform:scale(1.5);
+  }
+  .node.done{ background:var(--dim); }
+  .track-line{
+    width:22px; height:1px;
+    background:var(--grid);
+  }
+
+  /* Nav buttons */
+  .nav-btn{
+    position:fixed;
+    top:50%; transform:translateY(-50%);
+    width:46px; height:46px;
+    border-radius:50%;
+    background:var(--panel);
+    border:1px solid var(--grid);
+    color:var(--text);
+    font-size:18px;
+    cursor:pointer;
+    z-index:10;
+    display:flex; align-items:center; justify-content:center;
+    transition: border-color 200ms, color 200ms;
+  }
+  .nav-btn:hover{ border-color:var(--cyan); color:var(--cyan); }
+  .nav-btn:disabled{ opacity:0.25; cursor:default; }
+  .nav-btn:disabled:hover{ border-color:var(--grid); color:var(--text); }
+  #prevBtn{ left:26px; }
+  #nextBtn{ right:26px; }
+
+  .step-count{
+    position:fixed;
+    top:26px; right:32px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--dim);
+    z-index:10;
+  }
+  .step-count b{ color:var(--cyan); }
+
+  .kicker-logo{
+    position:fixed;
+    top:26px; left:32px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    z-index:10;
+    color:var(--text);
+  }
+  .kicker-logo span{ color:var(--cyan); }
+
+  @media (max-width:640px){
+    .grid2{ grid-template-columns:1fr; gap:20px; }
+    .arch{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .arch-arrow{ transform:rotate(90deg); padding:2px 0; }
+    .roadmap{ flex-direction:column; gap:22px; }
+    .rm-step::after{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kicker-logo">Tech<span>Mind</span></div>
+<div class="step-count"><b id="stepNow">1</b> / 10</div>
+
+<div class="viewport">
+  <div class="world" id="world">
+
+    <!-- SLIDE 1 — HERO -->
+    <div class="slide" style="left:0vw; top:0vh;">
+      <div class="card">
+        <div class="eyebrow">Hackathon G9 LATAM · Equipo 37</div>
+        <h1>TechMind</h1>
+        <p class="lead">Un sistema que lee textos técnicos y los ordena solo, como si tuviera un bibliotecario automático que sabe de qué habla cada documento.</p>
+        <div class="tag">→ desliza para recorrer el proyecto</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 — PROBLEMA -->
+    <div class="slide" style="left:100vw; top:14vh;">
+      <div class="card">
+        <div class="eyebrow">01 · El problema</div>
+        <h2>El conocimiento técnico está disperso</h2>
+        <p class="lead">La información vive repartida en múltiples formatos y fuentes, sin una forma común de organizarla.</p>
+        <div class="sources">
+          <span class="source-chip">PDFs</span>
+          <span class="source-chip">Documentación Word</span>
+          <span class="source-chip">CSV</span>
+          <span class="source-chip">Manuales</span>
+          <span class="source-chip">Documentación oficial</span>
+          <span class="source-chip">Información web</span>
+        </div>
+        <ul class="list">
+          <li><span class="dot"></span>Tiempos elevados de búsqueda</li>
+          <li><span class="dot"></span>Duplicación de información</li>
+          <li><span class="dot"></span>Dificultad para encontrar la documentación correcta</li>
+          <li><span class="dot"></span>Poca reutilización del conocimiento existente</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 — OBJETIVO / SOLUCION -->
+    <div class="slide" style="left:200vw; top:-8vh;">
+      <div class="card">
+        <div class="eyebrow">02 · Objetivo y solución</div>
+        <h2>Que todo el conocimiento viva en un solo lugar, ya ordenado</h2>
+        <div class="grid2">
+          <div class="stat-card">
+            <h3>Objetivo</h3>
+            <p style="font-size:14.5px; color:var(--text); line-height:1.6;">Que cualquier persona pueda encontrar la documentación correcta en segundos, sin tener que buscar en diez lugares distintos.</p>
+          </div>
+          <div class="stat-card">
+            <h3>Solución</h3>
+            <p style="font-size:14.5px; color:var(--text); line-height:1.6;">El sistema lee cada texto, "aprende" de qué tema trata, y lo clasifica automáticamente — sin que una persona tenga que etiquetarlo a mano.</p>
+          </div>
+        </div>
+        <div class="analogy">Es como tener un asistente que lee cada documento que entra a la empresa y lo archiva solo en la carpeta correcta, en vez de que alguien tenga que leerlo y decidir dónde va.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 — ARQUITECTURA -->
+    <div class="slide" style="left:300vw; top:10vh;">
+      <div class="card">
+        <div class="eyebrow">03 · Cómo está armado por dentro</div>
+        <h2>Tres partes que se especializan, en vez de una que hace todo</h2>
+        <div class="arch">
+          <div class="arch-box"><div class="top">Quien pregunta</div>Envía el texto<span class="tech-note">Cliente / Postman</span></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="top">El recepcionista</div>Recibe y organiza el pedido<span class="tech-note">Spring Boot · 8080</span></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="top">El experto en IA</div>Lee y clasifica el texto<span class="tech-note">FastAPI · 8000</span></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="top">El archivo</div>Guarda el resultado<span class="tech-note">PostgreSQL · 5432</span></div>
+        </div>
+        <div class="analogy">Cada parte hace una sola cosa y la hace bien: una recibe el pedido, otra piensa la respuesta, otra guarda el historial. Si el "experto en IA" necesita una actualización, se puede cambiar sin tocar el resto del sistema.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 — STACK -->
+    <div class="slide" style="left:400vw; top:-10vh;">
+      <div class="card">
+        <div class="eyebrow">04 · Con qué lo construimos</div>
+        <h2>Cada herramienta, para qué sirve</h2>
+        <div class="grid2">
+          <div class="stat-card">
+            <h3>La parte que recibe pedidos</h3>
+            <p style="font-size:13.5px; color:var(--text); line-height:1.6;">Atiende cada solicitud que llega y la dirige a donde tiene que ir.</p>
+            <span class="tech-note">Java · Spring Boot</span>
+          </div>
+          <div class="stat-card">
+            <h3>La parte que "piensa"</h3>
+            <p style="font-size:13.5px; color:var(--text); line-height:1.6;">Analiza el texto y decide de qué tema se trata.</p>
+            <span class="tech-note">Python 3.12 · FastAPI · Scikit-Learn · Pandas</span>
+          </div>
+          <div class="stat-card">
+            <h3>Cómo aprende a clasificar</h3>
+            <p style="font-size:13.5px; color:var(--text); line-height:1.6;">Detecta qué palabras son más representativas de cada tema y aprende el patrón a partir de ejemplos ya clasificados.</p>
+            <span class="tech-note">TF-IDF + Regresión Logística</span>
+          </div>
+          <div class="stat-card">
+            <h3>Dónde vive todo</h3>
+            <p style="font-size:13.5px; color:var(--text); line-height:1.6;">Guarda el historial de resultados y hace que el sistema funcione en la nube, no en una sola computadora.</p>
+            <span class="tech-note">PostgreSQL 16 · Docker · Oracle Cloud (OCI)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 — PIPELINE ML -->
+    <div class="slide" style="left:500vw; top:12vh;">
+      <div class="card">
+        <div class="eyebrow">05 · Cómo aprende el sistema</div>
+        <h2>Como enseñarle a alguien a reconocer temas, mostrándole muchos ejemplos</h2>
+        <ul class="list" style="grid-template-columns:1fr 1fr; display:grid; gap:12px 30px;">
+          <li><span class="dot"></span>1 · Juntamos muchos textos técnicos ya clasificados</li>
+          <li><span class="dot"></span>2 · Revisamos que los datos estén completos y bien</li>
+          <li><span class="dot"></span>3 · Limpiamos el texto (minúsculas, sin errores)</li>
+          <li><span class="dot"></span>4 · Identificamos qué palabras son más importantes en cada tema</li>
+          <li><span class="dot"></span>5 · El sistema aprende el patrón "estas palabras → este tema"</li>
+          <li><span class="dot"></span>6 · También rescata las palabras clave de cada texto</li>
+          <li><span class="dot"></span>7 · Medimos qué tan bien acierta antes de darlo por listo</li>
+        </ul>
+        <div class="analogy">Es parecido a cómo aprende una persona nueva en un trabajo: si le mostrás cien mails ya clasificados como "reclamo" o "consulta", después de un rato empieza a reconocer el patrón sola, sin que se lo expliques palabra por palabra.</div>
+        <p class="lead" style="margin-top:18px; font-size:13px;">Al final, el sistema responde con la categoría, qué tan seguro está, y las palabras clave del texto.<span class="tech-note" style="margin-top:8px;">TF-IDF (1500 features) + Regresión Logística · joblib.dump() · POST /predecir</span></p>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 — EQUIPO -->
+    <div class="slide" style="left:600vw; top:6vh;">
+      <div class="card">
+        <div class="eyebrow">06 · Equipo</div>
+        <h2>G9 LATAM · Equipo 37</h2>
+        <div class="grid2" style="grid-template-columns:1fr 1fr;">
+          <div class="stat-card">
+            <h3>Ciencia de Datos</h3>
+            <ul>
+              <li>Leandro Villamil</li>
+              <li>Ernesto Llampa</li>
+              <li>Romulo Garcia Maygua</li>
+            </ul>
+          </div>
+          <div class="stat-card">
+            <h3>Back-End</h3>
+            <ul>
+              <li>Sergio Pablo Vilte</li>
+              <li>Andres Felipe Rojas</li>
+              <li>Noelia Rementeria</li>
+              <li>Camila Fagina</li>
+            </ul>
+          </div>
+          <div class="stat-card">
+            <h3>Quality Assurance</h3>
+            <ul><li>Federico Gutierrez</li></ul>
+          </div>
+          <div class="stat-card">
+            <h3>Nube (OCI)</h3>
+            <ul><li>Todo el equipo</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 — QA -->
+    <div class="slide" style="left:700vw; top:10vh;">
+      <div class="card">
+        <div class="eyebrow">07 · Control de calidad</div>
+        <h2>Antes de mostrarlo, lo pusimos a prueba a fondo</h2>
+        <div class="grid2" style="grid-template-columns:auto 1fr; gap:28px; align-items:center; margin-bottom:10px;">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:56px; color:var(--cyan); line-height:1;">100%</div>
+          <p style="font-size:14.5px; color:var(--dim); line-height:1.5; max-width:340px;">de las pruebas pasaron: <b style="color:var(--text);">24 de 24 casos</b>, sin ningún fallo, verificados el 24 de julio de 2026.</p>
+        </div>
+        <ul class="list" style="grid-template-columns:1fr 1fr; display:grid; gap:12px 30px; margin-top:18px;">
+          <li><span class="dot"></span><b style="color:var(--text);">¿Funciona bien?</b> — clasifica, da palabras clave y responde rápido (8 casos)</li>
+          <li><span class="dot"></span><b style="color:var(--text);">¿Guarda todo bien?</b> — rechaza datos incompletos o mal armados (6 casos)</li>
+          <li><span class="dot"></span><b style="color:var(--text);">¿Aguanta lo raro?</b> — textos gigantes, emojis, texto sin sentido (3 casos)</li>
+          <li><span class="dot"></span><b style="color:var(--text);">¿Rechaza lo inválido?</b> — tipos de datos o formatos incorrectos (3 casos)</li>
+          <li><span class="dot"></span><b style="color:var(--text);">¿Es seguro?</b> — resiste intentos de ataque como inyección SQL (2 casos)</li>
+          <li><span class="dot"></span><b style="color:var(--text);">¿Se puede monitorear?</b> — estado del sistema y catálogo de 8 categorías (2 casos)</li>
+        </ul>
+        <div class="analogy">Es como probar un auto antes de venderlo: no solo que arranque y ande, sino que frene bien, resista un pozo en el camino, y no falle si alguien lo usa de forma inesperada. Acá, ese auto pasó las 24 pruebas.</div>
+        <span class="tech-note" style="margin-top:16px;">Respuestas en &lt;2000ms · resistió 100 peticiones simultáneas · Postman + Swagger UI · Responsable: Federico G. Gutierrez</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 9 — ROADMAP -->
+    <div class="slide" style="left:800vw; top:-6vh;">
+      <div class="card">
+        <div class="eyebrow">08 · Roadmap</div>
+        <h2>De MVP a base de conocimiento autoactualizable</h2>
+        <div class="roadmap">
+          <div class="rm-step">
+            <div class="rm-dot"></div>
+            <h4>Actualmente</h4>
+            <p>Clasificación de contenido técnico funcionando de punta a punta.</p>
+          </div>
+          <div class="rm-step">
+            <div class="rm-dot"></div>
+            <h4>Luego</h4>
+            <p>Ingesta de múltiples fuentes: CSV, PDF, Word, HTML.</p>
+          </div>
+          <div class="rm-step">
+            <div class="rm-dot"></div>
+            <h4>Después</h4>
+            <p>Descarga automática de documentación oficial desde internet.</p>
+          </div>
+          <div class="rm-step">
+            <div class="rm-dot"></div>
+            <h4>Finalmente</h4>
+            <p>Base de conocimiento que se actualiza sola, sin intervención manual.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10 — CIERRE -->
+    <div class="slide" style="left:900vw; top:8vh;">
+      <div class="card">
+        <div class="eyebrow">09 · Cierre</div>
+        <h1 style="font-size:clamp(30px,4.4vw,52px);">Veamos TechMind en acción</h1>
+        <p class="lead">Demo en vivo: carga de contenido técnico, clasificación automática y consulta de la base de conocimiento.</p>
+        <div class="tag">Gracias</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="nav-btn" id="prevBtn">‹</button>
+<button class="nav-btn" id="nextBtn">›</button>
+
+<div class="tracker" id="tracker"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const world = document.getElementById('world');
+  const tracker = document.getElementById('tracker');
+  const stepNow = document.getElementById('stepNow');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  // build tracker nodes
+  slides.forEach((s, i) => {
+    if(i>0){
+      const line = document.createElement('div');
+      line.className = 'track-line';
+      tracker.appendChild(line);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'node-wrap';
+    const btn = document.createElement('button');
+    btn.className = 'node';
+    btn.addEventListener('click', () => goTo(i));
+    wrap.appendChild(btn);
+    tracker.appendChild(wrap);
+  });
+
+  function getOffsets(i){
+    const style = slides[i].getAttribute('style');
+    const leftMatch = style.match(/left:([-0-9.]+)vw/);
+    const topMatch = style.match(/top:([-0-9.]+)vh/);
+    return {
+      x: leftMatch ? parseFloat(leftMatch[1]) : 0,
+      y: topMatch ? parseFloat(topMatch[1]) : 0
+    };
+  }
+
+  function render(){
+    const {x, y} = getOffsets(current);
+    world.style.transform = `translate(${-x}vw, ${-y}vh)`;
+    stepNow.textContent = String(current+1).padStart(2,'0');
+    document.querySelectorAll('.node').forEach((n, i) => {
+      n.classList.toggle('active', i === current);
+      n.classList.toggle('done', i < current);
+    });
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    render();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  window.addEventListener('keydown', (e) => {
+    if(['ArrowRight','ArrowDown',' '].includes(e.key)) goTo(current + 1);
+    if(['ArrowLeft','ArrowUp'].includes(e.key)) goTo(current - 1);
+  });
+
+  let touchStartX = 0;
+  window.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+  window.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(dx > 50) goTo(current - 1);
+    if(dx < -50) goTo(current + 1);
+  });
+
+  render();
+</script>
+</body>
+</html>

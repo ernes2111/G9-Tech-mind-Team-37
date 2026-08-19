@@ -65,7 +65,7 @@
 
 | Campo | Valor |
 |---|---|
-| **Estado** | ⬜ Pendiente |
+| **Estado** | ✅ Completado |
 | **Owner** | Ernesto |
 | **Esfuerzo** | 30 min |
 
@@ -193,25 +193,23 @@ def recomendar(texto_consulta: str, top_k: int = 3):
 
 | Campo | Valor |
 |---|---|
-| **Estado** | ⬜ Pendiente |
+| **Estado** | ✅ Completado |
 | **Owner** | Equipo Backend |
 | **Esfuerzo** | 15 min |
 
-**Problema:** Sin CORS configurado, cualquier frontend en el browser fallará al intentar consumir la API.
-
-**Acción:** Agregar `@CrossOrigin` en `ContenidoController` o una `WebMvcConfigurer` global.
+**Resultado:** `@CrossOrigin(origins = "*")` implementado en `ContenidoController`. CORS para el endpoint `/actuator/health` configurado vía `management.endpoints.web.cors.allowed-origins=*` en `application.properties`.
 
 ---
 
-### 🟠 MEJORA-BE-002 — Verificar `/health` de FastAPI al arrancar Spring Boot
+### 🟠 MEJORA-BE-002 — Exponer endpoint de salud para monitoreo
 
 | Campo | Valor |
 |---|---|
-| **Estado** | ⬜ Pendiente |
+| **Estado** | ✅ Completado |
 | **Owner** | Equipo Backend |
 | **Esfuerzo** | 30 min |
 
-**Descripción:** Al iniciar Spring Boot, llamar a `GET /health` de FastAPI. Si el modelo no está cargado (`model_loaded: false`), registrar un warning claro en los logs en lugar de fallar silenciosamente en el primer request.
+**Resultado:** Agregado `spring-boot-starter-actuator` al `pom.xml`. El endpoint `GET /actuator/health` responde `{ "status": "UP" }` cuando el servicio está operativo. El frontend lo consume al cargar la página para actualizar el indicador LED en tiempo real. FastAPI sigue siendo verificado por Spring Boot vía `GET /health` antes de cada clasificación (comportamiento previo conservado).
 
 ---
 
@@ -268,4 +266,4 @@ def recomendar(texto_consulta: str, top_k: int = 3):
 
 ---
 
-*TechMind G9 LATAM Team 37 — Roadmap generado el 2026-07-27*
+*TechMind G9 LATAM Team 37 — Roadmap actualizado el 2026-07-30*

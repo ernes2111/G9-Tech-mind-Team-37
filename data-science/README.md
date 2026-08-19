@@ -19,29 +19,31 @@ data-science/
 │
 ├── data/
 │   ├── raw/
-│   │   └── contenidos_tecnicos.csv    # Dataset inicial de entrenamiento (~61 registros)
+│   │   └── contenidos_tecnicos.csv    # Dataset de entrenamiento (259 registros, 8 categorías)
 │   └── processed/                  # Datos procesados / intermedios
 │
 ├── notebooks/
-│   └── TechMind_DataScience.ipynb  # Notebook Jupyter con el pipeline de ML completo
+│   └── TechMind_DataScience.ipynb  # Notebook con el pipeline completo documentado + Cross-Validation K=5
 │
 ├── src/
-│   ├── migrate_to_postgres.py     # Script de migración CSV -> PostgreSQL
-│   └── ingest_documents.py        # Ingesta masiva de PDFs/DOCXs a PostgreSQL
+│   ├── expand_and_train.py        # ⭐ Script de producción: amplía dataset y genera artefactos .joblib
+│   ├── generate_models.py         # Generación de modelos auxiliares
+│   ├── migrate_to_postgres.py     # Script de migración CSV → PostgreSQL
+│   ├── ingest_documents.py        # Ingesta masiva de PDFs/DOCXs a PostgreSQL
+│   └── verify_schema.py           # Verificación del esquema de base de datos
 │
 ├── models/
-│   ├── modelo_clasificador.joblib # Modelo de Regresión Logística entrenado
-│   └── tfidf_vectorizer.joblib    # Vectorizador TF-IDF ajustado
+│   ├── modelo_clasificador.joblib # Ensamble calibrado (LR + LinearSVC + ComplementNB) — Accuracy 90.38%
+│   └── tfidf_vectorizer.joblib    # Vectorizador TF-IDF sublineal (1-3 n-gramas, 6 000 features)
 │
 ├── docs/
-│   ├── BACKEND_INTEGRATION.md     # Guía de integración Java / Spring Boot <-> FastAPI
+│   ├── BACKEND_INTEGRATION.md     # Guía de integración Java / Spring Boot ↔ FastAPI
 │   ├── ENTRENAMIENTO_Y_EJECUCION.md # Guía paso a paso para entrenar y ejecutar modelos
 │   ├── DIAGRAMA_PIPELINE.md       # Diagrama Mermaid interactivo del pipeline
 │   ├── INGESTA_DOCUMENTOS.md      # Guía de ingesta de documentos PDF/DOCX
 │   ├── EXPLICACION_PROYECTO.md    # Resumen conceptual del proyecto
 │   ├── REQUIREMENTS.md            # Requerimientos detallados
-│   ├── ROADMAP.md                 # Próximos pasos
-│   └── CHANGELOG.md               # Historial de cambios
+│   └── ROADMAP.md                 # Próximos pasos
 │
 ├── assets/
 │   └── pipeline_flowchart.png     # Diagrama visual del flujo de datos
@@ -74,13 +76,16 @@ pip install -r requirements.txt
 ### 3. Configurar `.env` y levantar PostgreSQL con Docker
 ```bash
 cp .env.example .env
-docker-compose up -d
+docker compose up -d
 ```
 
-### 4. Migrar el dataset semilla a PostgreSQL
+### 4. (Opcional) Re-entrenar el modelo con el dataset actual
 ```bash
-python src/migrate_to_postgres.py
+# Amplía el dataset, re-entrena el ensamble y genera nuevos .joblib
+python src/expand_and_train.py
 ```
+> El notebook `notebooks/TechMind_DataScience.ipynb` documenta el mismo pipeline
+> de forma reproducible e incluye validación cruzada K-Fold (K=5).
 
 ### 5. Iniciar la API FastAPI (Microservicio)
 ```bash

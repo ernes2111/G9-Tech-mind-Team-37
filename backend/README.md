@@ -69,19 +69,42 @@ curl -X POST http://localhost:8080/contenido \
 ## 📁 Estructura del Repositorio
 
 ```
-g9-techmind-team37/
-├── .env                    # Variables de entorno locales
-├── docker-compose.yml      # Infraestructura PostgreSQL
-├── docs/                   # Documentación del proyecto
-│   ├── FUNCIONALIDADES.md
-│   ├── ARQUITECTURA.md
-│   ├── INTEGRACION_FASTAPI.md
-│   └── SETUP.md
-└── api/api/                # Código fuente Spring Boot
-    ├── pom.xml
-    └── src/
-        ├── main/
-        │   ├── java/api/   # Código fuente Java
-        │   └── resources/  # Config + migraciones SQL
-        └── test/
+g9-techmind-team37/backend/
+│
+├── api/                                            # Aplicación Spring Boot
+│   ├── .mvn/wrapper/
+│   │       └── maven-wrapper.properties
+│   │
+│   ├── src/
+│   │   ├── main/                                   # Código principal de la aplicación
+│   │   │   ├── java/
+│   │   │   │   └── api/
+│   │   │   │       ├── config/                     # Configuraciones de la aplicación
+│   │   │   │       ├── controller/                 # Endpoints y controladores REST
+│   │   │   │       ├── dto/                        # Objetos de entrada y salida de la API
+│   │   │   │       ├── model/                      # Entidades y modelos de dominio
+│   │   │   │       ├── repository/                 # Acceso y persistencia de datos
+│   │   │   │       ├── service/                    # Lógica de negocio
+│   │   │   │       └── ApiApplication.java
+│   │   │   │
+│   │   │   └── resources/                          # Configuración y recursos
+│   │   │       ├── db/migration/                   # Migraciones de base de datos
+│   │   │       │       └── V1__create_tables.sql
+│   │   │       │
+│   │   │       └── application.properties          # Configuración de Spring Boot
+│   │   │
+│   │   └── test/java/api/                          # Pruebas automatizadas
+│   │               └── ApiApplicationTests.java
+│   │
+│   ├── mvnw                                        # Maven Wrapper para Linux/macOS
+│   ├── mvnw.cmd                                    # Maven Wrapper para Windows
+│   └── pom.xml                                     # Dependencias y configuración Maven
+│
+├── docs/                                           # Documentación técnica del proyecto
+│   ├── ARQUITECTURA.md                             # Arquitectura y componentes
+│   └── FUNCIONALIDADES.md                          # Funcionalidades implementadas
+│ 
+├── Dockerfile                                      # Infraestructura PostgreSQL
+│
+└── README.md                                       # Documentación principal del Backend
 ```

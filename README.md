@@ -4,7 +4,7 @@
 ### Organización Inteligente del Conocimiento Técnico
 
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=flat&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.x-6DB33F?style=flat&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-F7931E?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
@@ -25,6 +25,7 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 - 📂 La **categoría temática** del contenido (`Backend`, `Frontend`, `Data Science`, `DevOps`, `Mobile`, `Bases de Datos`, `Seguridad`, `Cloud`)
 - 📊 El nivel de **confianza / probabilidad** de la predicción
 - 🔑 Las **palabras clave** (keywords) más relevantes extraídas automáticamente mediante vectores TF-IDF
+- 📄 **Importación de documentos PDF y DOCX** con extracción automática de texto, inferencia de título y previsualización editable antes de clasificar
 - 📜 Un **historial persistente** accesible desde la interfaz web con todas las clasificaciones registradas
 
 ---
@@ -38,24 +39,31 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 </div>
 
 ```
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │                      Cliente Web (Navegador)                            │
-  │                      HTML5 + JS Vanilla + TailwindCSS                   │
-  │                      http://localhost:5173                              │
-  └────────────────────────────────────┬────────────────────────────────────┘
-                                       │ HTTP POST /contenido
-                                       ▼
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │              API Backend Principal — Spring Boot (Java 17)              │
-  │              Puerto 8080 · JPA / Hibernate · Flyway Migrations          │
-  └──────────────┬──────────────────────────────────────────┬───────────────┘
-                 │ HTTP POST /predecir                      │ JDBC
-                 ▼                                          ▼
-  ┌──────────────────────────────┐          ┌──────────────────────────────┐
-  │ Microservicio Data Science   │          │ Base de Datos PostgreSQL 16  │
-  │ FastAPI (Python) · :8000     │          │ Puerto 5432                  │
-  │ TF-IDF + LogisticRegression  │          │ contenidos · predicciones    │
-  └──────────────────────────────┘          └──────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                    Oracle Cloud Infrastructure (OCI)                              │
+│ ┌───────────────────────────────────────────────────────────────────────────────┐ │
+│ │                  Docker & Docker Compose Multi-Container                      │ │
+│ │                                                                               │ │
+│ │ ┌───────────────────────────────────────────────────────────────────────────┐ │ │
+│ │ │                   Cliente Web / Frontend (Nginx)                          │ │ │
+│ │ │                   HTML5 + JS Vanilla + TailwindCSS                        │ │ │
+│ │ │                   http://localhost:5173                                   │ │ │
+│ │ └─────────────────────────────────────┬─────────────────────────────────────┘ │ │
+│ │                                       │ HTTP POST /contenido                  │ │
+│ │                                       ▼                                       │ │
+│ │ ┌───────────────────────────────────────────────────────────────────────────┐ │ │
+│ │ │            API Backend Principal — Spring Boot (Java 17)                  │ │ │
+│ │ │            Puerto 8080 · JPA / Hibernate · Flyway Migrations              │ │ │
+│ │ └──────────────┬──────────────────────────────────────────┬─────────────────┘ │ │
+│ │                │ HTTP POST /predecir                      │ JDBC              │ │
+│ │                ▼                                          ▼                   │ │
+│ │ ┌──────────────────────────────┐          ┌──────────────────────────────┐    │ │
+│ │ │ Microservicio Data Science   │          │ Base de Datos PostgreSQL 16  │    │ │
+│ │ │ FastAPI (Python) · :8000     │          │ Puerto 5432                  │    │ │
+│ │ │ Ensamble Calibrado (LR+SVC)  │          │ contenidos · predicciones    │    │ │
+│ │ └──────────────────────────────┘          └──────────────────────────────┘    │ │
+│ └───────────────────────────────────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -64,7 +72,7 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 
 ### ☕ Back-End (Java / Spring Boot)
 - **Java 17 (LTS)**: Lenguaje principal de backend transaccional.
-- **Spring Boot 3.x**: Framework base para APIs REST.
+- **Spring Boot 4.x**: Framework base para APIs REST.
 - **Spring Data JPA / Hibernate**: ORM para la persistencia de datos.
 - **Flyway**: Control de versiones y migraciones automáticas de base de datos (`V1__create_tables.sql`).
 - **Lombok**: Reducción de código repetitivo (Getters, Setters, Constructors).
@@ -74,9 +82,11 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 - **Python 3.12**: Entorno de ejecución de inteligencia artificial.
 - **FastAPI & Uvicorn**: Microservicio asíncrono de alto rendimiento.
 - **Scikit-Learn**:
-  - `TfidfVectorizer` (3.000 características, unigramas y bigramas) para extracción de features y keywords.
-  - `LogisticRegression` (con pesos de clase balanceados) para la clasificación temática.
-- **Pandas & NumPy**: Procesamiento y limpieza del dataset técnico.
+  - `TfidfVectorizer` (sublineal, 6.000 características, n-gramas 1 a 3) para extracción de features y keywords.
+  - **Ensamble Calibrado (`VotingClassifier` Soft Voting)**: combina `LogisticRegression`, `CalibratedClassifierCV(LinearSVC)` y `ComplementNB` para máxima precisión y estimación de confianza.
+  - **Validación Cruzada Estratificada (K=5)** en desarrollo/notebook (87.28% CV Accuracy, 90.38% Holdout).
+- **Pandas & NumPy**: Procesamiento, augmentación de datos y limpieza del dataset técnico.
+- **Ingesta y Parsing de Documentos**: `pdfplumber` (PDFs hasta 15 pág.), `python-docx` (DOCX hasta 4.500 palabras) y `python-multipart` (manejo seguro de streams).
 - **Joblib**: Serialización y des-serialización de modelos entrenados.
 
 ### 🎨 Front-End (Web UI)
@@ -95,14 +105,14 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 
 | Integrante | Rol / Especialidad | Responsabilidades Principales |
 |-----------|-------------------|--------------------------------|
-| **Ernesto Llampa** | Data Science / Fullstack | Pipeline NLP, vectorización TF-IDF, entrenamiento del modelo, Integración completa, Frontend Web UI, auto-healing Docker & `setup.py` |
-| **Leandro Villamil** | Data Science / ML | Pipeline NLP, vectorización TF-IDF y entrenamiento del modelo |
+| **Ernesto Llampa** | Data Science / Fullstack / Cloud | Pipeline NLP, vectorización TF-IDF, entrenamiento del modelo, Integración completa, Frontend Web UI, auto-healing Docker & `setup.py`, deploy y optimización de infraestructura en OCI |
+| **Leandro Villamil** | Data Science / ML | Pipeline NLP, vectorización TF-IDF y entrenamiento del modelo, demostración de cómo funciona el proyecto con pruebas piloto, análisis y pruebas, Frontend, diseño responsivo UI/UX |
 | **Rómulo García Maygua** | Data Science / ML | Ingesta de datos, exploración EDA y notebooks |
 | **Sergio Pablo Vilte** | Backend Java | Desarrollo API REST Spring Boot, controladores y servicio de predicción |
-| **Andrés Felipe Rojas** | Backend Java | Configuración Spring Boot, entidades JPA y DTOs |
-| **Noelia Rementería** | Backend Java | Configuración de base de datos y soporte backend |
+| **Andrés Felipe Rojas** | Backend Java | Configuración Spring Boot, entidades JPA y DTOs, Frontend, diseño responsivo UI/UX |
+| **Noelia Rementeria** | Backend Java | Desarrollo API REST Spring Boot, configuración de base de datos y soporte backend |
 | **Camila Fagina** | Backend Java | Soporte backend y lógica transaccional |
-| **Federico Gutiérrez** | Quality Assurance (QA) | Matriz de pruebas, testing manual de endpoints, Swagger y validación |
+| **Federico Gutierrez** | Quality Assurance (QA) | Matriz de pruebas, testing manual de endpoints, Swagger y validación, Frontend |
 
 ---
 
@@ -112,13 +122,14 @@ TechMind es una plataforma web inteligente para la **organización y clasificaci
 g9-latam-techmind-team37/
 │
 ├── app/                                   # Microservicio FastAPI (Python)
-│   ├── main.py                            # API REST: /predecir, /health, /predicciones
+│   ├── main.py                            # API REST: /predecir, /extraer-texto, /health, /analytics
+│   ├── documento_extractor.py             # Ingesta y parsing seguro de documentos PDF y DOCX
 │   ├── database.py                        # Consulta a PostgreSQL para el historial
 │   └── Dockerfile                         # Imagen Docker de FastAPI
 │
 ├── backend/                               # API Backend Principal (Spring Boot / Java)
 │   ├── Dockerfile                         # Imagen Docker multi-stage de Spring Boot
-│   └── api/api/                           # Proyecto Maven / Spring Boot
+│   └── api                                # Proyecto Maven / Spring Boot
 │       ├── pom.xml
 │       ├── src/main/java/api/             # Controladores, Entidades JPA, DTOs y Servicios
 │       └── src/main/resources/            # application.properties y db/migration (Flyway)
@@ -137,10 +148,43 @@ g9-latam-techmind-team37/
 │       ├── ingest_documents.py            # Ingesta masiva de documentos PDF / DOCX
 │       └── migrate_to_postgres.py         # Carga inicial de datos a PostgreSQL
 │
-├── docker-compose.yml                    # Configuración de los 4 servicios en Docker
-├── setup.py                              # Installer y orquestador multiplataforma (Windows/Mac/Linux)
-├── how-to-run.md                         # Guía paso a paso de ejecución
-└── README.md                             # Documentación principal del proyecto
+├── qa/                                    # Módulo de Quality Assurance
+│   ├── casos-de-prueba/                   # Documentación de diseño de pruebas         
+│   │   ├── (v1.1) Matriz de Bugs.xlsx
+│   │   ├── (v1.1) Matriz de Mejoras.xlsx
+│   │   └── (v4.0) Matriz de Casos de Prueba.xlsx         
+│   ├── evidencias/                        # Respaldos y ejecuciones de las pruebas                   
+│   │   ├── Capturas de Pantalla/  
+│   │   │   ├── Backend (Spring Boot)/ 
+│   │   │   ├── Base de Datos (PostgreSQL 16)/ 
+│   │   │   ├── Data Science (FastAPI)/   
+│   │   │   └── FrontEnd/    
+│   │   │       ├── Bugs/ 
+│   │   │       ├── Casos de Prueba/ 
+│   │   │       └── Mejoras/      
+│   │   └── JSON/
+│   │       ├── Backend (Spring Boot)/ 
+│   │       └── Data Science (FastAPI)/  
+│   ├── reportes/                          # Informes y resultados finales
+│   │   ├── informes/
+│   │   │   └── (v3.0) Reporte de Resultados.pdf
+│   │   ├── Reporte de BUGS/
+│   │   │   ├── FIX-Columna-informaciones_adicionales.md
+│   │   │   ├── FIX-Docker-multiarch-spring-boot.md 
+│   │   │   ├── FIX-Indicadores-de-estado-congelados-en-rojo-al-iniciar-la-aplicacion.md
+│   │   │   ├── FIX-Persistencia-del-formulario-tras-ejecutar-la clasificacion.md
+│   │   │   └── FIX-Redundancia-en-controles-del-modal-de-JSON.md
+│   │   ├── resultados-sprint-1.md         # Resumen ejecutivo de métricas, bugs encontrados del Sprint 1
+│   │   ├── resultados-sprint-2.md         # Resumen ejecutivo de métricas, bugs encontrados del Sprint 2
+│   │   ├── resultados-sprint-3.md         # Resumen ejecutivo de métricas, bugs encontrados del Sprint 3
+│   │   └── resultados-sprint-4.md         # Resumen ejecutivo de métricas, bugs encontrados del Sprint 4
+│   └── README.md                          # Documentación específica del módulo QA
+│
+│
+├── docker-compose.yml                     # Configuración de los 4 servicios en Docker
+├── setup.py                               # Installer y orquestador multiplataforma (Windows/Mac/Linux)
+├── how-to-run.md                          # Guía paso a paso de ejecución
+└── README.md                              # Documentación principal del proyecto
 ```
 
 ---
@@ -207,10 +251,10 @@ El script creará el entorno virtual de Python, instalará requerimientos, levan
 ## 📚 Documentación Adicional
 
 - 📄 **Guía de Ejecución Rápida**: [`how-to-run.md`](how-to-run.md)
-- 📄 **Changelog de Bugs Corregidos**: [`data-science/docs/BUGFIX_CHANGELOG.md`](data-science/docs/BUGFIX_CHANGELOG.md)
+- 📄 **Registro Técnico de Bugs Corregidos**: [`data-science/docs/BUGFIX_REGISTRO.md`](data-science/docs/BUGFIX_REGISTRO.md)
 - 📄 **Integración Backend / ML**: [`data-science/docs/BACKEND_INTEGRATION.md`](data-science/docs/BACKEND_INTEGRATION.md)
 - 📄 **Ingesta de Documentos PDF/DOCX**: [`data-science/docs/INGESTA_DOCUMENTOS.md`](data-science/docs/INGESTA_DOCUMENTOS.md)
-- 📄 **Reporte Ejecutivo de QA**: [`qa/reportes/resultados-sprint-1.md`](qa/reportes/resultados-sprint-1.md)
+- 📄 **Reporte Ejecutivo de QA**: [`qa/reportes/Informes/RESULTADOS.md`](/qa/reportes/Informes/RESULTADOS.md)
 
 ---
 

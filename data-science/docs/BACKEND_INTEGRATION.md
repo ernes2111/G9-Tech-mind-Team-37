@@ -97,7 +97,7 @@ pip install -r data-science/requirements.txt
 > ⚠️ **Orden estricto de arranque:** Spring Boot debe iniciarse antes de migrar los datos para que Flyway cree las tablas oficiales (`contenidos` y `predicciones`) con los tipos de datos correctos (`BIGINT` / `BIGSERIAL`).
 
 ```bash
-cd backend/api/api
+cd backend/api
 ./mvnw spring-boot:run
 ```
 

@@ -220,3 +220,41 @@ Optimización de costos en la nube (FinOps),"Prácticas para analizar la factura
 Recuperación ante desastres (Disaster Recovery) en Cloud,Estrategias de RPO y RTO utilizando replicación entre regiones cloud para continuidad de negocio.,Cloud
 Almacenamiento en bloque OCI Block Volumes,Adición de discos de alto rendimiento IOPS a instancias de cómputo para bases de datos transaccionales.,Cloud
 Servicios de mensajería Cloud: SQS y SNS,Integración de colas de mensajes (SQS) y notificaciones fan-out (SNS) para desacoplar sistemas distribuidos.,Cloud
+Navegación nativa en iOS con SwiftUI NavigationStack,"Cómo estructurar flujos de pantalla declarativos, paso de binding y rutas en SwiftUI para iOS 16+.",Mobile
+Jetpack Compose State Management y Remember,"Manejo de estado reactivo en Android con remember, rememberSaveable y StateFlow en Kotlin Compose.",Mobile
+Compilación nativa de Flutter con Dart AOT,Compilación Ahead-Of-Time (AOT) en Flutter para generar código de máquina nativo súper rápido en iOS y Android.,Mobile
+Módulos nativos en React Native con la nueva arquitectura (Fabric),Integración de C++ y TurboModules en React Native para comunicación directa con el hilo nativo.,Mobile
+Persistencia local rápida con Realm / Isar en móviles,Uso de bases de datos orientadas a objetos ultrarrápidas para sincronización offline en Flutter y React Native.,Mobile
+Inyección de dependencias en Android con Hilt y Dagger,Configuración de anotaciones @AndroidEntryPoint y @HiltViewModel para desacoplar componentes nativos.,Mobile
+Arquitectura MVVM y Clean Architecture en iOS con Swift,"Organización de capas de presentación, caso de uso y repositorio usando Combine y Async/Await en Swift.",Mobile
+Push Notifications nativas con APNs y Firebase en iOS,Configuración de certificados Apple Push Notification service (APNs) y payload de notificaciones en Swift.,Mobile
+Deep Links e Intent Filters en aplicaciones Android,Manejo de esquemas URL personalizados y Universal Links para abrir pantallas específicas de la app móvil.,Mobile
+Pruebas automatizadas de UI en iOS con XCTest y XCUITest,"Escritura de tests de interfaz para simular toques, scroll y aserciones de elementos visuales en iOS.",Mobile
+Optimizaciones de rendimiento de batería y memoria en apps móviles,"Estrategias para minimizar consumo de batería, rastreo GPS en background y fugas de memoria en smartphones.",Mobile
+Kotlin Multiplatform (KMP) para compartir lógica de negocio,"Compartir código de lógica de dominio, modelos y red entre iOS y Android usando Kotlin Multiplatform.",Mobile
+Arquitectura de Redes VPC en AWS: Subnets y NAT Gateway,"Diseño de redes privadas virtuales, tablas de ruteo, subredes públicas/privadas e instancias Bastion en AWS.",Cloud
+Servicios Serverless con AWS Lambda y API Gateway,Creación de microservicios sin servidor mediante funciones Lambda activadas por endpoints de API Gateway.,Cloud
+Oracle Cloud Infrastructure (OCI) Autonomous Database,Despliegue y administración de bases de datos autónomas con autorreparación y escalado dinámico en OCI.,Cloud
+Políticas IAM y Roles de Asunción en AWS / Azure,"Configuración de políticas de seguridad basadas en JSON, mínimo privilegio y asunción de roles IAM para servicios.",Cloud
+Almacenamiento global con AWS S3 y CloudFront CDN,Distribución acelerada de archivos multimedia y assets estáticos mediante puntos de presencia de CloudFront.,Cloud
+Despliegue de infraestructura multinube con Terraform HCL,"Procesamiento de plantillas declarativas en HCL para aprovisionar recursos en AWS, Azure y Google Cloud.",Cloud
+Monitoreo cloud nativo con AWS CloudWatch y CloudTrail,Auditoría de llamadas a la API de AWS y métricas de consumo de cómputo en tiempo real con alarmas SNS.,Cloud
+Google Cloud Run y ejecución de contenedores sin servidor,Despliegue de contenedores Docker HTTP en GCP con autoescalado a cero instancias cuando no hay tráfico.,Cloud
+Estrategias FinOps para optimizar costos de cómputo Cloud,"Uso de instancias Spot/Reservadas, análisis de facturación en la nube y etiquetado de recursos cloud.",Cloud
+Azure App Services y Azure Functions serverless,Alojamiento de aplicaciones web y funciones asíncronas serverless en la plataforma en la nube de Microsoft Azure.,Cloud
+Disaster Recovery y Multi-Region Active-Active en Cloud,Estrategias de replicación transcontinental de datos y conmutación por error DNS para alta disponibilidad cloud.,Cloud
+Conexión privada corporativa con AWS Direct Connect / OCI FastConnect,Enlace dedicado de fibra óptica entre el data center on-premise y la nube privada virtual.,Cloud
+Orquestación de clústeres de Kubernetes con Helm y Kustomize,"Plantillado de recursos de Kubernetes y gestión de entornos dev, staging y prod con Helm charts.",DevOps
+Pipelines de CI/CD avanzados en GitHub Actions con Caching,Reutilización de caché de dependencias npm/maven y paralelizacion de jobs de pruebas automatizadas.,DevOps
+GitOps con ArgoCD y Sincronización Automática,Despliegue continuo declarativo desde Git hacia Kubernetes mediante el agente controlador de ArgoCD.,DevOps
+Microservicios reactivos con Spring Boot 3 y WebFlux,"Programación reactiva no bloqueante en Java utilizando Netty, Flux, Mono y Spring WebFlux.",Backend
+"API REST con FastAPI, Pydantic v2 y SQLModel","Desarrollo de microservicios ultra rápidos en Python con tipado estático, validación Pydantic y ORM async.",Backend
+Comunicación entre microservicios con gRPC y Protobuf,Serialización binaria de alta velocidad mediante Protocol Buffers y contratos gRPC en servicios backend.,Backend
+"Next.js 14 App Router, Server Actions y React Server Components","Renderizado híbrido en el servidor, mutaciones de datos directas con Server Actions y optimización web.",Frontend
+Gestión de estado asíncrono con TanStack React Query v5,"Caché de consultas HTTP, invalidación de queries y mutaciones optimistas en aplicaciones frontend.",Frontend
+Fine-tuning de modelos LLM con LoRA y Hugging Face,Ajuste fino eficiente de modelos de lenguaje grandes mediante adaptadores de baja densidad LoRA.,Data Science
+Vector Embeddings e Indexación HNSW con ChromaDB / pgvector,Búsqueda por similitud semántica de texto utilizando embeddings vectoriales y métricas de coseno.,Data Science
+Consultas analíticas avanzadas en PostgreSQL con Window Functions,"Uso de OVER(), PARTITION BY, DENSE_RANK() y LAG() para reportes complejos en PostgreSQL.",Bases de Datos
+Indexación GIN y búsqueda Full-Text Search en PostgreSQL,Búsqueda rápida de texto en campos JSONB y documentos usando índices GIN y tsvector en PostgreSQL.,Bases de Datos
+"Autenticación robusta con OAuth2, PKCE y JSON Web Tokens (JWT)",Implementación de flujos seguros de autorización sin estado con tokens de acceso y refresh tokens.,Seguridad
+Protección contra inyecciones SQL y mitigación de OWASP Top 10,"Buenas prácticas de sanitización de entradas, cabeceras de seguridad HSTS/CSP y consultas preparadas.",Seguridad
