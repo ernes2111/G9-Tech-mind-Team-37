@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechMind — Presentación Ejecutiva | Equipo 37</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       PROFESSIONAL PALETTE — Deep Slate & Warm Accents
+       ════════════════════════════════════════════════════════════ */
+    :root {
+      --bg-base: #0A0E1A;
+      --bg-surface: rgba(16, 22, 40, 0.78);
+      --bg-surface-elevated: rgba(24, 32, 56, 0.88);
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-glow: rgba(99, 179, 237, 0.35);
+
+      /* Primary: Refined Sky Blue */
+      --primary: #63B3ED;
+      --primary-soft: rgba(99, 179, 237, 0.12);
+      /* Secondary: Warm Gold */
+      --gold: #ECC94B;
+      --gold-soft: rgba(236, 201, 75, 0.12);
+      /* Accent: Soft Emerald */
+      --emerald: #68D391;
+      --emerald-soft: rgba(104, 211, 145, 0.12);
+      /* Danger: Coral / Rose */
+      --coral: #FC8181;
+      --coral-soft: rgba(252, 129, 129, 0.12);
+      /* Muted Purple */
+      --lavender: #B794F4;
+      --lavender-soft: rgba(183, 148, 244, 0.12);
+
+      --text-main: #F7FAFC;
+      --text-secondary: #CBD5E0;
+      --text-dim: #718096;
+
+      --font-heading: 'Outfit', -apple-system, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow: hidden;
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      user-select: none;
+    }
+
+    /* ── Ambient Background ── */
+    #bgCanvas {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 1; opacity: 0.45;
+    }
+    .ambient-glow-1 {
+      position: fixed; top: -18%; left: -12%; width: 60vw; height: 60vh;
+      background: radial-gradient(circle, rgba(99,179,237,0.12) 0%, rgba(183,148,244,0.06) 50%, transparent 70%);
+      filter: blur(120px); pointer-events: none; z-index: 2; transition: all 1.2s ease;
+    }
+    .ambient-glow-2 {
+      position: fixed; bottom: -18%; right: -12%; width: 60vw; height: 60vh;
+      background: radial-gradient(circle, rgba(236,201,75,0.08) 0%, rgba(104,211,145,0.06) 50%, transparent 70%);
+      filter: blur(120px); pointer-events: none; z-index: 2; transition: all 1.2s ease;
+    }
+    .grid-bg-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 56px 56px; pointer-events: none; z-index: 2;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: 64px; padding: 0 44px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(10,14,26,0.88); backdrop-filter: blur(24px); z-index: 50;
+    }
+    .brand-group { display: flex; align-items: center; gap: 16px; }
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-heading); font-weight: 800; font-size: 22px;
+      letter-spacing: -0.02em; color: #fff;
+    }
+    .brand-logo span {
+      background: linear-gradient(135deg, var(--primary), var(--emerald));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .brand-badge {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      padding: 4px 12px; border-radius: 999px;
+      background: var(--primary-soft); border: 1px solid rgba(99,179,237,0.25);
+      color: var(--primary); letter-spacing: 0.06em;
+    }
+    .header-controls { display: flex; align-items: center; gap: 12px; }
+    .pill-btn {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      color: var(--text-dim); padding: 7px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: all 0.25s ease;
+    }
+    .pill-btn:hover { background: var(--bg-surface-elevated); color: var(--text-main); border-color: rgba(255,255,255,0.15); }
+    .pill-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+    .keyboard-hint {
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .kbd {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);
+    }
+
+    /* ── Slides Engine ── */
+    .presentation-container {
+      position: relative; flex: 1; width: 100vw;
+      height: calc(100vh - 64px - 64px); margin-top: 64px;
+      overflow: hidden; z-index: 10;
+    }
+    .slides-slider {
+      display: flex; width: 500vw; height: 100%;
+      transition: transform 900ms cubic-bezier(0.65,0,0.15,1);
+    }
+    .slide {
+      width: 100vw; height: 100%; padding: 2.5vh 5vw;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .slide-content {
+      width: 100%; max-width: 1480px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* Stagger Animations */
+    .slide .anim-target {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
+    }
+    .slide.active-slide .anim-target { opacity: 1; transform: translateY(0); }
+    .slide.active-slide .anim-delay-1 { transition-delay: 0.08s; }
+    .slide.active-slide .anim-delay-2 { transition-delay: 0.18s; }
+    .slide.active-slide .anim-delay-3 { transition-delay: 0.3s; }
+    .slide.active-slide .anim-delay-4 { transition-delay: 0.42s; }
+
+    /* ── Typography & Gradient Text ── */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      color: var(--primary); letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: ''; width: 8px; height: 8px; background: var(--primary);
+      border-radius: 50%; box-shadow: 0 0 10px var(--primary);
+    }
+    .slide-title {
+      font-family: var(--font-heading); font-size: clamp(32px, 4vw, 54px);
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; color: #fff;
+    }
+    .slide-title .gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--emerald) 50%, var(--lavender) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: textGradientShift 8s ease infinite;
+    }
+    @keyframes textGradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .slide-subtitle {
+      font-size: clamp(15px, 1.4vw, 19px); color: var(--text-secondary);
+      line-height: 1.6; max-width: 1080px;
+    }
+
+    /* ── Shared Card ── */
+    .card {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg); padding: 24px 26px;
+      backdrop-filter: blur(14px); transition: all 0.3s ease; position: relative;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.14); box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 1: HOOK + PROBLEMA (ANIMATIONS)
+       ══════════════════════════════════════════════════════════ */
+    .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pain-card {
+      background: rgba(16,22,40,0.85); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg); padding: 28px 24px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .pain-card:hover {
+      border-color: rgba(99,179,237,0.45);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px -10px rgba(0,0,0,0.6), 0 0 20px rgba(99,179,237,0.15);
+    }
+    .pain-card:hover .pain-icon {
+      transform: scale(1.12) rotate(-4deg);
+    }
+    .pain-icon {
+      width: 60px; height: 60px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 30px;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pain-card h3 { font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: #fff; }
+    .pain-card p { font-size: 14.5px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Question Block Breathing Glow Pulse */
+    .question-block {
+      background: linear-gradient(135deg, rgba(99,179,237,0.1), rgba(183,148,244,0.06));
+      border: 1px solid rgba(99,179,237,0.3); border-radius: var(--radius-lg);
+      padding: 28px 36px; text-align: center;
+      position: relative;
+      box-shadow: 0 8px 32px -8px rgba(99,179,237,0.15);
+      animation: questionGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes questionGlow {
+      0% {
+        border-color: rgba(99,179,237,0.25);
+        box-shadow: 0 8px 32px -8px rgba(99,179,237,0.12), inset 0 0 20px rgba(99,179,237,0.02);
+      }
+      100% {
+        border-color: rgba(99,179,237,0.55);
+        box-shadow: 0 12px 40px -6px rgba(99,179,237,0.28), inset 0 0 30px rgba(99,179,237,0.08);
+      }
+    }
+    .question-block p {
+      font-family: var(--font-heading); font-size: clamp(18px, 2vw, 24px);
+      font-weight: 700; color: #fff; line-height: 1.4;
+    }
+    .question-block .answer {
+      margin-top: 14px; font-family: var(--font-body); font-size: 15.5px;
+      font-weight: 700; color: var(--primary);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 20px; border-radius: 999px;
+      background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.35);
+      animation: answerPulse 3s ease-in-out infinite;
+    }
+    @keyframes answerPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(99,179,237,0); }
+      50% { transform: scale(1.03); box-shadow: 0 0 16px rgba(99,179,237,0.3); }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 2: PROPUESTA DE VALOR (ANIMATIONS)
+       ══════════════════════════════════════════════════════════ */
+    .value-headline {
+      background: linear-gradient(135deg, rgba(99,179,237,0.08), rgba(104,211,145,0.05));
+      border: 1px solid rgba(99,179,237,0.22); border-radius: var(--radius-lg);
+      padding: 22px 32px; text-align: center;
+    }
+    .value-headline p {
+      font-size: clamp(16px, 1.6vw, 21px); color: #fff; font-weight: 600; line-height: 1.5;
+    }
+    .value-headline strong { color: var(--primary); }
+
+    .flow-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .flow-step {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg); padding: 26px 22px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+    }
+    .flow-step:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -8px rgba(99,179,237,0.2);
+    }
+    .flow-num {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--primary-soft); border: 2px solid var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-size: 19px; font-weight: 800; color: var(--primary);
+      transition: all 0.3s ease;
+    }
+    /* Staggered Pulsing for Step Numbers */
+    .flow-step:nth-child(1) .flow-num { animation: stepWave 3s ease-in-out infinite 0s; }
+    .flow-step:nth-child(2) .flow-num { animation: stepWave 3s ease-in-out infinite 1s; }
+    .flow-step:nth-child(3) .flow-num { animation: stepWave 3s ease-in-out infinite 2s; }
+
+    @keyframes stepWave {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(99,179,237,0.4);
+      }
+      50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 10px rgba(99,179,237,0);
+      }
+    }
+    .flow-step h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 700; color: #fff; }
+    .flow-step p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Shimmer effect for Result Chips */
+    .result-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    .result-chip {
+      background: rgba(16,22,40,0.9); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md); padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-chip::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -100%;
+      width: 60%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+      transform: rotate(25deg);
+      animation: chipShimmerSweep 5s ease-in-out infinite;
+    }
+    .result-chip:nth-child(1)::after { animation-delay: 0.5s; }
+    .result-chip:nth-child(2)::after { animation-delay: 2.2s; }
+    .result-chip:nth-child(3)::after { animation-delay: 3.8s; }
+
+    @keyframes chipShimmerSweep {
+      0% { left: -100%; }
+      30%, 100% { left: 200%; }
+    }
+    .result-chip:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px -8px rgba(99,179,237,0.25);
+    }
+    .result-chip .chip-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .result-chip .chip-text { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+    .result-chip .chip-text strong { color: #fff; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 3: DEMO EN VIVO (ANIMATIONS)
+       ══════════════════════════════════════════════════════════ */
+    .demo-hero {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 26px; padding: 4vh 3vw;
+      background: radial-gradient(ellipse at 50% 40%, rgba(99,179,237,0.12) 0%, rgba(236,201,75,0.05) 50%, transparent 70%);
+      border-radius: 28px; border: 1px solid rgba(99,179,237,0.28);
+      box-shadow: 0 20px 60px -20px rgba(99,179,237,0.2);
+    }
+    /* Radar Ping on Demo Badge */
+    .demo-badge {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+      border: 1px solid var(--gold); background: var(--gold-soft);
+      border-radius: 999px; padding: 7px 22px;
+      display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 0 18px rgba(236,201,75,0.15);
+      position: relative;
+    }
+    .demo-badge::before {
+      content: ''; width: 10px; height: 10px; background: var(--gold);
+      border-radius: 50%; animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+    .demo-badge::after {
+      content: '';
+      position: absolute;
+      left: 21px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.8;
+      animation: radarRing 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    }
+    @keyframes radarRing {
+      0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-50%) scale(3.5); opacity: 0; }
+    }
+    @keyframes pulse-dot {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.4; }
+    }
+    .demo-title {
+      font-family: var(--font-heading); font-size: clamp(44px,5.5vw,72px);
+      font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; color: #fff;
+    }
+    .demo-title span {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .demo-flow { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; max-width: 1300px; }
+    .demo-pill {
+      background: rgba(16,22,40,0.9); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 12px 20px; font-size: 15px; font-weight: 600;
+      color: var(--text-main); display: flex; align-items: center; gap: 10px;
+      backdrop-filter: blur(12px); transition: all 0.25s ease;
+    }
+    .demo-pill:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .demo-pill .num { font-family: var(--font-mono); color: var(--gold); font-weight: 800; }
+
+    /* Shimmer & Magnetic Glow on Demo Button */
+    .demo-btn {
+      background: linear-gradient(135deg, var(--primary), var(--emerald));
+      color: #0A0E1A; font-family: var(--font-heading); font-weight: 800;
+      font-size: 17px; padding: 14px 34px; border-radius: 12px;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 6px; box-shadow: 0 10px 30px rgba(99,179,237,0.35);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+    }
+    .demo-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      animation: btnShimmer 3s infinite;
+    }
+    @keyframes btnShimmer {
+      0% { left: -100%; }
+      35%, 100% { left: 100%; }
+    }
+    .demo-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 18px 45px rgba(99,179,237,0.55), 0 0 25px rgba(104,211,145,0.35);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 4: POR QUÉ CONFIAR (ANIMATIONS)
+       ══════════════════════════════════════════════════════════ */
+    .trust-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .trust-card {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg); padding: 22px 18px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .trust-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-glow);
+      box-shadow: 0 14px 30px -10px rgba(99,179,237,0.25);
+    }
+    .trust-icon {
+      width: 54px; height: 54px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+      transition: transform 0.35s ease;
+    }
+    .trust-card:hover .trust-icon {
+      transform: scale(1.12);
+    }
+    .trust-card h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 700; color: #fff; }
+    .trust-card p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.45; }
+
+    /* Pop-in Entrance & Numeric Glow for Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .stat-box {
+      background: rgba(16,22,40,0.88); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md); padding: 20px; text-align: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px -8px rgba(99,179,237,0.25);
+    }
+    .stat-value {
+      font-family: var(--font-heading); font-size: 36px; font-weight: 800;
+      color: var(--primary); line-height: 1; margin-bottom: 6px;
+      text-shadow: 0 0 20px rgba(99,179,237,0.35);
+    }
+    .stat-label { font-size: 13.5px; color: var(--text-secondary); line-height: 1.35; }
+
+    .slide.active-slide .stat-box {
+      animation: statPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .slide.active-slide .stat-box:nth-child(1) { animation-delay: 0.35s; }
+    .slide.active-slide .stat-box:nth-child(2) { animation-delay: 0.45s; }
+    .slide.active-slide .stat-box:nth-child(3) { animation-delay: 0.55s; }
+
+    @keyframes statPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 5: CIERRE (ANIMATIONS)
+       ══════════════════════════════════════════════════════════ */
+    .closing-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 36px; align-items: center; }
+    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .team-card {
+      background: rgba(16,22,40,0.75); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md); padding: 14px 18px;
+      transition: all 0.25s ease;
+    }
+    .team-card:hover {
+      border-color: rgba(99,179,237,0.3);
+      transform: translateY(-2px);
+    }
+    .team-label {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      color: var(--primary); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.04em;
+    }
+    .team-names { font-size: 14.5px; color: var(--text-main); line-height: 1.45; }
+
+    /* Ambient breathing Quote Card */
+    .closing-quote {
+      background: linear-gradient(135deg, rgba(99,179,237,0.07), rgba(104,211,145,0.04));
+      border-left: 4px solid var(--primary); padding: 16px 22px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      position: relative;
+      animation: quoteGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes quoteGlow {
+      0% { border-left-color: var(--primary); box-shadow: -4px 0 12px rgba(99,179,237,0.1); }
+      100% { border-left-color: var(--emerald); box-shadow: -4px 0 20px rgba(104,211,145,0.25); }
+    }
+    .closing-quote p {
+      font-size: 16px; color: #fff; font-weight: 600; line-height: 1.5; font-style: italic;
+    }
+    .closing-quote .attribution {
+      font-style: normal; font-size: 14px; color: var(--primary); margin-top: 8px; font-weight: 700;
+    }
+
+    /* Glowing Aura on QR Card with laser scanline */
+    .qr-showcase {
+      background: linear-gradient(145deg, rgba(16,22,40,0.95), rgba(24,32,56,0.95));
+      border: 1px solid var(--border-glow); border-radius: 24px; padding: 28px;
+      text-align: center; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      box-shadow: 0 24px 50px -15px rgba(0,0,0,0.65), 0 0 30px rgba(99,179,237,0.12);
+      position: relative;
+    }
+    #qrcode-box {
+      background: #fff; padding: 12px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    /* Subtle laser scan line on QR */
+    #qrcode-box::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      box-shadow: 0 0 8px var(--primary);
+      animation: qrScan 3.2s ease-in-out infinite;
+    }
+    @keyframes qrScan {
+      0%, 100% { top: 0; opacity: 0.15; }
+      50% { top: calc(100% - 3px); opacity: 0.9; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 64px; padding: 0 44px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(10,14,26,0.88); backdrop-filter: blur(18px); z-index: 50;
+    }
+    .timeline-tracker { display: flex; align-items: center; gap: 12px; }
+    .tracker-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: var(--bg-surface-elevated); border: 1px solid rgba(255,255,255,0.18);
+      cursor: pointer; transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .tracker-dot.active { background: var(--primary); border-color: var(--primary); transform: scale(1.5); box-shadow: 0 0 12px var(--primary); }
+    .tracker-dot.passed { background: var(--text-dim); }
+    .tracker-dot.demo-dot.active { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 14px var(--gold); }
+
+    /* Pacing Timer */
+    .pacing-box {
+      display: flex; flex-direction: column; gap: 4px; min-width: 220px;
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: 8px; padding: 5px 12px; cursor: pointer;
+      transition: all 0.3s ease; user-select: none;
+    }
+    .pacing-box:hover { border-color: var(--border-glow); background: var(--bg-surface-elevated); }
+    .pacing-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .timer-icon { font-size: 11px; color: var(--primary); }
+    .timer-text { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+    .pacing-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--primary); box-shadow: 0 0 8px var(--primary);
+      transition: all 0.4s ease; flex-shrink: 0;
+    }
+    .pacing-track { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+    .pacing-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--emerald)); border-radius: 999px; transition: width 0.25s linear, background 0.4s ease; }
+    .pacing-box.warning .pacing-bar { background: linear-gradient(90deg, var(--gold), #D69E2E); }
+    .pacing-box.warning .pacing-dot { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+    .pacing-box.urgent .pacing-bar { background: linear-gradient(90deg, var(--coral), #E53E3E); }
+    .pacing-box.urgent .pacing-dot { background: var(--coral); box-shadow: 0 0 12px var(--coral); animation: pulse-urgent 0.8s infinite alternate; }
+    .pacing-box.urgent { border-color: rgba(252,129,129,0.5); box-shadow: 0 0 14px rgba(252,129,129,0.25); }
+    @keyframes pulse-urgent { from { transform: scale(0.85); opacity: 0.7; } to { transform: scale(1.35); opacity: 1; } }
+
+    .nav-buttons { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      color: var(--text-main); display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer; transition: all 0.2s ease;
+    }
+    .nav-btn:hover:not(:disabled) { background: var(--bg-surface-elevated); border-color: var(--primary); color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Speaker Notes */
+    .notes-modal {
+      position: fixed; bottom: 76px; right: 44px; width: 480px; max-height: 500px;
+      background: rgba(14,20,36,0.97); border: 1px solid var(--border-glow);
+      border-radius: 18px; padding: 22px; box-shadow: 0 24px 50px rgba(0,0,0,0.8);
+      backdrop-filter: blur(22px); z-index: 100;
+      display: none; flex-direction: column; gap: 12px; overflow-y: auto;
+    }
+    .notes-modal.show { display: flex; animation: fadeIn 0.25s ease-out; }
+    .notes-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; }
+    .notes-head-title { font-family: var(--font-heading); font-size: 15px; font-weight: 700; color: var(--gold); }
+    .notes-body { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+    .notes-body strong { color: var(--text-main); }
+    .notes-cue { background: rgba(99,179,237,0.08); border-left: 3px solid var(--primary); padding: 8px 12px; border-radius: 0 8px 8px 0; font-size: 13px; color: var(--text-main); margin-top: 6px; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 1100px) {
+      .pain-grid, .flow-steps, .trust-grid, .closing-layout, .stats-row, .result-strip, .diff-ribbon { grid-template-columns: 1fr; }
+      .before-after { grid-template-columns: 1fr; }
+      .notes-modal { width: calc(100vw - 40px); right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+  <div class="ambient-glow-1" id="ambientGlow1"></div>
+  <div class="ambient-glow-2" id="ambientGlow2"></div>
+  <div class="grid-bg-overlay"></div>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-logo">🧠 Tech<span>Mind</span></div>
+      <div class="brand-badge">HACKATHON G9 LATAM · EQUIPO 37</div>
+    </div>
+    <div class="header-controls">
+      <div class="keyboard-hint">
+        <span class="kbd">←</span> <span class="kbd">→</span> navegar &nbsp;|&nbsp;
+        <span class="kbd">T</span> timer &nbsp;|&nbsp;
+        <span class="kbd">N</span> guion
+      </div>
+      <button class="pill-btn" id="notesToggleBtn">🎙️ Guion (N)</button>
+      <button class="pill-btn" id="fullscreenBtn">⛶ Pantalla Completa (F)</button>
+    </div>
+  </header>
+
+  <main class="presentation-container">
+    <div class="slides-slider" id="slidesSlider">
+
+      <!-- ═══════ SLIDE 1: HOOK + PROBLEMA (0:00 – 0:45) ═══════ -->
+      <section class="slide active-slide" id="slide-0">
+        <div class="slide-content">
+          <div class="anim-target anim-delay-1">
+            <div class="eyebrow">El Problema</div>
+            <h1 class="slide-title" style="margin-top: 8px;">
+              Guardamos documentos todos los días.<br>
+              <span class="gradient">Pero cuando los necesitamos, no los encontramos.</span>
+            </h1>
+            <p class="slide-subtitle" style="margin-top: 8px;">
+              No con diez documentos, sino con cientos o miles. Estudiantes, profesionales y empresas generan conocimiento constantemente — pero ese conocimiento crece muchísimo más rápido de lo que podemos organizarlo.
+            </p>
+          </div>
+
+          <div class="pain-grid anim-target anim-delay-2">
+            <div class="pain-card">
+              <div class="pain-icon" style="background: var(--coral-soft);">📄</div>
+              <h3>Documentos acumulados</h3>
+              <p>PDFs, archivos Word, apuntes y tutoriales que se van apilando sin ningún orden ni clasificación.</p>
+            </div>
+            <div class="pain-card">
+              <div class="pain-icon" style="background: var(--gold-soft);">🔍</div>
+              <h3>Búsquedas frustrantes</h3>
+              <p>"Yo sé que guardé ese tutorial…" — Minutos u horas buscando algo que sabemos que existe en algún lado.</p>
+            </div>
+            <div class="pain-card">
+              <div class="pain-icon" style="background: var(--lavender-soft);">🏷️</div>
+              <h3>Organizar a mano no escala</h3>
+              <p>Clasificar y etiquetar cada documento manualmente es lento, subjetivo y la primera tarea que dejamos de hacer.</p>
+            </div>
+          </div>
+
+          <div class="question-block anim-target anim-delay-3">
+            <p>¿Cómo transformamos todo ese contenido que tenemos disperso<br>en conocimiento que podamos encontrar, entender y reutilizar fácilmente?</p>
+            <div class="answer">✨ Ese es el problema que buscamos resolver con TechMind.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ SLIDE 2: PROPUESTA DE VALOR (0:45 – 1:30) ═══════ -->
+      <section class="slide" id="slide-1">
+        <div class="slide-content">
+          <div class="anim-target anim-delay-1">
+            <div class="eyebrow">Nuestra Solución</div>
+            <h2 class="slide-title" style="margin-top: 6px;">
+              Del contenido desordenado al<br>
+              <span class="gradient">conocimiento organizado automáticamente</span>
+            </h2>
+          </div>
+
+          <div class="value-headline anim-target anim-delay-2">
+            <p>TechMind ayuda a estudiantes, profesionales y organizaciones a <strong>transformar contenido técnico desordenado en conocimiento estructurado</strong>, sin tener que catalogarlo manualmente.</p>
+          </div>
+
+          <div class="flow-steps anim-target anim-delay-3">
+            <div class="flow-step">
+              <div class="flow-num">1</div>
+              <h3>Subí tu contenido</h3>
+              <p>Escribí un texto, o todavía más simple: subí directamente un PDF o un documento Word.</p>
+            </div>
+            <div class="flow-step" style="border-color: rgba(99,179,237,0.35);">
+              <div class="flow-num">2</div>
+              <h3>TechMind lo analiza</h3>
+              <p>La plataforma analiza el contenido y automáticamente identifica de qué tema se trata.</p>
+            </div>
+            <div class="flow-step">
+              <div class="flow-num">3</div>
+              <h3>Conocimiento organizado</h3>
+              <p>Obtenés la categoría, el nivel de confianza, las palabras clave y todo queda guardado para consultar después.</p>
+            </div>
+          </div>
+
+          <div class="result-strip anim-target anim-delay-4">
+            <div class="result-chip">
+              <div class="chip-icon" style="background: var(--primary-soft); color: var(--primary);">🏷️</div>
+              <div class="chip-text"><strong>Categoría automática</strong> entre 8 temas técnicos reconocidos</div>
+            </div>
+            <div class="result-chip">
+              <div class="chip-icon" style="background: var(--emerald-soft); color: var(--emerald);">📊</div>
+              <div class="chip-text"><strong>Nivel de confianza</strong> para saber qué tan seguro está el sistema</div>
+            </div>
+            <div class="result-chip">
+              <div class="chip-icon" style="background: var(--gold-soft); color: var(--gold);">🔑</div>
+              <div class="chip-text"><strong>Palabras clave</strong> para entender de qué trata sin leer todo</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ SLIDE 3: DEMO EN VIVO (1:30 – 3:10) ═══════ -->
+      <section class="slide" id="slide-2">
+        <div class="slide-content">
+          <div class="demo-hero anim-target anim-delay-1">
+            <div class="demo-badge">1:30 – 3:10 &nbsp;·&nbsp; DEMOSTRACIÓN EN VIVO</div>
+            <h2 class="demo-title">
+              Veamos cómo funciona<br><span>TechMind en la práctica</span>
+            </h2>
+            <p style="font-size: clamp(16px,1.6vw,22px); color: var(--text-secondary); max-width: 840px; line-height: 1.55;">
+              Vamos a tomar un documento técnico real, importarlo y ver cómo la plataforma lo clasifica al instante.
+            </p>
+            <div class="demo-flow anim-target anim-delay-2">
+              <div class="demo-pill"><span class="num">01</span> Importar un PDF o Word</div>
+              <div class="demo-pill" style="border-color: rgba(99,179,237,0.4); background: var(--primary-soft);">
+                <span class="num" style="color: var(--primary);">02</span> Clasificar con un clic
+              </div>
+              <div class="demo-pill"><span class="num">03</span> Ver categoría + confianza + keywords</div>
+              <div class="demo-pill"><span class="num">04</span> Consultar el historial guardado</div>
+              <div class="demo-pill"><span class="num">05</span> Panel de estadísticas y analytics</div>
+            </div>
+            <a href="http://147.15.127.238:5173" target="_blank" class="demo-btn anim-target anim-delay-3" id="openDemoBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Abrir TechMind en Vivo ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ SLIDE 4: ¿POR QUÉ CONFIAR? (3:10 – 4:10) ═══════ -->
+      <section class="slide" id="slide-3">
+        <div class="slide-content">
+          <div class="anim-target anim-delay-1">
+            <div class="eyebrow">¿Por qué confiar en TechMind?</div>
+            <h2 class="slide-title" style="margin-top: 6px;">
+              No es un prototipo:<br>
+              <span class="gradient">es un producto completo, probado y funcionando</span>
+            </h2>
+            <p class="slide-subtitle" style="margin-top: 6px;">
+              El mayor desafío no fue solo entrenar la inteligencia artificial. Fue conseguir que todo funcionara como un producto real: integración, persistencia, manejo de errores, rendimiento y calidad.
+            </p>
+          </div>
+
+          <div class="trust-grid anim-target anim-delay-2">
+            <div class="trust-card">
+              <div class="trust-icon" style="background: var(--primary-soft);">🧠</div>
+              <h3>Inteligencia Artificial propia</h3>
+              <p>Modelo entrenado específicamente para contenido técnico con 8 categorías. No depende de servicios externos ni de suscripciones.</p>
+            </div>
+            <div class="trust-card">
+              <div class="trust-icon" style="background: var(--lavender-soft);">🔒</div>
+              <h3>Privacidad total</h3>
+              <p>Todo se procesa dentro de nuestro servidor. Ningún documento se envía a terceros. Ideal para información confidencial.</p>
+            </div>
+            <div class="trust-card">
+              <div class="trust-icon" style="background: var(--emerald-soft);">✅</div>
+              <h3>Calidad comprobada</h3>
+              <p>Múltiples ciclos de pruebas documentando casos, errores y correcciones. 61 pruebas aprobadas con 100% de éxito.</p>
+            </div>
+            <div class="trust-card">
+              <div class="trust-icon" style="background: var(--gold-soft);">☁️</div>
+              <h3>Desplegado en la nube</h3>
+              <p>Funcionando en un servidor real en la nube, preparado para ejecutarse de forma contenerizada. No requiere hardware costoso.</p>
+            </div>
+          </div>
+
+          <div class="stats-row anim-target anim-delay-3">
+            <div class="stat-box">
+              <div class="stat-value">9 de 10</div>
+              <div class="stat-label">Documentos clasificados correctamente por la IA</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">8 categorías</div>
+              <div class="stat-label">Temas técnicos reconocidos automáticamente</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">< 1 segundo</div>
+              <div class="stat-label">Tiempo de respuesta por cada clasificación</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ SLIDE 5: CIERRE MEMORABLE (4:10 – 5:00) ═══════ -->
+      <section class="slide" id="slide-4">
+        <div class="slide-content">
+          <div class="anim-target anim-delay-1">
+            <div class="eyebrow">Equipo 37 & Cierre</div>
+            <h2 class="slide-title" style="margin-top: 8px;">
+              Convertir contenido técnico en<br>
+              <span class="gradient">conocimiento organizado</span>
+            </h2>
+          </div>
+
+          <div class="closing-layout anim-target anim-delay-2" style="margin-top: 6px;">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.55;">
+                8 profesionales trabajando de forma coordinada en inteligencia artificial, desarrollo de software, aseguramiento de calidad y diseño:
+              </p>
+              <div class="team-grid">
+                <div class="team-card">
+                  <div class="team-label">Inteligencia Artificial</div>
+                  <div class="team-names">Ernesto Llampa · Leandro Villamil · Rómulo García</div>
+                </div>
+                <div class="team-card">
+                  <div class="team-label">Desarrollo de Software</div>
+                  <div class="team-names">Sergio Vilte · Andrés Rojas · Noelia Rementeria · Camila Fagina</div>
+                </div>
+                <div class="team-card">
+                  <div class="team-label">Calidad de Software</div>
+                  <div class="team-names">Federico Gutierrez</div>
+                </div>
+                <div class="team-card">
+                  <div class="team-label">Infraestructura Cloud</div>
+                  <div class="team-names">Equipo 37 Completo</div>
+                </div>
+              </div>
+              <div class="closing-quote">
+                <p>"Porque el valor no está solamente en tener información. Está en poder encontrarla, entenderla y reutilizarla cuando realmente la necesitamos."</p>
+                <div class="attribution">— Eso es TechMind.</div>
+              </div>
+            </div>
+            <div class="qr-showcase anim-target anim-delay-3">
+              <div id="qrcode-box"></div>
+              <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px; color: #fff;">¡Probalo ahora!</div>
+              <div style="font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 600;">http://147.15.127.238:5173</div>
+              <p style="font-size: 12px; color: var(--text-dim);">Escaneá el código QR para probar la plataforma en vivo.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="timeline-tracker" id="timelineTracker"></div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="pacing-box" id="pacingTimerBox" title="Clic: Pausar/Reanudar · T · Doble Clic: reiniciar">
+        <div class="pacing-header">
+          <span class="timer-icon" id="timerStateIcon">▶</span>
+          <span class="timer-text" id="pacingSlideTime">00:00 / 00:45</span>
+          <span class="pacing-dot" id="pacingStatusDot"></span>
+        </div>
+        <div class="pacing-track"><div class="pacing-bar" id="pacingProgressBar"></div></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prevSlideBtn">‹</button>
+        <button class="nav-btn" id="nextSlideBtn">›</button>
+      </div>
+    </div>
+  </footer>
+
+  <div class="notes-modal" id="speakerNotesModal">
+    <div class="notes-head">
+      <div class="notes-head-title">🎙️ Guion Hablado (Pitch 5 Min)</div>
+      <button id="closeNotesBtn" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:16px;">✕</button>
+    </div>
+    <div class="notes-body" id="notesContent"></div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // SLIDES DATA — Guion adaptado del archivo .md del orador
+    // ═══════════════════════════════════════════════════════════
+    const SLIDES_DATA = [
+      {
+        title: "1. Hook + Problema",
+        timeRange: "0:00 – 0:45",
+        durationSeconds: 45,
+        theme: { glow1: "rgba(99,179,237,0.12)", glow2: "rgba(252,129,129,0.06)" },
+        script: `
+          <strong>🗣️ Guion (45 segundos):</strong><br><br>
+          "Quiero empezar con una pregunta.<br><br>
+          ¿Cuántas veces guardamos un tutorial, una documentación, un PDF o un apunte porque pensamos que algún día lo vamos a necesitar?<br><br>
+          Y cuando finalmente lo necesitamos… ya no recordamos dónde estaba.<br><br>
+          Ahora imaginemos eso, pero no con diez documentos, sino con cientos o miles.<br><br>
+          Estudiantes, desarrolladores, equipos técnicos y empresas generan constantemente conocimiento. El problema es que ese conocimiento crece muchísimo más rápido de lo que podemos organizarlo manualmente.<br><br>
+          Y ahí aparece una necesidad muy concreta:<br><br>
+          <strong>¿Cómo transformamos todo ese contenido técnico que tenemos disperso en conocimiento que podamos encontrar, entender y reutilizar fácilmente?</strong><br><br>
+          Ese es el problema que buscamos resolver con TechMind."
+        `,
+        cue: "💡 Pausa breve después de la pregunta retórica. Dejá que el jurado reflexione."
+      },
+      {
+        title: "2. Propuesta de Valor",
+        timeRange: "0:45 – 1:30",
+        durationSeconds: 45,
+        theme: { glow1: "rgba(104,211,145,0.14)", glow2: "rgba(99,179,237,0.08)" },
+        script: `
+          <strong>🗣️ Guion (45 segundos):</strong><br><br>
+          "TechMind es una plataforma que <strong>organiza automáticamente contenido técnico utilizando Ciencia de Datos</strong>.<br><br>
+          En una sola frase: TechMind ayuda a estudiantes, profesionales y organizaciones a transformar contenido técnico desordenado en conocimiento estructurado, sin tener que catalogarlo manualmente.<br><br>
+          ¿Cómo funciona?<br><br>
+          El usuario puede escribir un contenido técnico o, todavía más simple, subir directamente un PDF o un documento Word.<br><br>
+          TechMind analiza ese contenido y automáticamente identifica: <strong>de qué tema se trata, qué nivel de confianza tiene la clasificación y cuáles son las palabras clave más relevantes.</strong><br><br>
+          Y además guarda ese resultado, para que ese conocimiento pueda consultarse posteriormente.<br><br>
+          En lugar de tener simplemente una carpeta llena de documentos, empezamos a construir una <strong>base de conocimiento organizada automáticamente</strong>."
+        `,
+        cue: "💡 Tip: Enfatizá la frase 'base de conocimiento organizada automáticamente'. Es el concepto central."
+      },
+      {
+        title: "3. Demo en Vivo",
+        timeRange: "1:30 – 3:10",
+        durationSeconds: 100,
+        isDemo: true,
+        theme: { glow1: "rgba(236,201,75,0.14)", glow2: "rgba(99,179,237,0.1)" },
+        script: `
+          <strong>🗣️ Guion (1 min 40 seg):</strong><br><br>
+          "Y quiero mostrarles cómo funciona esto en la práctica.<br><br>
+          Voy a tomar un documento técnico que ya tengo preparado. En lugar de copiar todo su contenido manualmente, simplemente voy a importarlo."<br><br>
+          <em>[Clic → Importar PDF/DOCX]</em><br><br>
+          "TechMind extrae automáticamente el contenido del documento y completa la información por nosotros."<br><br>
+          <em>[Mostrar título y texto extraído]</em><br><br>
+          "Ahora simplemente le pedimos que lo clasifique."<br><br>
+          <em>[Clic → Clasificar con TechMind]</em><br><br>
+          "Y en unos segundos obtenemos el resultado. El resultado queda almacenado."<br><br>
+          <em>[Ir a Historial → Mostrar búsqueda/filtro]</em><br><br>
+          "Y cuando ya tenemos suficientes contenidos, podemos empezar a ver cómo se está construyendo nuestra base de conocimiento."<br><br>
+          <em>[Ir a Analytics]</em><br><br>
+          "Es decir, pasamos de tener documentos aislados… a tener <strong>información organizada y consultable</strong>."
+        `,
+        cue: "💡 Tip: Tené el PDF preparado de antemano. Hacé la demo con calma, mostrá el resultado y el historial."
+      },
+      {
+        title: "4. ¿Por qué confiar en TechMind?",
+        timeRange: "3:10 – 4:10",
+        durationSeconds: 60,
+        theme: { glow1: "rgba(183,148,244,0.14)", glow2: "rgba(99,179,237,0.08)" },
+        script: `
+          <strong>🗣️ Guion (60 segundos):</strong><br><br>
+          "Detrás de esta experiencia hay un sistema completo.<br><br>
+          Tenemos una aplicación web que recibe el contenido, un servicio encargado del análisis mediante inteligencia artificial, una capa que coordina el procesamiento y una base de datos donde almacenamos los resultados.<br><br>
+          El modelo fue entrenado específicamente para contenido técnico y trabaja con ocho categorías, alcanzando un <strong>90,38% de precisión en nuestro conjunto de prueba</strong>.<br><br>
+          Pero para nosotros, uno de los mayores desafíos no fue solamente entrenar el modelo. Fue conseguir que todo funcionara como un producto real.<br><br>
+          Durante el desarrollo tuvimos que resolver problemas de integración, persistencia, manejo de errores y rendimiento.<br><br>
+          Además realizamos múltiples ciclos de pruebas de calidad, documentando casos, errores y correcciones.<br><br>
+          Y todo esto está preparado para ejecutarse de forma completamente contenerizada y desplegado en la nube."
+        `,
+        cue: "💡 Tip: Enfatizá que no es un prototipo local. Es un producto real desplegado en un servidor."
+      },
+      {
+        title: "5. Cierre Memorable",
+        timeRange: "4:10 – 5:00",
+        durationSeconds: 50,
+        theme: { glow1: "rgba(99,179,237,0.14)", glow2: "rgba(236,201,75,0.1)" },
+        script: `
+          <strong>🗣️ Guion (50 segundos):</strong><br><br>
+          "Todos los días generamos conocimiento.<br><br>
+          El problema es que gran parte de ese conocimiento termina perdido entre documentos, tutoriales, apuntes y archivos que después cuesta volver a encontrar.<br><br>
+          <strong>TechMind busca cambiar eso.</strong><br><br>
+          Queremos que organizar conocimiento técnico deje de ser una tarea manual y pase a ser algo automático.<br><br>
+          Porque el valor no está solamente en tener información.<br><br>
+          <strong>Está en poder encontrarla, entenderla y reutilizarla cuando realmente la necesitamos.</strong><br><br>
+          Eso es TechMind.<br><br>
+          <strong>Convertir contenido técnico en conocimiento organizado.</strong>"<br><br>
+          <em>[Pausa. Mirar al jurado.]</em><br><br>
+          "Muchas gracias."
+        `,
+        cue: "💡 Tip: Señalá el QR. Hacé la pausa final con confianza. Mantené contacto visual con el jurado."
+      }
+    ];
+
+    // ── State ──
+    let currentSlide = 0;
+    const totalSlides = SLIDES_DATA.length;
+    const slider = document.getElementById("slidesSlider");
+    const slides = document.querySelectorAll(".slide");
+    const timelineTracker = document.getElementById("timelineTracker");
+    const prevBtn = document.getElementById("prevSlideBtn");
+    const nextBtn = document.getElementById("nextSlideBtn");
+    const notesModal = document.getElementById("speakerNotesModal");
+    const notesContent = document.getElementById("notesContent");
+    const notesToggleBtn = document.getElementById("notesToggleBtn");
+    const closeNotesBtn = document.getElementById("closeNotesBtn");
+    const fullscreenBtn = document.getElementById("fullscreenBtn");
+    const glow1 = document.getElementById("ambientGlow1");
+    const glow2 = document.getElementById("ambientGlow2");
+
+    // ── Timer ──
+    let timerRunning = false, slideElapsedSeconds = 0, timerInterval = null;
+    const pacingBox = document.getElementById("pacingTimerBox");
+    const pacingTimeText = document.getElementById("pacingSlideTime");
+    const pacingDot = document.getElementById("pacingStatusDot");
+    const pacingBar = document.getElementById("pacingProgressBar");
+    const timerStateIcon = document.getElementById("timerStateIcon");
+
+    // ── Particle Canvas ──
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener("resize", resizeCanvas); resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.35; this.vy = (Math.random() - 0.5) * 0.35;
+        this.radius = Math.random() * 1.4 + 0.6;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(99,179,237,0.3)"; ctx.fill();
+      }
+    }
+    for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update(); particles[i].draw();
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(99,179,237,${0.08 * (1 - dist / 140)})`;
+            ctx.lineWidth = 0.7; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ── Utils ──
+    function fmt(s) { return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`; }
+
+    function updatePacing() {
+      const max = SLIDES_DATA[currentSlide].durationSeconds;
+      const pct = Math.min(100, (slideElapsedSeconds / max) * 100);
+      pacingBar.style.width = `${pct}%`;
+      pacingTimeText.textContent = `${fmt(slideElapsedSeconds)} / ${fmt(max)}`;
+      pacingBox.classList.remove("warning", "urgent");
+      if (slideElapsedSeconds > max || pct >= 85) pacingBox.classList.add("urgent");
+      else if (pct >= 65) pacingBox.classList.add("warning");
+    }
+
+    function startTimer() { if (timerRunning) return; timerRunning = true; timerStateIcon.textContent = "⏸"; timerStateIcon.style.color = "var(--primary)"; timerInterval = setInterval(() => { slideElapsedSeconds++; updatePacing(); }, 1000); }
+    function pauseTimer() { if (!timerRunning) return; timerRunning = false; timerStateIcon.textContent = "▶"; timerStateIcon.style.color = "var(--gold)"; clearInterval(timerInterval); }
+    function toggleTimer() { timerRunning ? pauseTimer() : startTimer(); }
+    function resetTimer() { slideElapsedSeconds = 0; updatePacing(); }
+
+    pacingBox.addEventListener("click", toggleTimer);
+    pacingBox.addEventListener("dblclick", (e) => { e.stopPropagation(); resetTimer(); });
+
+    // ── Timeline ──
+    SLIDES_DATA.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "tracker-dot" + (i === 0 ? " active" : "") + (s.isDemo ? " demo-dot" : "");
+      d.title = `${s.title} (${s.timeRange})`;
+      d.addEventListener("click", () => goToSlide(i));
+      timelineTracker.appendChild(d);
+    });
+
+    // ── QR ──
+    try { new QRCode(document.getElementById("qrcode-box"), { text: "http://147.15.127.238:5173", width: 150, height: 150, colorDark: "#0A0E1A", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M }); } catch(e) {}
+
+    // ── Navigation ──
+    function updateSlideView() {
+      slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+      slides.forEach((s, i) => s.classList.toggle("active-slide", i === currentSlide));
+      const t = SLIDES_DATA[currentSlide].theme;
+      if (t) {
+        glow1.style.background = `radial-gradient(circle, ${t.glow1} 0%, rgba(183,148,244,0.05) 50%, transparent 70%)`;
+        glow2.style.background = `radial-gradient(circle, ${t.glow2} 0%, rgba(104,211,145,0.04) 50%, transparent 70%)`;
+      }
+      timelineTracker.querySelectorAll(".tracker-dot").forEach((d, i) => { d.classList.toggle("active", i === currentSlide); d.classList.toggle("passed", i < currentSlide); });
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+      resetTimer();
+      const data = SLIDES_DATA[currentSlide];
+      notesContent.innerHTML = `<div style="font-weight:700; color:#fff; font-size:14px; margin-bottom:6px;">${data.title} (${data.timeRange})</div>${data.script}<div class="notes-cue">${data.cue}</div>`;
+    }
+
+    function goToSlide(i) { currentSlide = Math.max(0, Math.min(totalSlides - 1, i)); updateSlideView(); if (!timerRunning) startTimer(); }
+    prevBtn.addEventListener("click", () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener("click", () => goToSlide(currentSlide + 1));
+
+    function toggleNotes() { notesModal.classList.toggle("show"); notesToggleBtn.classList.toggle("active", notesModal.classList.contains("show")); }
+    notesToggleBtn.addEventListener("click", toggleNotes);
+    closeNotesBtn.addEventListener("click", toggleNotes);
+
+    function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else if (document.exitFullscreen) document.exitFullscreen(); }
+    fullscreenBtn.addEventListener("click", toggleFS);
+
+    window.addEventListener("keydown", (e) => {
+      if (["ArrowRight","Space","PageDown"].includes(e.code)) { e.preventDefault(); goToSlide(currentSlide + 1); }
+      else if (["ArrowLeft","PageUp"].includes(e.code)) { e.preventDefault(); goToSlide(currentSlide - 1); }
+      else if (e.key.toLowerCase() === "n") { e.preventDefault(); toggleNotes(); }
+      else if (e.key.toLowerCase() === "t") { e.preventDefault(); toggleTimer(); }
+      else if (e.key.toLowerCase() === "f") { e.preventDefault(); toggleFS(); }
+      else if (e.key === "Home") { e.preventDefault(); goToSlide(0); }
+      else if (e.key === "End") { e.preventDefault(); goToSlide(totalSlides - 1); }
+    });
+
+    let tx = 0;
+    window.addEventListener("touchstart", (e) => { tx = e.changedTouches[0].screenX; }, false);
+    window.addEventListener("touchend", (e) => { const d = e.changedTouches[0].screenX - tx; if (d < -50) goToSlide(currentSlide + 1); else if (d > 50) goToSlide(currentSlide - 1); }, false);
+
+    updateSlideView();
+  </script>
+</body>
+</html>
